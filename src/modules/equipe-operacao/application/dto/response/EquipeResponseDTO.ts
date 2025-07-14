@@ -10,7 +10,7 @@ export class EquipeResponseDTO {
   jaRespondeu: boolean;
   email: string;
   contatoEquipe: string;
-  dataOperacao: string; // formatada como string
+  dataOperacao: string;
   horarioInicial: string;
   horarioFinal: string;
   nomeOperacao: string;

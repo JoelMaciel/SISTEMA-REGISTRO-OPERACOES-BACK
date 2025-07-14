@@ -29,7 +29,7 @@ export const CreateEquipeSchema = z.object({
           return date;
         }
       }
-      return undefined; // invalida o campo
+      return undefined;
     },
     z.date({
       required_error: 'O campo "dataOperacao" é obrigatório.',

@@ -1,4 +1,3 @@
-// src/shared/errors/AppExceptionFilter.ts
 import {
   ExceptionFilter,
   Catch,

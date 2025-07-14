@@ -7,11 +7,10 @@ dotenv.config();
 
 async function bootstrap() {
   try {
-    // await AppDataSource.initialize();
-    console.log('📦  bootstrap Conectado ao banco de dados!');
     const app = await NestFactory.create(AppModule);
-    // app.useGlobalFilters(new AppExceptionFilter());
+    app.useGlobalFilters(new AppExceptionFilter());
     await app.listen(3000);
+    console.log('📦 Conectado ao banco de dados!');
     console.log('🚀 Servidor rodando na porta 3000');
   } catch (error) {
     console.error('Erro ao conectar ao banco de dados', error);

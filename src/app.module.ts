@@ -1,15 +1,12 @@
-// app.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { EquipeOperacao } from './modules/equipe-operacao/domain/entities/equipe-operacao';
 import { EquipeModule } from './EquipeModule';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }), // <--- carrega o .env automaticamente
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -26,7 +23,7 @@ import { EquipeModule } from './EquipeModule';
     }),
     EquipeModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}

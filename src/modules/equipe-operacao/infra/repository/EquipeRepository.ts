@@ -8,34 +8,95 @@ import { InjectRepository } from '@nestjs/typeorm';
 export class EquipeRepository implements IEquipeRepository {
   constructor(
     @InjectRepository(EquipeOperacao)
-    private readonly equipeRepo: Repository<EquipeOperacao>,
+    private readonly equipeRepository: Repository<EquipeOperacao>,
   ) {}
 
   async create(data: Partial<EquipeOperacao>): Promise<EquipeOperacao> {
-    const equipe = this.equipeRepo.create(data);
-    return this.equipeRepo.save(equipe);
+    const equipe = this.equipeRepository.create(data);
+    return this.equipeRepository.save(equipe);
   }
 
   async findById(id: string): Promise<EquipeOperacao | null> {
-    return this.equipeRepo.findOne({ where: { id } });
+    return this.equipeRepository.findOne({ where: { id } });
   }
 
-  async findAll(): Promise<EquipeOperacao[]> {
-    return this.equipeRepo.find();
+  async findAllPaginatedAndFiltered(
+    page: number,
+    size: number,
+    filtros?: Partial<{
+      email: string;
+      dataOperacao: string;
+      nomeOperacao: string;
+      opmGuarnicao: string;
+      prefixoVtr: string;
+      areaAtuacao: string;
+      tipoServico: string;
+    }>,
+  ): Promise<[EquipeOperacao[], number]> {
+    const skip = (page - 1) * size;
+
+    const query = this.equipeRepository
+      .createQueryBuilder('equipe')
+      .skip(skip)
+      .take(size);
+
+    if (filtros?.email) {
+      query.andWhere('equipe.email ILIKE :email', {
+        email: `%${filtros.email}%`,
+      });
+    }
+
+    if (filtros?.dataOperacao) {
+      query.andWhere('equipe.dataOperacao = :dataOperacao', {
+        dataOperacao: filtros.dataOperacao,
+      });
+    }
+
+    if (filtros?.nomeOperacao) {
+      query.andWhere('equipe.nomeOperacao ILIKE :nomeOperacao', {
+        nomeOperacao: `%${filtros.nomeOperacao}%`,
+      });
+    }
+
+    if (filtros?.opmGuarnicao) {
+      query.andWhere('equipe.opmGuarnicao ILIKE :opmGuarnicao', {
+        opmGuarnicao: `%${filtros.opmGuarnicao}%`,
+      });
+    }
+
+    if (filtros?.prefixoVtr) {
+      query.andWhere('equipe.prefixoVtr ILIKE :prefixoVtr', {
+        prefixoVtr: `%${filtros.prefixoVtr}%`,
+      });
+    }
+
+    if (filtros?.areaAtuacao) {
+      query.andWhere('equipe.areaAtuacao = :areaAtuacao', {
+        areaAtuacao: filtros.areaAtuacao,
+      });
+    }
+
+    if (filtros?.tipoServico) {
+      query.andWhere('equipe.tipo_servico = :tipoServico', {
+        tipoServico: filtros.tipoServico,
+      });
+    }
+
+    return query.getManyAndCount();
   }
 
   async update(
     id: string,
     data: Partial<EquipeOperacao>,
   ): Promise<EquipeOperacao> {
-    const equipe = await this.equipeRepo.findOneOrFail({ where: { id } });
+    const equipe = await this.equipeRepository.findOneOrFail({ where: { id } });
 
-    const equipeAtualizada = this.equipeRepo.merge(equipe, data);
+    const equipeAtualizada = this.equipeRepository.merge(equipe, data);
 
-    return this.equipeRepo.save(equipeAtualizada);
+    return this.equipeRepository.save(equipeAtualizada);
   }
 
   async delete(id: string): Promise<void> {
-    await this.equipeRepo.delete(id);
+    await this.equipeRepository.delete(id);
   }
 }
