@@ -1,15 +1,16 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { AppDataSource } from 'ormconfig';
 import * as dotenv from 'dotenv';
+import { AppExceptionFilter } from './shared/errors/AppExceptionFilter';
 
 dotenv.config();
 
 async function bootstrap() {
   try {
-    await AppDataSource.initialize();
-    console.log('📦 Conectado ao banco de dados!');
+    // await AppDataSource.initialize();
+    console.log('📦  bootstrap Conectado ao banco de dados!');
     const app = await NestFactory.create(AppModule);
+    // app.useGlobalFilters(new AppExceptionFilter());
     await app.listen(3000);
     console.log('🚀 Servidor rodando na porta 3000');
   } catch (error) {
