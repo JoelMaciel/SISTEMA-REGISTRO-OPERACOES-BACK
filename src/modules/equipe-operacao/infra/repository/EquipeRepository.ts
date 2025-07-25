@@ -40,7 +40,8 @@ export class EquipeRepository implements IEquipeRepository {
     const query = this.equipeRepository
       .createQueryBuilder('equipe')
       .skip(skip)
-      .take(limit);
+      .take(limit)
+      .orderBy('equipe.dataOperacao', 'DESC');
 
     const conditions: Record<string, { field: string; like: boolean }> = {
       matriculaComandante: { field: 'equipe.matriculaComandante', like: true },
