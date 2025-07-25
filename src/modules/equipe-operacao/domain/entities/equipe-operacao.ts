@@ -15,9 +15,6 @@ export class EquipeOperacao {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'ja_respondeu', nullable: false })
-  jaRespondeu: boolean;
-
   @Column({ name: 'email', length: 60, nullable: false })
   email: string;
 

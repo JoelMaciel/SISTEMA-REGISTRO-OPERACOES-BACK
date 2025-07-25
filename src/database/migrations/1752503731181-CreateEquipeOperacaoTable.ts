@@ -16,11 +16,6 @@ export class CreateEquipeOperacaoTable1752503731181
             isGenerated: true,
           },
           {
-            name: 'ja_respondeu',
-            type: 'boolean',
-            isNullable: false,
-          },
-          {
             name: 'email',
             type: 'varchar',
             length: '50',

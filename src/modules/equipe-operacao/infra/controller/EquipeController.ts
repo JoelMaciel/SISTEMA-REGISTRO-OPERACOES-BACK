@@ -26,10 +26,35 @@ export class EquipeController {
 
   @Get()
   async listarEquipes(
-    @Query('page') page: number,
-    @Query('size') limit: number,
-    @Query() filtros: any,
+    @Query('pageIndex') pageIndex?: string,
+    @Query('limit') limit?: string,
+    @Query('matriculaComandante') matriculaComandante?: string,
+    @Query('dataOperacao') dataOperacao?: string,
+    @Query('nomeOperacao') nomeOperacao?: string,
+    @Query('opmGuarnicao') opmGuarnicao?: string,
+    @Query('prefixoVtr') prefixoVtr?: string,
+    @Query('areaAtuacao') areaAtuacao?: string,
+    @Query('tipoServico') tipoServico?: string,
+    @Query('localAtividade') localAtividade?: string,
+    @Query('atividadeRealizada') atividadeRealizada?: string,
   ) {
-    return this.listarEquipeUseCase.execute(page, limit, filtros);
+    const pageInt = parseInt(pageIndex ?? '1', 10);
+    const limitInt = parseInt(limit ?? '10', 10);
+
+    const result = await this.listarEquipeUseCase.execute(
+      pageInt,
+      limitInt,
+      matriculaComandante,
+      dataOperacao,
+      nomeOperacao,
+      opmGuarnicao,
+      prefixoVtr,
+      areaAtuacao,
+      tipoServico,
+      localAtividade,
+      atividadeRealizada,
+    );
+
+    return result;
   }
 }

@@ -8,7 +8,6 @@ import { TipoServico } from '../../../domain/enums/tipo-servico.enum';
 const horaRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 
 export const CreateEquipeSchema = z.object({
-  jaRespondeu: z.boolean(),
   email: z
     .string({ required_error: "O campo 'email' é obrigatório." })
     .email({ message: "O campo 'email' deve ser um endereço de email válido." })

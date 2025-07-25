@@ -7,7 +7,6 @@ import { TipoServico } from 'src/modules/equipe-operacao/domain/enums/tipo-servi
 
 export class EquipeResponseDTO {
   id: string;
-  jaRespondeu: boolean;
   email: string;
   contatoEquipe: string;
   dataOperacao: string;
@@ -28,7 +27,6 @@ export class EquipeResponseDTO {
 
   constructor(entity: EquipeOperacao) {
     this.id = entity.id;
-    this.jaRespondeu = entity.jaRespondeu;
     this.email = entity.email;
     this.contatoEquipe = entity.contatoEquipe;
     this.dataOperacao = entity.dataOperacao.toISOString().split('T')[0];

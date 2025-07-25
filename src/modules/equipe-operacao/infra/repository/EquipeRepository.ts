@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { IEquipeRepository } from './interfaces/IEquipeRepository';
+import {
+  IEquipeRepository,
+  IPaginatedResult,
+} from './interfaces/IEquipeRepository';
 import { EquipeOperacao } from '../../domain/entities/equipe-operacao';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -20,69 +23,76 @@ export class EquipeRepository implements IEquipeRepository {
     return this.equipeRepository.findOne({ where: { id } });
   }
 
-  async findAllPaginatedAndFiltered(
-    page: number,
-    size: number,
-    filtros?: Partial<{
-      email: string;
-      dataOperacao: string;
-      nomeOperacao: string;
-      opmGuarnicao: string;
-      prefixoVtr: string;
-      areaAtuacao: string;
-      tipoServico: string;
-    }>,
-  ): Promise<[EquipeOperacao[], number]> {
-    const skip = (page - 1) * size;
-
+  public async findAll(
+    page = 1,
+    limit = 10,
+    matriculaComandante?: string,
+    dataOperacao?: string,
+    nomeOperacao?: string,
+    opmGuarnicao?: string,
+    prefixoVtr?: string,
+    areaAtuacao?: string,
+    tipoServico?: string,
+    localAtividade?: string,
+    atividadeRealizada?: string,
+  ): Promise<IPaginatedResult<EquipeOperacao>> {
+    const skip = (page - 1) * limit;
     const query = this.equipeRepository
       .createQueryBuilder('equipe')
       .skip(skip)
-      .take(size);
+      .take(limit);
 
-    if (filtros?.email) {
-      query.andWhere('equipe.email ILIKE :email', {
-        email: `%${filtros.email}%`,
-      });
-    }
+    const conditions: Record<string, { field: string; like: boolean }> = {
+      matriculaComandante: { field: 'equipe.matriculaComandante', like: true },
+      dataOperacao: { field: 'equipe.dataOperacao', like: false },
+      nomeOperacao: { field: 'equipe.nomeOperacao', like: true },
+      opmGuarnicao: { field: 'equipe.opmGuarnicao', like: true },
+      prefixoVtr: { field: 'CAST(equipe.prefixoVtr AS TEXT)', like: true },
+      areaAtuacao: { field: 'CAST(equipe.areaAtuacao AS TEXT)', like: true },
+      tipo_servico: { field: 'CAST(equipe.tipo_servico AS TEXT)', like: true },
+      localAtividade: {
+        field: 'CAST(equipe.localAtividade AS TEXT)',
+        like: true,
+      },
+      atividadeRealizada: {
+        field: 'CAST(equipe.atividadeRealizada AS TEXT)',
+        like: true,
+      },
+    };
 
-    if (filtros?.dataOperacao) {
-      query.andWhere('equipe.dataOperacao = :dataOperacao', {
-        dataOperacao: filtros.dataOperacao,
-      });
-    }
+    Object.entries(conditions).forEach(([key, { field, like }]) => {
+      const value = {
+        matriculaComandante,
+        dataOperacao,
+        nomeOperacao,
+        opmGuarnicao,
+        prefixoVtr,
+        areaAtuacao,
+        tipoServico,
+        localAtividade,
+        atividadeRealizada,
+      }[key];
 
-    if (filtros?.nomeOperacao) {
-      query.andWhere('equipe.nomeOperacao ILIKE :nomeOperacao', {
-        nomeOperacao: `%${filtros.nomeOperacao}%`,
-      });
-    }
+      if (value !== undefined && value !== null && value.trim() !== '') {
+        const param = {};
+        param[key] = `%${value}%`;
 
-    if (filtros?.opmGuarnicao) {
-      query.andWhere('equipe.opmGuarnicao ILIKE :opmGuarnicao', {
-        opmGuarnicao: `%${filtros.opmGuarnicao}%`,
-      });
-    }
+        if (like) {
+          query.andWhere(`${field} ILIKE :${key}`, param);
+        } else {
+          query.andWhere(`${field} = :${key}`, param);
+        }
+      }
+    });
 
-    if (filtros?.prefixoVtr) {
-      query.andWhere('equipe.prefixoVtr ILIKE :prefixoVtr', {
-        prefixoVtr: `%${filtros.prefixoVtr}%`,
-      });
-    }
+    const [items, total] = await query.getManyAndCount();
 
-    if (filtros?.areaAtuacao) {
-      query.andWhere('equipe.areaAtuacao = :areaAtuacao', {
-        areaAtuacao: filtros.areaAtuacao,
-      });
-    }
-
-    if (filtros?.tipoServico) {
-      query.andWhere('equipe.tipo_servico = :tipoServico', {
-        tipoServico: filtros.tipoServico,
-      });
-    }
-
-    return query.getManyAndCount();
+    return {
+      items,
+      total,
+      pageIndex: page,
+      pageSize: limit,
+    };
   }
 
   async update(
