@@ -29,7 +29,24 @@ export class EquipeResponseDTO {
     this.id = entity.id;
     this.email = entity.email;
     this.contatoEquipe = entity.contatoEquipe;
-    this.dataOperacao = entity.dataOperacao.toISOString().split('T')[0];
+
+    // ✅ Converte para Date se for string, e depois formata
+    let date: Date;
+    if (entity.dataOperacao instanceof Date) {
+      date = entity.dataOperacao;
+    } else if (typeof entity.dataOperacao === 'string') {
+      date = new Date(entity.dataOperacao);
+    } else {
+      throw new Error('dataOperacao inválida: não é uma data válida');
+    }
+
+    // Valida se a data é válida
+    if (isNaN(date.getTime())) {
+      throw new Error('dataOperacao inválida: data inválida após conversão');
+    }
+
+    this.dataOperacao = date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+
     this.horarioInicial = entity.horarioInicial;
     this.horarioFinal = entity.horarioFinal;
     this.nomeOperacao = entity.nomeOperacao;
@@ -39,9 +56,10 @@ export class EquipeResponseDTO {
     this.opmGuarnicao = entity.opmGuarnicao;
     this.prefixoVtr = entity.prefixoVtr;
     this.efetivoPolicial = entity.efetivoPolicial;
+    this.atividadeRealizada = entity.atividadeRealizada as AtividadeRealizada;
     this.localAtividade = entity.localAtividade as LocalAtividade;
-    this.areaAtuacao = entity.areaAtuacao;
-    this.tipoServico = entity.tipo_servico;
+    this.areaAtuacao = entity.areaAtuacao as AreaAtuacao;
+    this.tipoServico = entity.tipo_servico as TipoServico;
     this.numeroHt = entity.numeroHt;
   }
 }

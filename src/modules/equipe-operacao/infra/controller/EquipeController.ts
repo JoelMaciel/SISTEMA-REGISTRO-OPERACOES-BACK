@@ -1,28 +1,23 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { CriarEquipeUseCase } from '../../application/usecases/criar-equipe';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import { CriarEquipeUseCase } from '../../application/usecases/create-equipe';
 import { EquipeResponseDTO } from '../../application/dto/response/EquipeResponseDTO';
 import {
   CreateEquipeRequestDTO,
   CreateEquipeSchema,
 } from '../../application/dto/shemas/CreateEquipeSchema';
 import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
-import { ListarEquipeUseCase } from '../../application/usecases/listar-equipe';
+import { ListarEquipeUseCase } from '../../application/usecases/list-equipe';
+import { UpdateEquipeUseCase } from '../../application/usecases/update-equipe';
+import { ShowEquipeUseCase } from '../../application/usecases/show-equipe';
 
 @Controller('api/equipes')
 export class EquipeController {
   constructor(
     private readonly criarEquipeUseCase: CriarEquipeUseCase,
     private readonly listarEquipeUseCase: ListarEquipeUseCase,
+    private readonly updateEquipeUseCase: UpdateEquipeUseCase,
+    private readonly showEquipeUseCase: ShowEquipeUseCase,
   ) {}
-
-  @Post()
-  async create(@Body() body: unknown): Promise<EquipeResponseDTO> {
-    const dto: CreateEquipeRequestDTO = await ValidateSchema.validate(
-      CreateEquipeSchema,
-      body,
-    );
-    return this.criarEquipeUseCase.execute(dto);
-  }
 
   @Get()
   async listarEquipes(
@@ -56,5 +51,33 @@ export class EquipeController {
     );
 
     return result;
+  }
+
+  @Post()
+  async create(
+    @Body() body: CreateEquipeRequestDTO,
+  ): Promise<EquipeResponseDTO> {
+    const dto: CreateEquipeRequestDTO = await ValidateSchema.validate(
+      CreateEquipeSchema,
+      body,
+    );
+    return this.criarEquipeUseCase.execute(dto);
+  }
+
+  @Get(':id')
+  async findById(@Param('id') id: string): Promise<EquipeResponseDTO> {
+    return this.showEquipeUseCase.execute(id);
+  }
+
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() body: CreateEquipeRequestDTO,
+  ): Promise<EquipeResponseDTO> {
+    const dto: CreateEquipeRequestDTO = await ValidateSchema.validate(
+      CreateEquipeSchema,
+      body,
+    );
+    return this.updateEquipeUseCase.execute(id, dto);
   }
 }
