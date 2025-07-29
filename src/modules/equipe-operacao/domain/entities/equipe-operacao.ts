@@ -1,4 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { PostoComandante } from '../enums/posto-comandante.enum';
 import { AtividadeRealizada } from '../enums/atividade-realizada.enum';
 import { LocalAtividade } from '../enums/local-atividade.enum';
@@ -9,9 +14,6 @@ import { TipoServico } from '../enums/tipo-servico.enum';
 export class EquipeOperacao {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column({ name: 'ja_respondeu', nullable: false })
-  jaRespondeu: boolean;
 
   @Column({ name: 'email', length: 60, nullable: false })
   email: string;
@@ -48,7 +50,7 @@ export class EquipeOperacao {
   @Column({ name: 'opm_guarnicao', length: 30, nullable: false })
   opmGuarnicao: string;
 
-  @Column({ name: 'prefixo_vtr', length: 10, nullable: false })
+  @Column({ name: 'prefixo_vtr', length: 20, nullable: false })
   prefixoVtr: string;
 
   @Column({ name: 'efetivo_policial', type: 'int', nullable: false })
@@ -84,8 +86,11 @@ export class EquipeOperacao {
     enum: TipoServico,
     nullable: false,
   })
-  tipo_servico: TipoServico;
+  tipoServico: TipoServico;
 
   @Column({ name: 'numero_ht', length: 30, nullable: false })
   numeroHt: string;
+
+  @CreateDateColumn({ name: 'criado_em', type: 'timestamp' })
+  criadoEm: Date;
 }
