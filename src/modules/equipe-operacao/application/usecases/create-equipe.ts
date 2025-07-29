@@ -21,7 +21,7 @@ export class CriarEquipeUseCase {
       atividadeRealizada: dto.atividadeRealizada,
       localAtividade: dto.localAtividade as LocalAtividade,
       areaAtuacao: dto.areaAtuacao as AreaAtuacao,
-      tipo_servico: dto.tipoServico as TipoServico,
+      tipoServico: dto.tipoServico as TipoServico,
       postoComandante: dto.postoComandante as PostoComandante,
     };
 

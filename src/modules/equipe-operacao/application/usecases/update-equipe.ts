@@ -28,7 +28,7 @@ export class UpdateEquipeUseCase {
       atividadeRealizada: dto.atividadeRealizada,
       localAtividade: dto.localAtividade,
       areaAtuacao: dto.areaAtuacao,
-      tipo_servico: dto.tipoServico,
+      tipoServico: dto.tipoServico,
       postoComandante: dto.postoComandante,
     };
 

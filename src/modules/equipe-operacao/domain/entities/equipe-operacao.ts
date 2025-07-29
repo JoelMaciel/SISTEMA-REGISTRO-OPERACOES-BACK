@@ -86,7 +86,7 @@ export class EquipeOperacao {
     enum: TipoServico,
     nullable: false,
   })
-  tipo_servico: TipoServico;
+  tipoServico: TipoServico;
 
   @Column({ name: 'numero_ht', length: 30, nullable: false })
   numeroHt: string;

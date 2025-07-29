@@ -30,7 +30,6 @@ export class EquipeResponseDTO {
     this.email = entity.email;
     this.contatoEquipe = entity.contatoEquipe;
 
-    // ✅ Converte para Date se for string, e depois formata
     let date: Date;
     if (entity.dataOperacao instanceof Date) {
       date = entity.dataOperacao;
@@ -40,12 +39,11 @@ export class EquipeResponseDTO {
       throw new Error('dataOperacao inválida: não é uma data válida');
     }
 
-    // Valida se a data é válida
     if (isNaN(date.getTime())) {
       throw new Error('dataOperacao inválida: data inválida após conversão');
     }
 
-    this.dataOperacao = date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+    this.dataOperacao = date.toISOString().split('T')[0];
 
     this.horarioInicial = entity.horarioInicial;
     this.horarioFinal = entity.horarioFinal;
@@ -59,7 +57,7 @@ export class EquipeResponseDTO {
     this.atividadeRealizada = entity.atividadeRealizada as AtividadeRealizada;
     this.localAtividade = entity.localAtividade as LocalAtividade;
     this.areaAtuacao = entity.areaAtuacao as AreaAtuacao;
-    this.tipoServico = entity.tipo_servico as TipoServico;
+    this.tipoServico = entity.tipoServico;
     this.numeroHt = entity.numeroHt;
   }
 }
