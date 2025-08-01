@@ -1,3 +1,5 @@
+import { AppError } from '../errors/AppError';
+
 export function formatDate(date: string | Date): string {
   let parsedDate: Date;
 
@@ -7,11 +9,11 @@ export function formatDate(date: string | Date): string {
     const [year, month, day] = date.split('-').map(Number);
     parsedDate = new Date(year, month - 1, day);
   } else {
-    throw new Error('Valor inválido fornecido para formatação de data');
+    throw new AppError('Valor inválido fornecido para formatação de data');
   }
 
   if (isNaN(parsedDate.getTime())) {
-    throw new Error('Data inválida após conversão');
+    throw new AppError('Data inválida após conversão');
   }
 
   return parsedDate.toLocaleDateString('pt-BR', {
@@ -19,4 +21,10 @@ export function formatDate(date: string | Date): string {
     month: '2-digit',
     year: 'numeric',
   });
+}
+
+export function parseDate(date?: string): Date | undefined {
+  if (!date) return undefined;
+  const [day, month, year] = date.split('/').map(Number);
+  return new Date(year, month - 1, day);
 }

@@ -15,10 +15,14 @@ export interface IOperacaoRepository {
     limit: number,
     nome?: string,
     opmDemandante?: string,
-    dataInicial?: string,
+    dataInicialStart?: Date,
+    dataInicialEnd?: Date,
+    dataFinalStart?: Date,
+    dataFinalEnd?: Date,
     postoServico?: string,
     areaAtuacao?: string,
   ): Promise<IPaginatedResult<Operacao>>;
+
   delete(id: string): Promise<void>;
   update(id: string, data: Partial<Operacao>): Promise<Operacao>;
 }

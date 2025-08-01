@@ -26,12 +26,15 @@ export class OperacaoRepository implements IOperacaoRepository {
     limit = 10,
     nome?: string,
     opmDemandante?: string,
-    dataInicial?: string,
-    dataFinal?: string,
+    dataInicialStart?: Date,
+    dataInicialEnd?: Date,
+    dataFinalStart?: Date,
+    dataFinalEnd?: Date,
     postoServico?: string,
     areaAtuacao?: string,
   ): Promise<IPaginatedResult<Operacao>> {
     const skip = (page - 1) * limit;
+
     const query = this.operacaoRepository
       .createQueryBuilder('operacao')
       .leftJoinAndSelect('operacao.postoServico', 'postoServico')
@@ -40,36 +43,63 @@ export class OperacaoRepository implements IOperacaoRepository {
       .take(limit)
       .orderBy('operacao.dataInicial', 'DESC');
 
-    const conditions: Record<string, { field: string; like: boolean }> = {
-      nome: { field: 'operacao.nome', like: true },
-      opmDemandante: { field: 'operacao.opmDemandante', like: false },
-      dataInicial: { field: 'operacao.dataInicial', like: true },
-      dataFinal: { field: 'operacao.dataFinal', like: true },
-      postoServico: { field: 'postoServico.nome', like: true },
-      areaAtuacao: { field: 'areaAtuacao.nome', like: true },
-    };
+    if (nome) {
+      query.andWhere('operacao.nome ILIKE :nome', { nome: `%${nome}%` });
+    }
 
-    Object.entries(conditions).forEach(([key, { field, like }]) => {
-      const value = {
-        nome,
-        opmDemandante,
-        dataInicial,
-        dataFinal,
-        postoServico,
-        areaAtuacao,
-      }[key];
+    if (opmDemandante) {
+      query.andWhere('operacao.opmDemandante ILIKE :opmDemandante', {
+        opmDemandante: `%${opmDemandante}%`,
+      });
+    }
 
-      if (value !== undefined && value !== null && value.trim() !== '') {
-        const param = {};
-        param[key] = `%${value}%`;
+    if (dataInicialStart && dataInicialEnd) {
+      query.andWhere(
+        'operacao.dataInicial BETWEEN :dataInicialStart AND :dataInicialEnd',
+        {
+          dataInicialStart,
+          dataInicialEnd,
+        },
+      );
+    } else if (dataInicialStart) {
+      query.andWhere('operacao.dataInicial >= :dataInicialStart', {
+        dataInicialStart,
+      });
+    } else if (dataInicialEnd) {
+      query.andWhere('operacao.dataInicial <= :dataInicialEnd', {
+        dataInicialEnd,
+      });
+    }
 
-        if (like) {
-          query.andWhere(`${field} ILIKE :${key}`, param);
-        } else {
-          query.andWhere(`${field} = :${key}`, param);
-        }
-      }
-    });
+    if (dataFinalStart && dataFinalEnd) {
+      query.andWhere(
+        'operacao.dataFinal BETWEEN :dataFinalStart AND :dataFinalEnd',
+        {
+          dataFinalStart,
+          dataFinalEnd,
+        },
+      );
+    } else if (dataFinalStart) {
+      query.andWhere('operacao.dataFinal >= :dataFinalStart', {
+        dataFinalStart,
+      });
+    } else if (dataFinalEnd) {
+      query.andWhere('operacao.dataFinal <= :dataFinalEnd', {
+        dataFinalEnd,
+      });
+    }
+
+    if (postoServico) {
+      query.andWhere('postoServico.nome ILIKE :postoServico', {
+        postoServico: `%${postoServico}%`,
+      });
+    }
+
+    if (areaAtuacao) {
+      query.andWhere('areaAtuacao.nome ILIKE :areaAtuacao', {
+        areaAtuacao: `%${areaAtuacao}%`,
+      });
+    }
 
     const [items, total] = await query.getManyAndCount();
 
