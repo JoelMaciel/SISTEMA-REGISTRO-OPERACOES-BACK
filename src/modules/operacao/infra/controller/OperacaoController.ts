@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import {
   CreateOperacaoRequestDTO,
   CreateOperacaoSchema,
@@ -7,12 +7,14 @@ import { OperacaoResponseDTO } from '../../application/dto/response/OperacaoResp
 import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
 import { CriarOperacaoUseCase } from '../../application/usecase/operacao/create-operacao';
 import { ListOperacaoUseCase } from '../../application/usecase/operacao/list-operacao';
+import { UpdateOperacaoUseCase } from '../../application/usecase/operacao/update-operacao';
 
 @Controller('api/operacoes')
 export class OperacaoController {
   constructor(
     private readonly criarOperacaoUseCase: CriarOperacaoUseCase,
     private readonly listOperacaoUseCase: ListOperacaoUseCase,
+    private readonly updateOperacaoUseCase: UpdateOperacaoUseCase,
   ) {}
 
   @Get()
@@ -51,5 +53,14 @@ export class OperacaoController {
   ): Promise<OperacaoResponseDTO> {
     const dto = await ValidateSchema.validate(CreateOperacaoSchema, body);
     return this.criarOperacaoUseCase.execute(dto);
+  }
+
+  @Put(':id')
+  async atualizarOperacao(
+    @Param('id') id: string,
+    @Body() body: CreateOperacaoRequestDTO,
+  ): Promise<OperacaoResponseDTO> {
+    const dto = await ValidateSchema.validate(CreateOperacaoSchema, body);
+    return this.updateOperacaoUseCase.execute(id, dto);
   }
 }
