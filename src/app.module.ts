@@ -3,6 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EquipeOperacao } from './modules/equipe-operacao/domain/entities/equipe-operacao';
 import { EquipeModule } from './EquipeModule';
+import { OperacaoModule } from './OperacaoModule';
+import { Operacao } from './modules/operacao/domain/entities/operacao';
+import { PostoServico } from './modules/operacao/domain/entities/posto-servico';
+import { AreaAtuacao } from './modules/operacao/domain/entities/area-atuacao';
 
 @Module({
   imports: [
@@ -17,11 +21,13 @@ import { EquipeModule } from './EquipeModule';
         username: config.get<string>('DB_USER'),
         password: config.get<string>('DB_PASS'),
         database: config.get<string>('DB_NAME'),
-        entities: [EquipeOperacao],
-        synchronize: true,
+        entities: [EquipeOperacao, Operacao, PostoServico, AreaAtuacao],
+        synchronize: false,
+        logging: true,
       }),
     }),
     EquipeModule,
+    OperacaoModule,
   ],
   controllers: [],
   providers: [],

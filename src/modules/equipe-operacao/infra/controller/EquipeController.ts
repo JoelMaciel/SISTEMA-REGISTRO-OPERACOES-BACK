@@ -1,14 +1,14 @@
 import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
-import { CriarEquipeUseCase } from '../../application/usecases/create-equipe';
+import { CriarEquipeUseCase } from '../../application/usecases/equipe/create-equipe';
 import { EquipeResponseDTO } from '../../application/dto/response/EquipeResponseDTO';
 import {
   CreateEquipeRequestDTO,
   CreateEquipeSchema,
 } from '../../application/dto/shemas/CreateEquipeSchema';
 import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
-import { ListarEquipeUseCase } from '../../application/usecases/list-equipe';
-import { UpdateEquipeUseCase } from '../../application/usecases/update-equipe';
-import { ShowEquipeUseCase } from '../../application/usecases/show-equipe';
+import { ListarEquipeUseCase } from '../../application/usecases/equipe/list-equipe';
+import { UpdateEquipeUseCase } from '../../application/usecases/equipe/update-equipe';
+import { ShowEquipeUseCase } from '../../application/usecases/equipe/show-equipe';
 
 @Controller('api/equipes')
 export class EquipeController {

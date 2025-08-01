@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IEquipeRepository } from '../../infra/repository/interfaces/IEquipeRepository';
-import { EquipeResponseDTO } from '../dto/response/EquipeResponseDTO';
+import { IEquipeRepository } from '../../../infra/repository/interfaces/IEquipeRepository';
+import { EquipeResponseDTO } from '../../dto/response/EquipeResponseDTO';
 import { AppError } from 'src/shared/errors/AppError';
 
 @Injectable()

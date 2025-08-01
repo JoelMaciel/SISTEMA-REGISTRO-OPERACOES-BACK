@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   IEquipeRepository,
   IPaginatedResult,
-} from '../../infra/repository/interfaces/IEquipeRepository';
-import { EquipeOperacao } from '../../domain/entities/equipe-operacao';
+} from '../../../infra/repository/interfaces/IEquipeRepository';
+import { EquipeOperacao } from '../../../domain/entities/equipe-operacao';
 
 @Injectable()
 export class ListarEquipeUseCase {

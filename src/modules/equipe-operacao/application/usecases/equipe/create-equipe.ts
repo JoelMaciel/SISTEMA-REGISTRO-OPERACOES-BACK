@@ -1,12 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IEquipeRepository } from '../../infra/repository/interfaces/IEquipeRepository';
-import { EquipeOperacao } from '../../domain/entities/equipe-operacao';
-import { CreateEquipeRequestDTO } from '../dto/shemas/CreateEquipeSchema';
-import { EquipeResponseDTO } from '../dto/response/EquipeResponseDTO';
-import { LocalAtividade } from '../../domain/enums/local-atividade.enum';
-import { AreaAtuacao } from '../../domain/enums/area-atuacao.enum';
-import { TipoServico } from '../../domain/enums/tipo-servico.enum';
-import { PostoComandante } from '../../domain/enums/posto-comandante.enum';
+import { IEquipeRepository } from '../../../infra/repository/interfaces/IEquipeRepository';
+import { EquipeOperacao } from '../../../domain/entities/equipe-operacao';
+import { CreateEquipeRequestDTO } from '../../dto/shemas/CreateEquipeSchema';
+import { EquipeResponseDTO } from '../../dto/response/EquipeResponseDTO';
+import { LocalAtividade } from '../../../domain/enums/local-atividade.enum';
+import { AreaAtuacao } from '../../../domain/enums/area-atuacao.enum';
+import { TipoServico } from '../../../domain/enums/tipo-servico.enum';
+import { PostoComandante } from '../../../domain/enums/posto-comandante.enum';
 
 @Injectable()
 export class CriarEquipeUseCase {
