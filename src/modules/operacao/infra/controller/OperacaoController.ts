@@ -2,10 +2,10 @@ import { Body, Controller, Post } from '@nestjs/common';
 import {
   CreateOperacaoRequestDTO,
   CreateOperacaoSchema,
-} from '../../../operacao/application/dto/schema/CreateOperacaoSchema';
-import { OperacaoResponseDTO } from '../../../operacao/application/dto/response/OperacaoResponseDTO';
+} from '../../application/dto/schema/CreateOperacaoSchema';
+import { OperacaoResponseDTO } from '../../application/dto/response/OperacaoResponseDTO';
 import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
-import { CriarOperacaoUseCase } from '../../../operacao/application/usecase/operacao/create-operacao';
+import { CriarOperacaoUseCase } from '../../application/usecase/operacao/create-operacao';
 
 @Controller('api/operacoes')
 export class OperacaoController {

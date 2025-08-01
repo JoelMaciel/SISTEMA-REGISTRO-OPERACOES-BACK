@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
-import { IOperacaoRepository } from 'src/modules/equipe-operacao/infra/repository/interfaces/IOperacaoRepository';
+import { IOperacaoRepository } from 'src/modules/operacao/infra/repository/interfaces/IOperacaoRepository';
 import { OperacaoResponseDTO } from '../../dto/response/OperacaoResponseDTO';
 import { PostoServico } from 'src/modules/operacao/domain/entities/posto-servico';
 import { AreaAtuacao } from 'src/modules/operacao/domain/entities/area-atuacao';
