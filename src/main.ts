@@ -3,8 +3,8 @@ import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import * as cors from 'cors';
 
-import { AppExceptionFilter } from './shared/errors/AppExceptionFilter';
 import { ValidationPipe } from '@nestjs/common';
+import { AppExceptionFilter } from './shared/errors/AppExceptionFilter';
 
 dotenv.config();
 
@@ -22,6 +22,8 @@ async function bootstrap() {
       'Authorization',
     ],
   });
+
+  app.useGlobalFilters(new AppExceptionFilter());
 
   app.useGlobalPipes(
     new ValidationPipe({

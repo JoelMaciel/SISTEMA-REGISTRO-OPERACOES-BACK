@@ -8,6 +8,10 @@ import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
 import { CriarOperacaoUseCase } from '../../application/usecase/operacao/create-operacao';
 import { ListOperacaoUseCase } from '../../application/usecase/operacao/list-operacao';
 import { UpdateOperacaoUseCase } from '../../application/usecase/operacao/update-operacao';
+import {
+  UpdateOperacaoRequestDTO,
+  UpdateOperacaoSchema,
+} from '../../application/dto/schema/UpdateOperacaoSchema';
 
 @Controller('api/operacoes')
 export class OperacaoController {
@@ -58,9 +62,9 @@ export class OperacaoController {
   @Put(':id')
   async atualizarOperacao(
     @Param('id') id: string,
-    @Body() body: CreateOperacaoRequestDTO,
+    @Body() body: UpdateOperacaoRequestDTO,
   ): Promise<OperacaoResponseDTO> {
-    const dto = await ValidateSchema.validate(CreateOperacaoSchema, body);
+    const dto = await ValidateSchema.validate(UpdateOperacaoSchema, body);
     return this.updateOperacaoUseCase.execute(id, dto);
   }
 }
