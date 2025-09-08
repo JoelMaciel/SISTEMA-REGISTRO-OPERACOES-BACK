@@ -12,6 +12,11 @@ import {
   UpdateOperacaoRequestDTO,
   UpdateOperacaoSchema,
 } from '../../application/dto/schema/UpdateOperacaoSchema';
+import {
+  PostoServicoRequestDTO,
+  PostoServicoSchema,
+} from '../../application/dto/schema/PostoServicoSchema';
+import { UpdatePostoServicoOperacaoUseCase } from '../../application/usecase/posto-servico/update-posto-servico';
 
 @Controller('api/operacoes')
 export class OperacaoController {
@@ -19,6 +24,7 @@ export class OperacaoController {
     private readonly criarOperacaoUseCase: CriarOperacaoUseCase,
     private readonly listOperacaoUseCase: ListOperacaoUseCase,
     private readonly updateOperacaoUseCase: UpdateOperacaoUseCase,
+    private readonly updatePostoServicoOperacaoUseCase: UpdatePostoServicoOperacaoUseCase,
   ) {}
 
   @Get()
@@ -66,5 +72,19 @@ export class OperacaoController {
   ): Promise<OperacaoResponseDTO> {
     const dto = await ValidateSchema.validate(UpdateOperacaoSchema, body);
     return this.updateOperacaoUseCase.execute(id, dto);
+  }
+
+  @Put(':operacaoId/postos/:postoId')
+  async atualizarPostoServico(
+    @Param('operacaoId') operacaoId: string,
+    @Param('postoId') postoId: string,
+    @Body() body: PostoServicoRequestDTO,
+  ): Promise<OperacaoResponseDTO> {
+    const dto = await ValidateSchema.validate(PostoServicoSchema, body);
+    return this.updatePostoServicoOperacaoUseCase.execute(
+      operacaoId,
+      postoId,
+      dto,
+    );
   }
 }

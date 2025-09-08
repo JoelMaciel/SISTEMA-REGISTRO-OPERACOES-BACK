@@ -17,8 +17,14 @@ export class OperacaoRepository implements IOperacaoRepository {
     return this.operacaoRepository.save(operacao);
   }
 
-  async findById(id: string): Promise<Operacao | null> {
-    return this.operacaoRepository.findOne({ where: { id } });
+  async findById(
+    id: string,
+    relations: string[] = [],
+  ): Promise<Operacao | null> {
+    return this.operacaoRepository.findOne({
+      where: { id },
+      relations,
+    });
   }
 
   public async findAll(
@@ -120,6 +126,18 @@ export class OperacaoRepository implements IOperacaoRepository {
     const operacaoAtualizada = this.operacaoRepository.merge(operacao, data);
 
     return this.operacaoRepository.save(operacaoAtualizada);
+  }
+
+  async findOperacaoWithPosto(
+    operacaoId: string,
+    postoId: string,
+  ): Promise<Operacao | null> {
+    return this.operacaoRepository
+      .createQueryBuilder('operacao')
+      .leftJoinAndSelect('operacao.postoServico', 'posto')
+      .where('operacao.id = :operacaoId', { operacaoId })
+      .andWhere('posto.id = :postoId', { postoId })
+      .getOne();
   }
 
   async delete(id: string): Promise<void> {

@@ -15,3 +15,5 @@ export const PostoServicoSchema = z.object({
     .number({ required_error: "O campo 'quantidade' é obrigatório." })
     .min(2, { message: "O campo 'quantidade' deve ser pelo menos 2." }),
 });
+
+export type PostoServicoRequestDTO = z.infer<typeof PostoServicoSchema>;
