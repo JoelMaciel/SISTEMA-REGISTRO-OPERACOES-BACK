@@ -16,4 +16,4 @@ export const AreaAtuacaoSchema = z.object({
     .min(2, { message: "O campo 'quantidade' deve ser pelo menos 2." }),
 });
 
-export type AreaAtuacaoDTO = z.infer<typeof AreaAtuacaoSchema>;
+export type AreaAtuacaoRequestDTO = z.infer<typeof AreaAtuacaoSchema>;

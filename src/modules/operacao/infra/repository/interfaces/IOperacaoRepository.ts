@@ -31,5 +31,10 @@ export interface IOperacaoRepository {
     postoId: string,
   ): Promise<Operacao | null>;
 
+  findOperacaoWithAreaAtuacao(
+    operacaoId: string,
+    areaAtuacaoId: string,
+  ): Promise<Operacao | null>;
+
   delete(id: string): Promise<void>;
 }

@@ -140,6 +140,18 @@ export class OperacaoRepository implements IOperacaoRepository {
       .getOne();
   }
 
+  async findOperacaoWithAreaAtuacao(
+    operacaoId: string,
+    areaAtuacaoId: string,
+  ): Promise<Operacao | null> {
+    return this.operacaoRepository
+      .createQueryBuilder('operacao')
+      .leftJoinAndSelect('operacao.areaAtuacao', 'areaAtuacao')
+      .where('operacao.id = :operacaoId', { operacaoId })
+      .andWhere('areaAtuacao.id = :areaAtuacaoId', { areaAtuacaoId })
+      .getOne();
+  }
+
   async delete(id: string): Promise<void> {
     await this.operacaoRepository.delete(id);
   }
