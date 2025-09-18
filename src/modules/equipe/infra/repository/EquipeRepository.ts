@@ -4,7 +4,7 @@ import {
   IEquipeRepository,
   IPaginatedResult,
 } from './interfaces/IEquipeRepository';
-import { EquipeOperacao } from '../../domain/entities/equipe-operacao';
+import { EquipeOperacao } from '../../domain/entities/equipe';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()

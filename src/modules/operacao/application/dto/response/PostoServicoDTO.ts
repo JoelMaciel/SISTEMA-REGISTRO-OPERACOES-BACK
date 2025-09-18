@@ -1,4 +1,4 @@
-import { PostoServico } from 'src/modules/operacao/domain/entities/posto-servico';
+import { PostoServico } from 'src/modules/operacao/domain/entities/posto-area';
 
 export class PostoServicoDTO {
   id: string;

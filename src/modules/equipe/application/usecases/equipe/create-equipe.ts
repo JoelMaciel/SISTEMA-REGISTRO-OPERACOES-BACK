@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IEquipeRepository } from '../../../infra/repository/interfaces/IEquipeRepository';
-import { EquipeOperacao } from '../../../domain/entities/equipe-operacao';
+import { EquipeOperacao } from '../../../domain/entities/equipe';
 import { CreateEquipeRequestDTO } from '../../dto/shemas/CreateEquipeSchema';
 import { EquipeResponseDTO } from '../../dto/response/EquipeResponseDTO';
 import { LocalAtividade } from '../../../domain/enums/local-atividade.enum';

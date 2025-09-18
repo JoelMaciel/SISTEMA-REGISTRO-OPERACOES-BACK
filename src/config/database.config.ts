@@ -1,9 +1,9 @@
 import { DataSourceOptions } from 'typeorm';
 import * as dotenv from 'dotenv';
-import { EquipeOperacao } from 'src/modules/equipe-operacao/domain/entities/equipe-operacao';
 import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
-import { PostoServico } from 'src/modules/operacao/domain/entities/posto-servico';
-import { AreaAtuacao } from 'src/modules/operacao/domain/entities/area-atuacao';
+import { PostoArea } from 'src/modules/operacao/domain/entities/posto-area';
+import { Equipe } from 'src/modules/equipe/domain/entities/equipe';
+import { EquipePostoArea } from 'src/modules/operacao/domain/entities/equipe-posto-area.entity';
 
 dotenv.config();
 
@@ -16,7 +16,7 @@ export const databaseConfig: DataSourceOptions = {
   database: process.env.DB_NAME,
   synchronize: false,
   logging: true,
-  entities: [EquipeOperacao, Operacao, PostoServico, AreaAtuacao],
+  entities: [Equipe, Operacao, PostoArea, EquipePostoArea],
   migrations: ['src/database/migrations/*.ts'],
   subscribers: [],
 };

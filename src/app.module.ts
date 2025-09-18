@@ -5,7 +5,7 @@ import { EquipeOperacao } from './modules/equipe-operacao/domain/entities/equipe
 import { EquipeModule } from './EquipeModule';
 import { OperacaoModule } from './OperacaoModule';
 import { Operacao } from './modules/operacao/domain/entities/operacao';
-import { PostoServico } from './modules/operacao/domain/entities/posto-servico';
+import { PostoServico } from './modules/operacao/domain/entities/posto-area';
 import { AreaAtuacao } from './modules/operacao/domain/entities/area-atuacao';
 
 @Module({

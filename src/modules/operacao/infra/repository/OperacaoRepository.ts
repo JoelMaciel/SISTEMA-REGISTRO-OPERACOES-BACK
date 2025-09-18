@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { IPaginatedResult } from '../../../equipe-operacao/infra/repository/interfaces/IEquipeRepository';
+import { IPaginatedResult } from '../../../equipe/infra/repository/interfaces/IEquipeRepository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Operacao } from '../../domain/entities/operacao';
 import { IOperacaoRepository } from './interfaces/IOperacaoRepository';

@@ -2,54 +2,41 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { PostoServico } from './posto-servico';
-import { AreaAtuacao } from './area-atuacao';
+import { PostoArea } from './posto-area';
 
 @Entity('operacao')
 export class Operacao {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'nome', length: 70, nullable: false })
+  @Column({ length: 70 })
   nome: string;
 
-  @Column({ name: 'opm_demandante', length: 30, nullable: false })
+  @Column({ name: 'opm_demandante', length: 30 })
   opmDemandante: string;
 
-  @Column({ name: 'data_inicial', type: 'date', nullable: false })
+  @Column({ name: 'data_inicial', type: 'date' })
   dataInicial: Date;
 
-  @Column({ name: 'data_final', type: 'date', nullable: false })
+  @Column({ name: 'data_final', type: 'date' })
   dataFinal: Date;
 
-  @Column({ name: 'efetivo_policial', type: 'int', nullable: false })
+  @Column({ name: 'efetivo_policial', type: 'int' })
   efetivoPolicial: number;
 
-  @Column({ name: 'quantidade_posto_area', type: 'int', nullable: false })
+  @Column({ name: 'quantidade_posto_area', type: 'int' })
   quantidadePostoArea: number;
 
-  @Column({ name: 'observacoes', type: 'text', nullable: false })
+  @Column({ type: 'text' })
   observacoes: string;
 
-  @ManyToMany(() => PostoServico, { cascade: true })
-  @JoinTable({
-    name: 'operacao_posto_servico',
-    joinColumn: { name: 'operacao_id' },
-    inverseJoinColumn: { name: 'posto_servico_id' },
+  @OneToMany(() => PostoArea, (postoArea) => postoArea.operacao, {
+    cascade: true,
   })
-  postoServico: PostoServico[];
-
-  @ManyToMany(() => AreaAtuacao, { cascade: true })
-  @JoinTable({
-    name: 'operacao_area_atuacao',
-    joinColumn: { name: 'operacao_id' },
-    inverseJoinColumn: { name: 'area_atuacao_id' },
-  })
-  areaAtuacao: AreaAtuacao[];
+  postoAreas: PostoArea[];
 
   @CreateDateColumn({ name: 'criado_em', type: 'timestamp' })
   criadoEm: Date;

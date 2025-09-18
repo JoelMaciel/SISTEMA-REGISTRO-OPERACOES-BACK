@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
 import { IOperacaoRepository } from 'src/modules/operacao/infra/repository/interfaces/IOperacaoRepository';
 import { OperacaoResponseDTO } from '../../dto/response/OperacaoResponseDTO';
-import { PostoServico } from 'src/modules/operacao/domain/entities/posto-servico';
+import { PostoServico } from 'src/modules/operacao/domain/entities/posto-area';
 import { AreaAtuacao } from 'src/modules/operacao/domain/entities/area-atuacao';
 import { CreateOperacaoRequestDTO } from '../../dto/schema/CreateOperacaoSchema';
 

@@ -3,7 +3,7 @@ import {
   IEquipeRepository,
   IPaginatedResult,
 } from '../../../infra/repository/interfaces/IEquipeRepository';
-import { EquipeOperacao } from '../../../domain/entities/equipe-operacao';
+import { EquipeOperacao } from '../../../domain/entities/equipe';
 
 @Injectable()
 export class ListarEquipeUseCase {
