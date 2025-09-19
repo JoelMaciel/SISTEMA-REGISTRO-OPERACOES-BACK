@@ -2,17 +2,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  OneToMany,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { PostoComandante } from '../enums/posto-comandante.enum';
-import { AtividadeRealizada } from '../enums/atividade-realizada.enum';
-import { LocalAtividade } from '../enums/local-atividade.enum';
-import { AreaAtuacao } from '../enums/area-atuacao.enum';
 import { TipoServico } from '../enums/tipo-servico.enum';
-import { EquipePostoArea } from 'src/modules/operacao/domain/entities/equipe-posto-area.entity';
+import { PostoArea } from 'src/modules/operacao/domain/entities/posto-area';
 
-@Entity('equipe')
+@Entity('equipes')
 export class Equipe {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -53,14 +52,8 @@ export class Equipe {
   @Column({ type: 'int' })
   efetivoPolicial: number;
 
-  @Column({ type: 'enum', enum: AtividadeRealizada })
-  atividadeRealizada: AtividadeRealizada;
-
-  @Column({ type: 'enum', enum: LocalAtividade })
-  localAtividade: LocalAtividade;
-
-  @Column({ type: 'enum', enum: AreaAtuacao })
-  areaAtuacao: AreaAtuacao;
+  @Column({ length: 200, nullable: false })
+  logradouro: string;
 
   @Column({ type: 'enum', enum: TipoServico })
   tipoServico: TipoServico;
@@ -68,9 +61,16 @@ export class Equipe {
   @Column({ length: 30 })
   numeroHt: string;
 
-  @OneToMany(() => EquipePostoArea, (p) => p.equipe, { cascade: true })
-  equipePostoArea: EquipePostoArea;
+  @ManyToOne(() => PostoArea, (postoArea) => postoArea.equipes, {
+    onDelete: 'SET NULL',
+    nullable: true,
+  })
+  @JoinColumn({ name: 'posto_area_id' })
+  postoArea: PostoArea;
 
   @CreateDateColumn({ name: 'criado_em', type: 'timestamp' })
   criadoEm: Date;
+
+  @UpdateDateColumn({ name: 'atualizado_em', type: 'timestamp' })
+  atualizadoEm: Date;
 }

@@ -3,7 +3,6 @@ import * as dotenv from 'dotenv';
 import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
 import { PostoArea } from 'src/modules/operacao/domain/entities/posto-area';
 import { Equipe } from 'src/modules/equipe/domain/entities/equipe';
-import { EquipePostoArea } from 'src/modules/operacao/domain/entities/equipe-posto-area.entity';
 
 dotenv.config();
 
@@ -16,7 +15,7 @@ export const databaseConfig: DataSourceOptions = {
   database: process.env.DB_NAME,
   synchronize: false,
   logging: true,
-  entities: [Equipe, Operacao, PostoArea, EquipePostoArea],
+  entities: [Equipe, Operacao, PostoArea],
   migrations: ['src/database/migrations/*.ts'],
   subscribers: [],
 };

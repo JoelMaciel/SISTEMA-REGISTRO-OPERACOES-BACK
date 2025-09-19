@@ -1,7 +1,14 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Operacao } from './operacao';
+import { Equipe } from 'src/modules/equipe/domain/entities/equipe';
 
-@Entity('posto_area')
+@Entity('postos_areas')
 export class PostoArea {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -15,7 +22,7 @@ export class PostoArea {
   @Column({ length: 30, nullable: true })
   numero?: string;
 
-  @Column({ length: 120 })
+  @Column({ length: 120, nullable: true })
   bairro: string;
 
   @Column({ length: 120 })
@@ -28,4 +35,7 @@ export class PostoArea {
     onDelete: 'CASCADE',
   })
   operacao: Operacao;
+
+  @OneToMany(() => Equipe, (equipe) => equipe.postoArea)
+  equipes: Equipe[];
 }

@@ -4,10 +4,11 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { PostoArea } from './posto-area';
 
-@Entity('operacao')
+@Entity('operacoes')
 export class Operacao {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -40,4 +41,7 @@ export class Operacao {
 
   @CreateDateColumn({ name: 'criado_em', type: 'timestamp' })
   criadoEm: Date;
+
+  @UpdateDateColumn({ name: 'atualizado_em', type: 'timestamp' })
+  atualizadoEm: Date;
 }
