@@ -4,6 +4,7 @@ import { OperacaoController } from './modules/operacao/infra/controller/Operacao
 import { CriarOperacaoUseCase } from './modules/operacao/application/usecase/operacao/create-operacao';
 import { OperacaoRepository } from './modules/operacao/infra/repository/OperacaoRepository';
 import { Operacao } from './modules/operacao/domain/entities/operacao';
+import { UpdateOperacaoUseCase } from './modules/operacao/application/usecase/operacao/update-operacao';
 // import { ListOperacaoUseCase } from './modules/operacao/application/usecase/operacao/list-operacao';
 // import { UpdateOperacaoUseCase } from './modules/operacao/application/usecase/operacao/update-operacao';
 // import { UpdatePostoServicoOperacaoUseCase } from './modules/operacao/application/usecase/posto-servico/update-posto-servico';
@@ -16,7 +17,7 @@ import { Operacao } from './modules/operacao/domain/entities/operacao';
   providers: [
     CriarOperacaoUseCase,
     // ListOperacaoUseCase,
-    // UpdateOperacaoUseCase,
+    UpdateOperacaoUseCase,
     // UpdatePostoServicoOperacaoUseCase,
     // UpdateAreaAtuacaoOperacaoUseCase,
     // FindByIdOperacaoUseCase,

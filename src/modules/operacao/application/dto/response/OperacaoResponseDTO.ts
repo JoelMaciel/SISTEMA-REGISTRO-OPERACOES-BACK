@@ -1,3 +1,5 @@
+import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
+
 export class OperacaoResponseDTO {
   id: string;
   nome: string;
@@ -14,4 +16,25 @@ export class OperacaoResponseDTO {
     cidade: string;
     quantidade: number;
   }[];
+
+  constructor(operacao: Operacao) {
+    this.id = operacao.id;
+    this.nome = operacao.nome;
+    this.opmDemandante = operacao.opmDemandante;
+    this.dataInicial = operacao.dataInicial;
+    this.dataFinal = operacao.dataFinal;
+    this.efetivoPolicial = operacao.efetivoPolicial;
+    this.quantidadePostoArea = operacao.quantidadePostoArea;
+    this.observacoes = operacao.observacoes || '';
+
+    this.postoAreas = operacao.postoAreas
+      ? operacao.postoAreas.map((posto) => ({
+          id: posto.id,
+          nome: posto.nome,
+          local: posto.local,
+          cidade: posto.cidade,
+          quantidade: posto.quantidade,
+        }))
+      : [];
+  }
 }

@@ -115,7 +115,7 @@ export class OperacaoRepository implements IOperacaoRepository {
   async update(id: string, data: Partial<Operacao>): Promise<Operacao> {
     const operacao = await this.operacaoRepository.findOneOrFail({
       where: { id },
-      relations: ['postoArea'],
+      relations: ['postoAreas'],
     });
 
     const operacaoAtualizada = this.operacaoRepository.merge(operacao, data);

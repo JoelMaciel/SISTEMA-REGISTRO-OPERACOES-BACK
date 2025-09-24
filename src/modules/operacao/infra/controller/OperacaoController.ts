@@ -6,11 +6,17 @@ import {
 import { OperacaoResponseDTO } from '../../application/dto/response/OperacaoResponseDTO';
 import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
 import { CriarOperacaoUseCase } from '../../application/usecase/operacao/create-operacao';
+import { UpdateOperacaoUseCase } from '../../application/usecase/operacao/update-operacao';
+import {
+  UpdateOperacaoRequestDTO,
+  UpdateOperacaoSchema,
+} from '../../application/dto/schema/UpdateOperacaoSchema';
 
 @Controller('api/operacoes')
 export class OperacaoController {
   constructor(
-    private readonly criarOperacaoUseCase: CriarOperacaoUseCase, // private readonly listOperacaoUseCase: ListOperacaoUseCase, // private readonly updateOperacaoUseCase: UpdateOperacaoUseCase, // private readonly updatePostoServicoOperacaoUseCase: UpdatePostoServicoOperacaoUseCase, // private readonly updateAreaAtuacaoOperacaoUseCase: UpdateAreaAtuacaoOperacaoUseCase, // private readonly findByIdOperacaoUseCase: FindByIdOperacaoUseCase,
+    private readonly criarOperacaoUseCase: CriarOperacaoUseCase,
+    private readonly updateOperacaoUseCase: UpdateOperacaoUseCase,
   ) {}
 
   // @Get()
@@ -56,14 +62,14 @@ export class OperacaoController {
     return this.criarOperacaoUseCase.execute(dto);
   }
 
-  // @Put(':id')
-  // async atualizarOperacao(
-  //   @Param('id') id: string,
-  //   @Body() body: UpdateOperacaoRequestDTO,
-  // ): Promise<OperacaoResponseDTO> {
-  //   const dto = await ValidateSchema.validate(UpdateOperacaoSchema, body);
-  //   return this.updateOperacaoUseCase.execute(id, dto);
-  // }
+  @Put(':id')
+  async atualizarOperacao(
+    @Param('id') id: string,
+    @Body() body: UpdateOperacaoRequestDTO,
+  ): Promise<OperacaoResponseDTO> {
+    const dto = await ValidateSchema.validate(UpdateOperacaoSchema, body);
+    return this.updateOperacaoUseCase.execute(id, dto);
+  }
 
   // @Put(':operacaoId/postos/:postoId')
   // async atualizarPostoServico(
