@@ -44,8 +44,8 @@ export class OperacaoRepository implements IOperacaoRepository {
 
     const query = this.operacaoRepository
       .createQueryBuilder('operacao')
-      .leftJoinAndSelect('operacao.postoServico', 'postoServico')
-      .leftJoinAndSelect('operacao.areaAtuacao', 'areaAtuacao')
+      .leftJoinAndSelect('operacao.postoAreas', 'postoAreas')
+
       .skip(skip)
       .take(limit)
       .orderBy('operacao.dataInicial', 'DESC');

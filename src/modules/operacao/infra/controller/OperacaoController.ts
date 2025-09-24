@@ -11,43 +11,43 @@ import {
   UpdateOperacaoRequestDTO,
   UpdateOperacaoSchema,
 } from '../../application/dto/schema/UpdateOperacaoSchema';
+import { ListOperacaoUseCase } from '../../application/usecase/operacao/list-operacao';
 
 @Controller('api/operacoes')
 export class OperacaoController {
   constructor(
     private readonly criarOperacaoUseCase: CriarOperacaoUseCase,
+    private readonly listOperacaoUseCase: ListOperacaoUseCase,
     private readonly updateOperacaoUseCase: UpdateOperacaoUseCase,
   ) {}
 
-  // @Get()
-  // async listarOperacoes(
-  //   @Query('pageIndex') pageIndex?: string,
-  //   @Query('limit') limit?: string,
-  //   @Query('nome') nome?: string,
-  //   @Query('opmDemandante') opmDemandante?: string,
-  //   @Query('dataInicialStart') dataInicialStart?: string,
-  //   @Query('dataInicialEnd') dataInicialEnd?: string,
-  //   @Query('dataFinalStart') dataFinalStart?: string,
-  //   @Query('dataFinalEnd') dataFinalEnd?: string,
-  //   @Query('postoServico') postoServico?: string,
-  //   @Query('areaAtuacao') areaAtuacao?: string,
-  // ) {
-  //   const page = parseInt(pageIndex ?? '1', 10);
-  //   const lim = parseInt(limit ?? '10', 10);
+  @Get()
+  async listarOperacoes(
+    @Query('pageIndex') pageIndex?: string,
+    @Query('limit') limit?: string,
+    @Query('nome') nome?: string,
+    @Query('opmDemandante') opmDemandante?: string,
+    @Query('dataInicialStart') dataInicialStart?: string,
+    @Query('dataInicialEnd') dataInicialEnd?: string,
+    @Query('dataFinalStart') dataFinalStart?: string,
+    @Query('dataFinalEnd') dataFinalEnd?: string,
+    @Query('postoServico') postoServico?: string,
+  ) {
+    const page = parseInt(pageIndex ?? '1', 10);
+    const lim = parseInt(limit ?? '10', 10);
 
-  //   return this.listOperacaoUseCase.execute(
-  //     page,
-  //     lim,
-  //     nome,
-  //     opmDemandante,
-  //     dataInicialStart,
-  //     dataInicialEnd,
-  //     dataFinalStart,
-  //     dataFinalEnd,
-  //     postoServico,
-  //     areaAtuacao,
-  //   );
-  // }
+    return this.listOperacaoUseCase.execute(
+      page,
+      lim,
+      nome,
+      opmDemandante,
+      dataInicialStart,
+      dataInicialEnd,
+      dataFinalStart,
+      dataFinalEnd,
+      postoServico,
+    );
+  }
 
   // @Get(':id')
   // async buscarPorId(@Param('id') id: string): Promise<OperacaoResponseDTO> {  postoAreas: PostoServicoDTO[];

@@ -20,7 +20,6 @@ export class FindByIdOperacaoUseCase {
       return new Date(year, month - 1, day);
     };
 
-    // ⚠️ Carregue as relações se precisar delas no DTO!
     const operacaoExistente = await this.operacaoRepository.findById(id, [
       'postoAreas',
     ]);

@@ -3,11 +3,9 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Operacao } from './operacao';
-import { Exclude } from 'class-transformer';
 
 @Entity('postos_areas')
 export class PostoArea {

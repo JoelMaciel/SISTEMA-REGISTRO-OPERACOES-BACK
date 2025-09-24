@@ -5,18 +5,14 @@ import { CriarOperacaoUseCase } from './modules/operacao/application/usecase/ope
 import { OperacaoRepository } from './modules/operacao/infra/repository/OperacaoRepository';
 import { Operacao } from './modules/operacao/domain/entities/operacao';
 import { UpdateOperacaoUseCase } from './modules/operacao/application/usecase/operacao/update-operacao';
-// import { ListOperacaoUseCase } from './modules/operacao/application/usecase/operacao/list-operacao';
-// import { UpdateOperacaoUseCase } from './modules/operacao/application/usecase/operacao/update-operacao';
-// import { UpdatePostoServicoOperacaoUseCase } from './modules/operacao/application/usecase/posto-servico/update-posto-servico';
-// import { UpdateAreaAtuacaoOperacaoUseCase } from './modules/operacao/application/usecase/area-atuacao/update-area-atuacao';
-// import { FindByIdOperacaoUseCase } from './modules/operacao/application/usecase/operacao/show-operacao';
+import { ListOperacaoUseCase } from './modules/operacao/application/usecase/operacao/list-operacao';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Operacao])],
   controllers: [OperacaoController],
   providers: [
     CriarOperacaoUseCase,
-    // ListOperacaoUseCase,
+    ListOperacaoUseCase,
     UpdateOperacaoUseCase,
     // UpdatePostoServicoOperacaoUseCase,
     // UpdateAreaAtuacaoOperacaoUseCase,
