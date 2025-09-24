@@ -2,14 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { PostoComandante } from '../enums/posto-comandante.enum';
 import { TipoServico } from '../enums/tipo-servico.enum';
-import { PostoArea } from 'src/modules/operacao/domain/entities/posto-area';
 
 @Entity('equipes')
 export class Equipe {
@@ -60,13 +57,6 @@ export class Equipe {
 
   @Column({ length: 30 })
   numeroHt: string;
-
-  @ManyToOne(() => PostoArea, (postoArea) => postoArea.equipes, {
-    onDelete: 'SET NULL',
-    nullable: true,
-  })
-  @JoinColumn({ name: 'posto_area_id' })
-  postoArea: PostoArea;
 
   @CreateDateColumn({ name: 'criado_em', type: 'timestamp' })
   criadoEm: Date;

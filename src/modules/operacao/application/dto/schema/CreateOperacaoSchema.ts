@@ -1,6 +1,5 @@
 import { z } from 'zod';
-import { AreaAtuacaoSchema } from './AreaAtuacaoSchema';
-import { PostoServicoSchema } from './PostoServicoSchema';
+import { PostoAreaSchema } from './PostoAreaSchema';
 
 const dataRegex = /^(0[1-9]|[12][0-9]|3[01])-(0[1-9]|1[012])-(19|20)\d\d$/;
 
@@ -53,8 +52,6 @@ export const CreateOperacaoSchema = z.object({
       message: "O campo 'observacoes' deve ter pelo menos 3 caracteres.",
     }),
 
-  postoServico: z.array(PostoServicoSchema).optional(),
-
-  areaAtuacao: z.array(AreaAtuacaoSchema).optional(),
+  postoAreas: z.array(PostoAreaSchema),
 });
 export type CreateOperacaoRequestDTO = z.infer<typeof CreateOperacaoSchema>;

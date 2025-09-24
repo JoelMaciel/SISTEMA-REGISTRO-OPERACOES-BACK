@@ -1,12 +1,13 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Operacao } from './operacao';
-import { Equipe } from 'src/modules/equipe/domain/entities/equipe';
+import { Exclude } from 'class-transformer';
 
 @Entity('postos_areas')
 export class PostoArea {
@@ -23,7 +24,7 @@ export class PostoArea {
   numero?: string;
 
   @Column({ length: 120, nullable: true })
-  bairro: string;
+  bairro?: string;
 
   @Column({ length: 120 })
   cidade: string;
@@ -34,8 +35,6 @@ export class PostoArea {
   @ManyToOne(() => Operacao, (operacao) => operacao.postoAreas, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'operacao_id' })
   operacao: Operacao;
-
-  @OneToMany(() => Equipe, (equipe) => equipe.postoArea)
-  equipes: Equipe[];
 }

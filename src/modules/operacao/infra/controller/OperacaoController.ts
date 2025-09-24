@@ -6,69 +6,47 @@ import {
 import { OperacaoResponseDTO } from '../../application/dto/response/OperacaoResponseDTO';
 import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
 import { CriarOperacaoUseCase } from '../../application/usecase/operacao/create-operacao';
-import { ListOperacaoUseCase } from '../../application/usecase/operacao/list-operacao';
-import { UpdateOperacaoUseCase } from '../../application/usecase/operacao/update-operacao';
-import {
-  UpdateOperacaoRequestDTO,
-  UpdateOperacaoSchema,
-} from '../../application/dto/schema/UpdateOperacaoSchema';
-import {
-  PostoServicoRequestDTO,
-  PostoServicoSchema,
-} from '../../application/dto/schema/PostoServicoSchema';
-import { UpdatePostoServicoOperacaoUseCase } from '../../application/usecase/posto-servico/update-posto-servico';
-import {
-  AreaAtuacaoRequestDTO,
-  AreaAtuacaoSchema,
-} from '../../application/dto/schema/AreaAtuacaoSchema';
-import { UpdateAreaAtuacaoOperacaoUseCase } from '../../application/usecase/area-atuacao/update-area-atuacao';
-import { FindByIdOperacaoUseCase } from '../../application/usecase/operacao/show-operacao';
 
 @Controller('api/operacoes')
 export class OperacaoController {
   constructor(
-    private readonly criarOperacaoUseCase: CriarOperacaoUseCase,
-    private readonly listOperacaoUseCase: ListOperacaoUseCase,
-    private readonly updateOperacaoUseCase: UpdateOperacaoUseCase,
-    private readonly updatePostoServicoOperacaoUseCase: UpdatePostoServicoOperacaoUseCase,
-    private readonly updateAreaAtuacaoOperacaoUseCase: UpdateAreaAtuacaoOperacaoUseCase,
-    private readonly findByIdOperacaoUseCase: FindByIdOperacaoUseCase,
+    private readonly criarOperacaoUseCase: CriarOperacaoUseCase, // private readonly listOperacaoUseCase: ListOperacaoUseCase, // private readonly updateOperacaoUseCase: UpdateOperacaoUseCase, // private readonly updatePostoServicoOperacaoUseCase: UpdatePostoServicoOperacaoUseCase, // private readonly updateAreaAtuacaoOperacaoUseCase: UpdateAreaAtuacaoOperacaoUseCase, // private readonly findByIdOperacaoUseCase: FindByIdOperacaoUseCase,
   ) {}
 
-  @Get()
-  async listarOperacoes(
-    @Query('pageIndex') pageIndex?: string,
-    @Query('limit') limit?: string,
-    @Query('nome') nome?: string,
-    @Query('opmDemandante') opmDemandante?: string,
-    @Query('dataInicialStart') dataInicialStart?: string,
-    @Query('dataInicialEnd') dataInicialEnd?: string,
-    @Query('dataFinalStart') dataFinalStart?: string,
-    @Query('dataFinalEnd') dataFinalEnd?: string,
-    @Query('postoServico') postoServico?: string,
-    @Query('areaAtuacao') areaAtuacao?: string,
-  ) {
-    const page = parseInt(pageIndex ?? '1', 10);
-    const lim = parseInt(limit ?? '10', 10);
+  // @Get()
+  // async listarOperacoes(
+  //   @Query('pageIndex') pageIndex?: string,
+  //   @Query('limit') limit?: string,
+  //   @Query('nome') nome?: string,
+  //   @Query('opmDemandante') opmDemandante?: string,
+  //   @Query('dataInicialStart') dataInicialStart?: string,
+  //   @Query('dataInicialEnd') dataInicialEnd?: string,
+  //   @Query('dataFinalStart') dataFinalStart?: string,
+  //   @Query('dataFinalEnd') dataFinalEnd?: string,
+  //   @Query('postoServico') postoServico?: string,
+  //   @Query('areaAtuacao') areaAtuacao?: string,
+  // ) {
+  //   const page = parseInt(pageIndex ?? '1', 10);
+  //   const lim = parseInt(limit ?? '10', 10);
 
-    return this.listOperacaoUseCase.execute(
-      page,
-      lim,
-      nome,
-      opmDemandante,
-      dataInicialStart,
-      dataInicialEnd,
-      dataFinalStart,
-      dataFinalEnd,
-      postoServico,
-      areaAtuacao,
-    );
-  }
+  //   return this.listOperacaoUseCase.execute(
+  //     page,
+  //     lim,
+  //     nome,
+  //     opmDemandante,
+  //     dataInicialStart,
+  //     dataInicialEnd,
+  //     dataFinalStart,
+  //     dataFinalEnd,
+  //     postoServico,
+  //     areaAtuacao,
+  //   );
+  // }
 
-  @Get(':id')
-  async buscarPorId(@Param('id') id: string): Promise<OperacaoResponseDTO> {
-    return this.findByIdOperacaoUseCase.execute(id);
-  }
+  // @Get(':id')
+  // async buscarPorId(@Param('id') id: string): Promise<OperacaoResponseDTO> {  postoAreas: PostoServicoDTO[];
+  //   return this.findByIdOperacaoUseCase.execute(id);
+  // }
 
   @Post()
   async create(
@@ -78,41 +56,41 @@ export class OperacaoController {
     return this.criarOperacaoUseCase.execute(dto);
   }
 
-  @Put(':id')
-  async atualizarOperacao(
-    @Param('id') id: string,
-    @Body() body: UpdateOperacaoRequestDTO,
-  ): Promise<OperacaoResponseDTO> {
-    const dto = await ValidateSchema.validate(UpdateOperacaoSchema, body);
-    return this.updateOperacaoUseCase.execute(id, dto);
-  }
+  // @Put(':id')
+  // async atualizarOperacao(
+  //   @Param('id') id: string,
+  //   @Body() body: UpdateOperacaoRequestDTO,
+  // ): Promise<OperacaoResponseDTO> {
+  //   const dto = await ValidateSchema.validate(UpdateOperacaoSchema, body);
+  //   return this.updateOperacaoUseCase.execute(id, dto);
+  // }
 
-  @Put(':operacaoId/postos/:postoId')
-  async atualizarPostoServico(
-    @Param('operacaoId') operacaoId: string,
-    @Param('postoId') postoId: string,
-    @Body() body: PostoServicoRequestDTO,
-  ): Promise<OperacaoResponseDTO> {
-    const dto = await ValidateSchema.validate(PostoServicoSchema, body);
-    return this.updatePostoServicoOperacaoUseCase.execute(
-      operacaoId,
-      postoId,
-      dto,
-    );
-  }
+  // @Put(':operacaoId/postos/:postoId')
+  // async atualizarPostoServico(
+  //   @Param('operacaoId') operacaoId: string,
+  //   @Param('postoId') postoId: string,
+  //   @Body() body: PostoServicoRequestDTO,
+  // ): Promise<OperacaoResponseDTO> {
+  //   const dto = await ValidateSchema.validate(PostoServicoSchema, body);
+  //   return this.updatePostoServicoOperacaoUseCase.execute(
+  //     operacaoId,
+  //     postoId,
+  //     dto,
+  //   );
+  // }
 
-  @Put(':operacaoId/areas/:areaAtuacaoId')
-  async atualizarAreaAtuacao(
-    @Param('operacaoId') operacaoId: string,
-    @Param('areaAtuacaoId') areaAtuacaoId: string,
-    @Body() body: AreaAtuacaoRequestDTO,
-  ): Promise<OperacaoResponseDTO> {
-    const dto = await ValidateSchema.validate(AreaAtuacaoSchema, body);
+  // @Put(':operacaoId/areas/:areaAtuacaoId')
+  // async atualizarAreaAtuacao(
+  //   @Param('operacaoId') operacaoId: string,
+  //   @Param('areaAtuacaoId') areaAtuacaoId: string,
+  //   @Body() body: AreaAtuacaoRequestDTO,
+  // ): Promise<OperacaoResponseDTO> {
+  //   const dto = await ValidateSchema.validate(AreaAtuacaoSchema, body);
 
-    return this.updateAreaAtuacaoOperacaoUseCase.execute(
-      operacaoId,
-      areaAtuacaoId,
-      dto,
-    );
-  }
+  //   return this.updateAreaAtuacaoOperacaoUseCase.execute(
+  //     operacaoId,
+  //     areaAtuacaoId,
+  //     dto,
+  //   );
+  // }
 }

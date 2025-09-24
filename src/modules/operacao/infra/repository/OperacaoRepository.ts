@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import { IPaginatedResult } from '../../../equipe/infra/repository/interfaces/IEquipeRepository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Operacao } from '../../domain/entities/operacao';
-import { IOperacaoRepository } from './interfaces/IOperacaoRepository';
+import {
+  IOperacaoRepository,
+  IPaginatedResult,
+} from './interfaces/IOperacaoRepository';
 
 @Injectable()
 export class OperacaoRepository implements IOperacaoRepository {
@@ -36,8 +38,7 @@ export class OperacaoRepository implements IOperacaoRepository {
     dataInicialEnd?: Date,
     dataFinalStart?: Date,
     dataFinalEnd?: Date,
-    postoServico?: string,
-    areaAtuacao?: string,
+    postoArea?: string,
   ): Promise<IPaginatedResult<Operacao>> {
     const skip = (page - 1) * limit;
 
@@ -95,15 +96,9 @@ export class OperacaoRepository implements IOperacaoRepository {
       });
     }
 
-    if (postoServico) {
+    if (postoArea) {
       query.andWhere('postoServico.nome ILIKE :postoServico', {
-        postoServico: `%${postoServico}%`,
-      });
-    }
-
-    if (areaAtuacao) {
-      query.andWhere('areaAtuacao.nome ILIKE :areaAtuacao', {
-        areaAtuacao: `%${areaAtuacao}%`,
+        postoServico: `%${postoArea}%`,
       });
     }
 
@@ -120,7 +115,7 @@ export class OperacaoRepository implements IOperacaoRepository {
   async update(id: string, data: Partial<Operacao>): Promise<Operacao> {
     const operacao = await this.operacaoRepository.findOneOrFail({
       where: { id },
-      relations: ['postoServico', 'areaAtuacao'],
+      relations: ['postoArea'],
     });
 
     const operacaoAtualizada = this.operacaoRepository.merge(operacao, data);

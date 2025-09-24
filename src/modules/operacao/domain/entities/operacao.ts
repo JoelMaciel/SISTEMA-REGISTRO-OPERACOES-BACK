@@ -1,22 +1,23 @@
 import {
-  Column,
-  CreateDateColumn,
   Entity,
-  OneToMany,
   PrimaryGeneratedColumn,
+  Column,
+  OneToMany,
+  CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { PostoArea } from './posto-area';
+import { Exclude } from 'class-transformer';
 
 @Entity('operacoes')
 export class Operacao {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 70 })
+  @Column()
   nome: string;
 
-  @Column({ name: 'opm_demandante', length: 30 })
+  @Column({ name: 'opm_demandante' })
   opmDemandante: string;
 
   @Column({ name: 'data_inicial', type: 'date' })
@@ -31,17 +32,18 @@ export class Operacao {
   @Column({ name: 'quantidade_posto_area', type: 'int' })
   quantidadePostoArea: number;
 
-  @Column({ type: 'text' })
-  observacoes: string;
+  @Column({ name: 'observacoes', type: 'text', nullable: true })
+  observacoes?: string;
 
   @OneToMany(() => PostoArea, (postoArea) => postoArea.operacao, {
     cascade: true,
   })
+  @Exclude({ toPlainOnly: true })
   postoAreas: PostoArea[];
 
   @CreateDateColumn({ name: 'criado_em', type: 'timestamp' })
-  criadoEm: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ name: 'atualizado_em', type: 'timestamp' })
-  atualizadoEm: Date;
+  updatedAt: Date;
 }

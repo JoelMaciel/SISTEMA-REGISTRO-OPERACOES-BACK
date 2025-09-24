@@ -20,8 +20,7 @@ export interface IOperacaoRepository {
     dataInicialEnd?: Date,
     dataFinalStart?: Date,
     dataFinalEnd?: Date,
-    postoServico?: string,
-    areaAtuacao?: string,
+    postoArea?: string,
   ): Promise<IPaginatedResult<Operacao>>;
 
   update(id: string, data: Partial<Operacao>): Promise<Operacao>;
