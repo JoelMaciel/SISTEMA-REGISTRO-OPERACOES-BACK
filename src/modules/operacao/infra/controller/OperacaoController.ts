@@ -1,4 +1,15 @@
-import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
 import {
   CreateOperacaoRequestDTO,
   CreateOperacaoSchema,
@@ -19,6 +30,7 @@ import {
 } from '../../application/dto/schema/PostoAreaSchema';
 import { UpdatePostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/update-posto-area';
 import { PostoAreaResponseDTO } from '../../application/dto/response/PostoAreaResponseDTO';
+import { DeleteOperacaoUseCase } from '../../application/usecase/operacao/delete-operacao';
 
 @Controller('api/operacoes')
 export class OperacaoController {
@@ -28,12 +40,14 @@ export class OperacaoController {
     private readonly updateOperacaoUseCase: UpdateOperacaoUseCase,
     private readonly findByIdOperacaoUseCase: ShowOperacaoUseCase,
     private readonly updatePostoAreaOperacaoUseCase: UpdatePostoAreaOperacaoUseCase,
+    private readonly deleteOperacaoUseCase: DeleteOperacaoUseCase,
   ) {}
 
   @Get()
   async listarOperacoes(
     @Query('pageIndex') pageIndex?: string,
-    @Query('limit') limit?: string,
+    @Query('limit')
+    limit?: string,
     @Query('nome') nome?: string,
     @Query('opmDemandante') opmDemandante?: string,
     @Query('dataInicialStart') dataInicialStart?: string,
@@ -64,6 +78,7 @@ export class OperacaoController {
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async create(
     @Body() body: CreateOperacaoRequestDTO,
   ): Promise<OperacaoResponseDTO> {
@@ -79,6 +94,7 @@ export class OperacaoController {
     const dto = await ValidateSchema.validate(UpdateOperacaoSchema, body);
     return this.updateOperacaoUseCase.execute(id, dto);
   }
+
   @Put(':operacaoId/postosAreas/:postoAreaId')
   async atualizarPostoArea(
     @Param('operacaoId') operacaoId: string,
@@ -91,5 +107,11 @@ export class OperacaoController {
       postoAreaId,
       dto,
     );
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@Param('id') id: string): Promise<void> {
+    await this.deleteOperacaoUseCase.execute(id);
   }
 }

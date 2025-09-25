@@ -7,7 +7,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { PostoArea } from './posto-area';
-import { Exclude } from 'class-transformer';
 
 @Entity('operacoes')
 export class Operacao {
@@ -37,8 +36,8 @@ export class Operacao {
 
   @OneToMany(() => PostoArea, (postoArea) => postoArea.operacao, {
     cascade: true,
+    orphanedRowAction: 'delete',
   })
-  @Exclude({ toPlainOnly: true })
   postoAreas: PostoArea[];
 
   @CreateDateColumn({ name: 'criado_em', type: 'timestamp' })
