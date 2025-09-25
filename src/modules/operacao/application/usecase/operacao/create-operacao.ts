@@ -1,9 +1,9 @@
-import { PostoArea } from 'src/modules/operacao/domain/entities/posto-area';
-import { OperacaoResponseDTO } from '../../dto/response/OperacaoResponseDTO';
 import { Inject, Injectable } from '@nestjs/common';
 import { IOperacaoRepository } from 'src/modules/operacao/infra/repository/interfaces/IOperacaoRepository';
+import { OperacaoResponseDTO } from '../../dto/response/OperacaoResponseDTO';
 import { CreateOperacaoRequestDTO } from '../../dto/schema/CreateOperacaoSchema';
 import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
+import { PostoArea } from 'src/modules/operacao/domain/entities/posto-area';
 
 @Injectable()
 export class CriarOperacaoUseCase {
@@ -13,6 +13,12 @@ export class CriarOperacaoUseCase {
   ) {}
 
   async execute(dto: CreateOperacaoRequestDTO): Promise<OperacaoResponseDTO> {
+    const operacao = this.mapToEntity(dto);
+    const novaOperacao = await this.operacaoRepository.create(operacao);
+    return new OperacaoResponseDTO(novaOperacao);
+  }
+
+  private mapToEntity(dto: CreateOperacaoRequestDTO): Operacao {
     const parseDate = (dateString: string): Date => {
       const [day, month, year] = dateString.split('-').map(Number);
       return new Date(year, month - 1, day);
@@ -38,24 +44,6 @@ export class CriarOperacaoUseCase {
       return novoPosto;
     });
 
-    const novaOperacao = await this.operacaoRepository.create(operacao);
-
-    return {
-      id: novaOperacao.id,
-      nome: novaOperacao.nome,
-      opmDemandante: novaOperacao.opmDemandante,
-      dataInicial: novaOperacao.dataInicial,
-      dataFinal: novaOperacao.dataFinal,
-      efetivoPolicial: novaOperacao.efetivoPolicial,
-      quantidadePostoArea: novaOperacao.quantidadePostoArea,
-      observacoes: novaOperacao.observacoes,
-      postoAreas: novaOperacao.postoAreas?.map((posto) => ({
-        id: posto.id,
-        nome: posto.nome,
-        local: posto.local,
-        cidade: posto.cidade,
-        quantidade: posto.quantidade,
-      })),
-    };
+    return operacao;
   }
 }

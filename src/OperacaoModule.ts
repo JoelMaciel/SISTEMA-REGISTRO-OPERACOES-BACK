@@ -6,6 +6,7 @@ import { OperacaoRepository } from './modules/operacao/infra/repository/Operacao
 import { Operacao } from './modules/operacao/domain/entities/operacao';
 import { UpdateOperacaoUseCase } from './modules/operacao/application/usecase/operacao/update-operacao';
 import { ListOperacaoUseCase } from './modules/operacao/application/usecase/operacao/list-operacao';
+import { ShowOperacaoUseCase } from './modules/operacao/application/usecase/operacao/show-operacao';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Operacao])],
@@ -14,9 +15,7 @@ import { ListOperacaoUseCase } from './modules/operacao/application/usecase/oper
     CriarOperacaoUseCase,
     ListOperacaoUseCase,
     UpdateOperacaoUseCase,
-    // UpdatePostoServicoOperacaoUseCase,
-    // UpdateAreaAtuacaoOperacaoUseCase,
-    // FindByIdOperacaoUseCase,
+    ShowOperacaoUseCase,
     {
       provide: 'IOperacaoRepository',
       useClass: OperacaoRepository,

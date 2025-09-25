@@ -12,6 +12,7 @@ import {
   UpdateOperacaoSchema,
 } from '../../application/dto/schema/UpdateOperacaoSchema';
 import { ListOperacaoUseCase } from '../../application/usecase/operacao/list-operacao';
+import { ShowOperacaoUseCase } from '../../application/usecase/operacao/show-operacao';
 
 @Controller('api/operacoes')
 export class OperacaoController {
@@ -19,6 +20,7 @@ export class OperacaoController {
     private readonly criarOperacaoUseCase: CriarOperacaoUseCase,
     private readonly listOperacaoUseCase: ListOperacaoUseCase,
     private readonly updateOperacaoUseCase: UpdateOperacaoUseCase,
+    private readonly findByIdOperacaoUseCase: ShowOperacaoUseCase,
   ) {}
 
   @Get()
@@ -49,10 +51,10 @@ export class OperacaoController {
     );
   }
 
-  // @Get(':id')
-  // async buscarPorId(@Param('id') id: string): Promise<OperacaoResponseDTO> {  postoAreas: PostoServicoDTO[];
-  //   return this.findByIdOperacaoUseCase.execute(id);
-  // }
+  @Get(':id')
+  async buscarPorId(@Param('id') id: string): Promise<OperacaoResponseDTO> {
+    return this.findByIdOperacaoUseCase.execute(id);
+  }
 
   @Post()
   async create(
