@@ -13,6 +13,12 @@ import {
 } from '../../application/dto/schema/UpdateOperacaoSchema';
 import { ListOperacaoUseCase } from '../../application/usecase/operacao/list-operacao';
 import { ShowOperacaoUseCase } from '../../application/usecase/operacao/show-operacao';
+import {
+  PostoAreaRequestDTO,
+  PostoAreaSchema,
+} from '../../application/dto/schema/PostoAreaSchema';
+import { UpdatePostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/update-posto-area';
+import { PostoAreaResponseDTO } from '../../application/dto/response/PostoAreaResponseDTO';
 
 @Controller('api/operacoes')
 export class OperacaoController {
@@ -21,6 +27,7 @@ export class OperacaoController {
     private readonly listOperacaoUseCase: ListOperacaoUseCase,
     private readonly updateOperacaoUseCase: UpdateOperacaoUseCase,
     private readonly findByIdOperacaoUseCase: ShowOperacaoUseCase,
+    private readonly updatePostoAreaOperacaoUseCase: UpdatePostoAreaOperacaoUseCase,
   ) {}
 
   @Get()
@@ -72,33 +79,17 @@ export class OperacaoController {
     const dto = await ValidateSchema.validate(UpdateOperacaoSchema, body);
     return this.updateOperacaoUseCase.execute(id, dto);
   }
-
-  // @Put(':operacaoId/postos/:postoId')
-  // async atualizarPostoServico(
-  //   @Param('operacaoId') operacaoId: string,
-  //   @Param('postoId') postoId: string,
-  //   @Body() body: PostoServicoRequestDTO,
-  // ): Promise<OperacaoResponseDTO> {
-  //   const dto = await ValidateSchema.validate(PostoServicoSchema, body);
-  //   return this.updatePostoServicoOperacaoUseCase.execute(
-  //     operacaoId,
-  //     postoId,
-  //     dto,
-  //   );
-  // }
-
-  // @Put(':operacaoId/areas/:areaAtuacaoId')
-  // async atualizarAreaAtuacao(
-  //   @Param('operacaoId') operacaoId: string,
-  //   @Param('areaAtuacaoId') areaAtuacaoId: string,
-  //   @Body() body: AreaAtuacaoRequestDTO,
-  // ): Promise<OperacaoResponseDTO> {
-  //   const dto = await ValidateSchema.validate(AreaAtuacaoSchema, body);
-
-  //   return this.updateAreaAtuacaoOperacaoUseCase.execute(
-  //     operacaoId,
-  //     areaAtuacaoId,
-  //     dto,
-  //   );
-  // }
+  @Put(':operacaoId/postosAreas/:postoAreaId')
+  async atualizarPostoArea(
+    @Param('operacaoId') operacaoId: string,
+    @Param('postoAreaId') postoAreaId: string,
+    @Body() body: PostoAreaRequestDTO,
+  ): Promise<PostoAreaResponseDTO> {
+    const dto = await ValidateSchema.validate(PostoAreaSchema, body);
+    return this.updatePostoAreaOperacaoUseCase.execute(
+      operacaoId,
+      postoAreaId,
+      dto,
+    );
+  }
 }

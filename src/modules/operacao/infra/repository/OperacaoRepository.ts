@@ -19,6 +19,10 @@ export class OperacaoRepository implements IOperacaoRepository {
     return this.operacaoRepository.save(operacao);
   }
 
+  async save(operacao: Operacao): Promise<Operacao> {
+    return this.operacaoRepository.save(operacao);
+  }
+
   async findById(
     id: string,
     relations: string[] = [],
@@ -123,28 +127,21 @@ export class OperacaoRepository implements IOperacaoRepository {
     return this.operacaoRepository.save(operacaoAtualizada);
   }
 
-  async findOperacaoWithPosto(
+  async findOperacaoWithPostoArea(
     operacaoId: string,
-    postoId: string,
+    postoAreaId: string,
   ): Promise<Operacao | null> {
-    return this.operacaoRepository
-      .createQueryBuilder('operacao')
-      .leftJoinAndSelect('operacao.postoServico', 'posto')
-      .where('operacao.id = :operacaoId', { operacaoId })
-      .andWhere('posto.id = :postoId', { postoId })
-      .getOne();
-  }
+    const operacao = await this.operacaoRepository.findOne({
+      where: { id: operacaoId },
+      relations: ['postoAreas'],
+    });
 
-  async findOperacaoWithAreaAtuacao(
-    operacaoId: string,
-    areaAtuacaoId: string,
-  ): Promise<Operacao | null> {
-    return this.operacaoRepository
-      .createQueryBuilder('operacao')
-      .leftJoinAndSelect('operacao.areaAtuacao', 'areaAtuacao')
-      .where('operacao.id = :operacaoId', { operacaoId })
-      .andWhere('areaAtuacao.id = :areaAtuacaoId', { areaAtuacaoId })
-      .getOne();
+    if (!operacao) return null;
+
+    const posto = operacao.postoAreas.find((p) => p.id === postoAreaId);
+    if (!posto) return null;
+
+    return operacao;
   }
 
   async delete(id: string): Promise<void> {

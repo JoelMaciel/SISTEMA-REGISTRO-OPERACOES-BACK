@@ -13,6 +13,8 @@ export class OperacaoResponseDTO {
     id: string;
     nome: string;
     local: string;
+    number?: string;
+    bairro?: string;
     cidade: string;
     quantidade: number;
   }[];
@@ -32,6 +34,8 @@ export class OperacaoResponseDTO {
           id: posto.id,
           nome: posto.nome,
           local: posto.local,
+          number: posto.numero,
+          bairro: posto.bairro,
           cidade: posto.cidade,
           quantidade: posto.quantidade,
         }))

@@ -10,6 +10,7 @@ export interface IPaginatedResult<T> {
 export interface IOperacaoRepository {
   create(data: Partial<Operacao>): Promise<Operacao>;
   findById(id: string, relations?: string[]): Promise<Operacao | null>;
+  save(operacao: Operacao): Promise<Operacao>;
 
   findAll(
     page: number,
@@ -25,14 +26,9 @@ export interface IOperacaoRepository {
 
   update(id: string, data: Partial<Operacao>): Promise<Operacao>;
 
-  findOperacaoWithPosto(
+  findOperacaoWithPostoArea(
     operacaoId: string,
-    postoId: string,
-  ): Promise<Operacao | null>;
-
-  findOperacaoWithAreaAtuacao(
-    operacaoId: string,
-    areaAtuacaoId: string,
+    postoAreaId: string,
   ): Promise<Operacao | null>;
 
   delete(id: string): Promise<void>;
