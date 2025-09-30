@@ -25,5 +25,6 @@ import { DeleteOperacaoUseCase } from './modules/operacao/application/usecase/op
       useClass: OperacaoRepository,
     },
   ],
+  exports: ['IOperacaoRepository'],
 })
 export class OperacaoModule {}

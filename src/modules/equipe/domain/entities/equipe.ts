@@ -2,11 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { PostoComandante } from '../enums/posto-comandante.enum';
 import { TipoServico } from '../enums/tipo-servico.enum';
+import { PostoArea } from 'src/modules/operacao/domain/entities/posto-area';
 
 @Entity('equipes')
 export class Equipe {
@@ -31,31 +34,31 @@ export class Equipe {
   @Column({ name: 'nome_operacao' })
   nomeOperacao: string;
 
-  @Column({ type: 'enum', enum: PostoComandante })
+  @Column({ name: 'posto_comandante', type: 'enum', enum: PostoComandante })
   postoComandante: PostoComandante;
 
-  @Column({ length: 60 })
+  @Column({ name: 'nome_guerra_comandante', length: 60 })
   nomeGuerraComandante: string;
 
-  @Column({ length: 12 })
+  @Column({ name: 'matricula_comandante', length: 12 })
   matriculaComandante: string;
 
-  @Column({ length: 30 })
+  @Column({ name: 'opm_guarnicao', length: 30 })
   opmGuarnicao: string;
 
-  @Column({ length: 20 })
+  @Column({ name: 'prefixo_vtr', length: 20 })
   prefixoVtr: string;
 
-  @Column({ type: 'int' })
+  @Column({ name: 'efetivo_policial', type: 'int' })
   efetivoPolicial: number;
 
   @Column({ length: 200, nullable: false })
   logradouro: string;
 
-  @Column({ type: 'enum', enum: TipoServico })
+  @Column({ name: 'tipo_servico', type: 'enum', enum: TipoServico })
   tipoServico: TipoServico;
 
-  @Column({ length: 30 })
+  @Column({ name: 'numero_ht', length: 30 })
   numeroHt: string;
 
   @CreateDateColumn({ name: 'criado_em', type: 'timestamp' })
@@ -63,4 +66,13 @@ export class Equipe {
 
   @UpdateDateColumn({ name: 'atualizado_em', type: 'timestamp' })
   atualizadoEm: Date;
+
+  @Column({ name: 'posto_area_id' })
+  postoAreaId: string;
+
+  @ManyToOne(() => PostoArea, (postoArea) => postoArea.equipes, {
+    eager: false,
+  })
+  @JoinColumn({ name: 'posto_area_id' })
+  postoArea: PostoArea;
 }
