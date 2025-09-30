@@ -6,10 +6,16 @@ import {
   CreateEquipeSchema,
 } from '../../application/dto/shemas/CreateEquipeSchema';
 import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
+import { ShowEquipeUseCase } from '../../application/usecases/equipe/show-equipe';
+import { ListarEquipeUseCase } from '../../application/usecases/equipe/list-equipe';
 
 @Controller('api/equipes')
 export class EquipeController {
-  constructor(private readonly criarEquipeUseCase: CriarEquipeUseCase) {}
+  constructor(
+    private readonly createEquipeUseCase: CriarEquipeUseCase,
+    private readonly showEquipeUseCase: ShowEquipeUseCase,
+    private readonly listarEquipeUseCase: ListarEquipeUseCase,
+  ) {}
 
   @Post(':operacaoId')
   async create(
@@ -20,47 +26,36 @@ export class EquipeController {
       CreateEquipeSchema,
       body,
     );
-    return this.criarEquipeUseCase.execute(operacaoId, dto);
+    return this.createEquipeUseCase.execute(operacaoId, dto);
   }
 
-  //   @Get()
-  //   async listarEquipes(
-  //     @Query('pageIndex') pageIndex?: string,
-  //     @Query('limit') limit?: string,
-  //     @Query('matriculaComandante') matriculaComandante?: string,
-  //     @Query('dataOperacao') dataOperacao?: string,
-  //     @Query('nomeOperacao') nomeOperacao?: string,
-  //     @Query('opmGuarnicao') opmGuarnicao?: string,
-  //     @Query('prefixoVtr') prefixoVtr?: string,
-  //     @Query('areaAtuacao') areaAtuacao?: string,
-  //     @Query('tipoServico') tipoServico?: string,
-  //     @Query('localAtividade') localAtividade?: string,
-  //     @Query('atividadeRealizada') atividadeRealizada?: string,
-  //   ) {
-  //     const pageInt = parseInt(pageIndex ?? '1', 10);
-  //     const limitInt = parseInt(limit ?? '10', 10);
+  @Get()
+  async listar(
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+    @Query('matriculaComandante') matriculaComandante?: string,
+    @Query('dataOperacao') dataOperacao?: string,
+    @Query('nomeOperacao') nomeOperacao?: string,
+    @Query('opmGuarnicao') opmGuarnicao?: string,
+    @Query('prefixoVtr') prefixoVtr?: string,
+    @Query('logradouro') logradouro?: string,
+  ) {
+    return this.listarEquipeUseCase.execute(
+      page,
+      limit,
+      matriculaComandante,
+      dataOperacao,
+      nomeOperacao,
+      opmGuarnicao,
+      prefixoVtr,
+      logradouro,
+    );
+  }
 
-  //     const result = await this.listarEquipeUseCase.execute(
-  //       pageInt,
-  //       limitInt,
-  //       matriculaComandante,
-  //       dataOperacao,
-  //       nomeOperacao,
-  //       opmGuarnicao,
-  //       prefixoVtr,
-  //       areaAtuacao,
-  //       tipoServico,
-  //       localAtividade,
-  //       atividadeRealizada,
-  //     );
-
-  //     return result;
-  //   }
-
-  //   @Get(':id')
-  //   async findById(@Param('id') id: string): Promise<EquipeResponseDTO> {
-  //     return this.showEquipeUseCase.execute(id);
-  //   }
+  @Get(':id')
+  async findById(@Param('id') id: string): Promise<EquipeResponseDTO> {
+    return this.showEquipeUseCase.execute(id);
+  }
 
   //   @Put(':id')
   //   async update(

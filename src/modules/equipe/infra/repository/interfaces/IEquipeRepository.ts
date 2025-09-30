@@ -18,10 +18,7 @@ export interface IEquipeRepository {
     nomeOperacao?: string,
     opmGuarnicao?: string,
     prefixoVtr?: string,
-    areaAtuacao?: string,
-    tipoServico?: string,
-    localAtividade?: string,
-    atividadeRealizada?: string,
+    logradouro?: string,
   ): Promise<IPaginatedResult<Equipe>>;
   delete(id: string): Promise<void>;
   update(id: string, data: Partial<Equipe>): Promise<Equipe>;

@@ -22,7 +22,22 @@ export class EquipeResponseDTO {
     this.id = entity.id;
     this.email = entity.email;
     this.contatoEquipe = entity.contatoEquipe;
-    this.dataOperacao = entity.dataOperacao.toISOString().split('T')[0];
+    let dataOperacao: Date | null = null;
+    if (entity.dataOperacao) {
+      if (entity.dataOperacao instanceof Date) {
+        dataOperacao = entity.dataOperacao;
+      } else if (typeof entity.dataOperacao === 'string') {
+        dataOperacao = new Date(entity.dataOperacao);
+        if (isNaN(dataOperacao.getTime())) {
+          dataOperacao = null;
+        }
+      }
+    }
+
+    this.dataOperacao = dataOperacao
+      ? dataOperacao.toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+      : '';
+
     this.horarioInicial = entity.horarioInicial;
     this.horarioFinal = entity.horarioFinal;
     this.nomeOperacao = entity.nomeOperacao;

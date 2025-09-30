@@ -5,12 +5,16 @@ import { EquipeController } from './modules/equipe/infra/controller/EquipeContro
 import { CriarEquipeUseCase } from './modules/equipe/application/usecases/equipe/create-equipe';
 import { EquipeRepository } from './modules/equipe/infra/repository/EquipeRepository';
 import { OperacaoModule } from './OperacaoModule';
+import { ShowEquipeUseCase } from './modules/equipe/application/usecases/equipe/show-equipe';
+import { ListarEquipeUseCase } from './modules/equipe/application/usecases/equipe/list-equipe';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Equipe]), OperacaoModule],
   controllers: [EquipeController],
   providers: [
     CriarEquipeUseCase,
+    ShowEquipeUseCase,
+    ListarEquipeUseCase,
     {
       provide: 'IEquipeRepository',
       useClass: EquipeRepository,
