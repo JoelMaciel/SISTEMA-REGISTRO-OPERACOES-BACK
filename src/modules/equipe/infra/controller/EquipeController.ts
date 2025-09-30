@@ -8,6 +8,7 @@ import {
 import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
 import { ShowEquipeUseCase } from '../../application/usecases/equipe/show-equipe';
 import { ListarEquipeUseCase } from '../../application/usecases/equipe/list-equipe';
+import { UpdateEquipeUseCase } from '../../application/usecases/equipe/update-equipe';
 
 @Controller('api/equipes')
 export class EquipeController {
@@ -15,6 +16,7 @@ export class EquipeController {
     private readonly createEquipeUseCase: CriarEquipeUseCase,
     private readonly showEquipeUseCase: ShowEquipeUseCase,
     private readonly listarEquipeUseCase: ListarEquipeUseCase,
+    private readonly updateEquipeUseCase: UpdateEquipeUseCase,
   ) {}
 
   @Post(':operacaoId')
@@ -57,15 +59,15 @@ export class EquipeController {
     return this.showEquipeUseCase.execute(id);
   }
 
-  //   @Put(':id')
-  //   async update(
-  //     @Param('id') id: string,
-  //     @Body() body: CreateEquipeRequestDTO,
-  //   ): Promise<EquipeResponseDTO> {
-  //     const dto: CreateEquipeRequestDTO = await ValidateSchema.validate(
-  //       CreateEquipeSchema,
-  //       body,
-  //     );
-  //     return this.updateEquipeUseCase.execute(id, dto);
-  //   }
+  @Put(':id')
+  async update(
+    @Param('id') id: string,
+    @Body() body: CreateEquipeRequestDTO,
+  ): Promise<EquipeResponseDTO> {
+    const dto: CreateEquipeRequestDTO = await ValidateSchema.validate(
+      CreateEquipeSchema,
+      body,
+    );
+    return this.updateEquipeUseCase.execute(id, dto);
+  }
 }

@@ -7,6 +7,7 @@ import { EquipeRepository } from './modules/equipe/infra/repository/EquipeReposi
 import { OperacaoModule } from './OperacaoModule';
 import { ShowEquipeUseCase } from './modules/equipe/application/usecases/equipe/show-equipe';
 import { ListarEquipeUseCase } from './modules/equipe/application/usecases/equipe/list-equipe';
+import { UpdateEquipeUseCase } from './modules/equipe/application/usecases/equipe/update-equipe';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Equipe]), OperacaoModule],
@@ -15,6 +16,7 @@ import { ListarEquipeUseCase } from './modules/equipe/application/usecases/equip
     CriarEquipeUseCase,
     ShowEquipeUseCase,
     ListarEquipeUseCase,
+    UpdateEquipeUseCase,
     {
       provide: 'IEquipeRepository',
       useClass: EquipeRepository,
