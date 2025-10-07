@@ -31,10 +31,7 @@ export class EquipeRepository implements IEquipeRepository {
     nomeOperacao?: string,
     opmGuarnicao?: string,
     prefixoVtr?: string,
-    areaAtuacao?: string,
-    tipoServico?: string,
-    localAtividade?: string,
-    atividadeRealizada?: string,
+    logradouro?: string,
   ): Promise<IPaginatedResult<Equipe>> {
     const skip = (page - 1) * limit;
     const query = this.equipeRepository
@@ -43,48 +40,38 @@ export class EquipeRepository implements IEquipeRepository {
       .take(limit)
       .orderBy('equipe.dataOperacao', 'DESC');
 
-    const conditions: Record<string, { field: string; like: boolean }> = {
-      matriculaComandante: { field: 'equipe.matriculaComandante', like: true },
-      dataOperacao: { field: 'equipe.dataOperacao', like: false },
-      nomeOperacao: { field: 'equipe.nomeOperacao', like: true },
-      opmGuarnicao: { field: 'equipe.opmGuarnicao', like: true },
-      prefixoVtr: { field: 'CAST(equipe.prefixoVtr AS TEXT)', like: true },
-      areaAtuacao: { field: 'CAST(equipe.areaAtuacao AS TEXT)', like: true },
-      tipo_servico: { field: 'CAST(equipe.tipo_servico AS TEXT)', like: true },
-      localAtividade: {
-        field: 'CAST(equipe.localAtividade AS TEXT)',
+    const filters = [
+      {
+        key: 'matriculaComandante',
+        field: 'equipe.matriculaComandante',
         like: true,
       },
-      atividadeRealizada: {
-        field: 'CAST(equipe.atividadeRealizada AS TEXT)',
-        like: true,
-      },
+      { key: 'opmGuarnicao', field: 'equipe.opmGuarnicao', like: true },
+      { key: 'prefixoVtr', field: 'equipe.prefixoVtr', like: true },
+      { key: 'logradouro', field: 'equipe.logradouro', like: true },
+      { key: 'nomeOperacao', field: 'equipe.nomeOperacao', like: true },
+      { key: 'dataOperacao', field: 'equipe.dataOperacao', like: false },
+    ];
+
+    const params = {
+      matriculaComandante,
+      dataOperacao,
+      nomeOperacao,
+      opmGuarnicao,
+      prefixoVtr,
+      logradouro,
     };
 
-    Object.entries(conditions).forEach(([key, { field, like }]) => {
-      const value = {
-        matriculaComandante,
-        dataOperacao,
-        nomeOperacao,
-        opmGuarnicao,
-        prefixoVtr,
-        areaAtuacao,
-        tipoServico,
-        localAtividade,
-        atividadeRealizada,
-      }[key];
-
+    for (const { key, field, like } of filters) {
+      const value = params[key as keyof typeof params];
       if (value !== undefined && value !== null && value.trim() !== '') {
-        const param = {};
-        param[key] = `%${value}%`;
-
         if (like) {
-          query.andWhere(`${field} ILIKE :${key}`, param);
+          query.andWhere(`${field} ILIKE :${key}`, { [key]: `%${value}%` });
         } else {
-          query.andWhere(`${field} = :${key}`, param);
+          query.andWhere(`${field} = :${key}`, { [key]: value });
         }
       }
-    });
+    }
 
     const [items, total] = await query.getManyAndCount();
 

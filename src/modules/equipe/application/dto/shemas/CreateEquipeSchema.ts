@@ -1,8 +1,6 @@
 import { z } from 'zod';
 import { PostoComandante } from '../../../domain/enums/posto-comandante.enum';
 import { AtividadeRealizada } from '../../../domain/enums/atividade-realizada.enum';
-import { LocalAtividade } from '../../../domain/enums/local-atividade.enum';
-import { AreaAtuacao } from '../../../domain/enums/area-atuacao.enum';
 import { TipoServico } from '../../../domain/enums/tipo-servico.enum';
 
 const horaRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
@@ -51,6 +49,13 @@ export const CreateEquipeSchema = z.object({
     }),
   nomeOperacao: z.string().min(2),
   postoComandante: z.nativeEnum(PostoComandante),
+  postoAreaId: z
+    .string({
+      required_error: "O campo 'postoAreaId' é obrigatório.",
+    })
+    .uuid({
+      message: "O campo 'postoAreaId' deve ser um UUID válido.",
+    }),
   nomeGuerraComandante: z
     .string()
     .min(3, {
@@ -96,16 +101,6 @@ export const CreateEquipeSchema = z.object({
       "O campo 'atividadeRealizada' deve conter um valor válido.",
   }),
 
-  localAtividade: z.nativeEnum(LocalAtividade, {
-    required_error: "O campo 'localAtividade' é obrigatório.",
-    invalid_type_error: "O campo 'localAtividade' deve conter um valor válido.",
-  }),
-
-  areaAtuacao: z.nativeEnum(AreaAtuacao, {
-    required_error: "O campo 'areaAtuacao' é obrigatório.",
-    invalid_type_error: "O campo 'areaAtuacao' deve conter um valor válido.",
-  }),
-
   tipoServico: z.nativeEnum(TipoServico, {
     required_error: "O campo 'tipoServico' é obrigatório.",
     invalid_type_error: "O campo 'tipoServico' deve conter um valor válido.",
@@ -117,6 +112,14 @@ export const CreateEquipeSchema = z.object({
     .max(30, {
       message: "O campo 'numeroHt' deve ter no máximo 30 caracteres.",
     }),
+
+  nomePosto: z
+    .string()
+    .min(2, { message: "O campo 'nomePosto' é obrigatório." }),
+  local: z.string().min(2, { message: "O campo 'local' é obrigatório." }),
+  numero: z.string().optional(),
+  bairro: z.string().optional(),
+  cidade: z.string().min(2, { message: "O campo 'cidade' é obrigatório." }),
 });
 
 export type CreateEquipeRequestDTO = z.infer<typeof CreateEquipeSchema>;

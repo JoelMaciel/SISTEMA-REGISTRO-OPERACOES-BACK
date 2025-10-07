@@ -3,9 +3,11 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Operacao } from './operacao';
+import { Equipe } from 'src/modules/equipe/domain/entities/equipe';
 
 @Entity('postos_areas')
 export class PostoArea {
@@ -29,6 +31,9 @@ export class PostoArea {
 
   @Column({ type: 'int' })
   quantidade: number;
+
+  @OneToMany(() => Equipe, (equipe) => equipe.postoArea, { cascade: true })
+  equipes: Equipe[];
 
   @ManyToOne(() => Operacao, (operacao) => operacao.postoAreas, {
     onDelete: 'CASCADE',

@@ -1,29 +1,64 @@
-// import { Inject, Injectable } from '@nestjs/common';
-// import { IEquipeRepository } from '../../../infra/repository/interfaces/IEquipeRepository';
-// import { CreateEquipeRequestDTO } from '../../dto/shemas/CreateEquipeSchema';
-// import { EquipeResponseDTO } from '../../dto/response/EquipeResponseDTO';
-// import { LocalAtividade } from '../../../domain/enums/local-atividade.enum';
-// import { AreaAtuacao } from '../../../domain/enums/area-atuacao.enum';
-// import { TipoServico } from '../../../domain/enums/tipo-servico.enum';
-// import { PostoComandante } from '../../../domain/enums/posto-comandante.enum';
-// import { Equipe } from 'src/modules/equipe/domain/entities/equipe';
+import { Inject, Injectable } from '@nestjs/common';
+import { IEquipeRepository } from '../../../infra/repository/interfaces/IEquipeRepository';
+import { CreateEquipeRequestDTO } from '../../dto/shemas/CreateEquipeSchema';
+import { EquipeResponseDTO } from '../../dto/response/EquipeResponseDTO';
+import { TipoServico } from '../../../domain/enums/tipo-servico.enum';
+import { PostoComandante } from '../../../domain/enums/posto-comandante.enum';
+import { Equipe } from 'src/modules/equipe/domain/entities/equipe';
+import { IOperacaoRepository } from 'src/modules/operacao/infra/repository/interfaces/IOperacaoRepository';
+import { AppError } from 'src/shared/errors/AppError';
 
-// @Injectable()
-// export class CriarEquipeUseCase {
-//   // constructor(
-//   //   @Inject('IEquipeRepository')
-//   //   private readonly equipeRepository: IEquipeRepository,
-//   // ) {}
-//   // async execute(dto: CreateEquipeRequestDTO): Promise<EquipeResponseDTO> {
-//   //   const data: Partial<Equipe> = {
-//   //     ...dto,
-//   //     // atividadeRealizada: dto.atividadeRealizada,
-//   //   //  localAtividade: dto.localAtividade as LocalAtividade,
-//   //     areaAtuacao: dto.areaAtuacao as AreaAtuacao,
-//   //     tipoServico: dto.tipoServico as TipoServico,
-//   //     postoComandante: dto.postoComandante as PostoComandante,
-//   //   };
-//   //   const novaEquipe = await this.equipeRepository.create(data);
-//   //   return new EquipeResponseDTO(novaEquipe);
-//   // }
-// }
+@Injectable()
+export class CriarEquipeUseCase {
+  constructor(
+    @Inject('IEquipeRepository')
+    private readonly equipeRepository: IEquipeRepository,
+
+    @Inject('IOperacaoRepository')
+    private readonly operacaoRepository: IOperacaoRepository,
+  ) {}
+
+  async execute(
+    operacaoId: string,
+    dto: CreateEquipeRequestDTO,
+  ): Promise<EquipeResponseDTO> {
+    const vinculo = await this.operacaoRepository.findOperacaoWithPostoArea(
+      operacaoId,
+      dto.postoAreaId,
+    );
+
+    if (!vinculo) {
+      throw new AppError(
+        'Posto ou  Área não estś vinculado a operação especificada',
+        400,
+      );
+    }
+    const logradouro = this.montarLogradouro(dto);
+
+    const data: Partial<Equipe> = {
+      ...dto,
+      tipoServico: dto.tipoServico as TipoServico,
+      postoComandante: dto.postoComandante as PostoComandante,
+      logradouro,
+    };
+
+    const novaEquipe = await this.equipeRepository.create(data);
+    return new EquipeResponseDTO(novaEquipe);
+  }
+
+  private montarLogradouro(dto: CreateEquipeRequestDTO): string {
+    const partes: string[] = [];
+
+    if (dto.nomePosto) partes.push(dto.nomePosto);
+    if (dto.local) partes.push(dto.local);
+
+    let endereco = '';
+    if (dto.numero) endereco += `${dto.numero}, `;
+    if (dto.bairro) endereco += `${dto.bairro} - `;
+    endereco += dto.cidade;
+
+    partes.push(endereco);
+
+    return partes.join(' - ');
+  }
+}
