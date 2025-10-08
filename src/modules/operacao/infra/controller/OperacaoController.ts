@@ -31,6 +31,7 @@ import {
 import { UpdatePostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/update-posto-area';
 import { PostoAreaResponseDTO } from '../../application/dto/response/PostoAreaResponseDTO';
 import { DeleteOperacaoUseCase } from '../../application/usecase/operacao/delete-operacao';
+import { AddPostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/adicionar-posto-area';
 
 @Controller('api/operacoes')
 export class OperacaoController {
@@ -41,6 +42,7 @@ export class OperacaoController {
     private readonly findByIdOperacaoUseCase: ShowOperacaoUseCase,
     private readonly updatePostoAreaOperacaoUseCase: UpdatePostoAreaOperacaoUseCase,
     private readonly deleteOperacaoUseCase: DeleteOperacaoUseCase,
+    private readonly addPostoAreaOperacaoUseCase: AddPostoAreaOperacaoUseCase,
   ) {}
 
   @Get()
@@ -84,6 +86,14 @@ export class OperacaoController {
   ): Promise<OperacaoResponseDTO> {
     const dto = await ValidateSchema.validate(CreateOperacaoSchema, body);
     return this.criarOperacaoUseCase.execute(dto);
+  }
+
+  @Post(':operacaoId/posto-area')
+  async addPostoArea(
+    @Param('operacaoId') operacaoId: string,
+    @Body() dto: PostoAreaRequestDTO,
+  ): Promise<PostoAreaResponseDTO> {
+    return this.addPostoAreaOperacaoUseCase.execute(operacaoId, dto);
   }
 
   @Put(':id')
