@@ -32,6 +32,7 @@ import { UpdatePostoAreaOperacaoUseCase } from '../../application/usecase/posto-
 import { PostoAreaResponseDTO } from '../../application/dto/response/PostoAreaResponseDTO';
 import { DeleteOperacaoUseCase } from '../../application/usecase/operacao/delete-operacao';
 import { AddPostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/adicionar-posto-area';
+import { RemovePostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/delete-posto-area';
 
 @Controller('api/operacoes')
 export class OperacaoController {
@@ -43,6 +44,7 @@ export class OperacaoController {
     private readonly updatePostoAreaOperacaoUseCase: UpdatePostoAreaOperacaoUseCase,
     private readonly deleteOperacaoUseCase: DeleteOperacaoUseCase,
     private readonly addPostoAreaOperacaoUseCase: AddPostoAreaOperacaoUseCase,
+    private readonly removePostoAreaOperacaoUseCase: RemovePostoAreaOperacaoUseCase,
   ) {}
 
   @Get()
@@ -117,6 +119,15 @@ export class OperacaoController {
       postoAreaId,
       dto,
     );
+  }
+
+  @Delete(':operacaoId/posto-areas/:postoAreaId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removePostoArea(
+    @Param('operacaoId') operacaoId: string,
+    @Param('postoAreaId') postoAreaId: string,
+  ): Promise<void> {
+    await this.removePostoAreaOperacaoUseCase.execute(operacaoId, postoAreaId);
   }
 
   @Delete(':id')
