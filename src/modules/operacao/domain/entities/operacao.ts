@@ -35,8 +35,8 @@ export class Operacao {
   observacoes?: string;
 
   @OneToMany(() => PostoArea, (postoArea) => postoArea.operacao, {
-    cascade: true,
-    orphanedRowAction: 'delete',
+    cascade: ['insert', 'update'],
+    eager: false,
   })
   postoAreas: PostoArea[];
 

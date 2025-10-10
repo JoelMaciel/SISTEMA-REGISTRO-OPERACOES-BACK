@@ -37,4 +37,9 @@ export const PostoAreaSchema = z.object({
     .min(1, { message: "O campo 'quantidade' deve ser pelo menos 1." }),
 });
 
+export const PostoAreaArraySchema = z.union([
+  PostoAreaSchema,
+  z.array(PostoAreaSchema),
+]);
+
 export type PostoAreaRequestDTO = z.infer<typeof PostoAreaSchema>;

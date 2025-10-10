@@ -25,6 +25,7 @@ import {
 import { ListOperacaoUseCase } from '../../application/usecase/operacao/list-operacao';
 import { ShowOperacaoUseCase } from '../../application/usecase/operacao/show-operacao';
 import {
+  PostoAreaArraySchema,
   PostoAreaRequestDTO,
   PostoAreaSchema,
 } from '../../application/dto/schema/PostoAreaSchema';
@@ -93,8 +94,10 @@ export class OperacaoController {
   @Post(':operacaoId/posto-area')
   async addPostoArea(
     @Param('operacaoId') operacaoId: string,
-    @Body() dto: PostoAreaRequestDTO,
-  ): Promise<PostoAreaResponseDTO> {
+    @Body() body: unknown,
+  ): Promise<PostoAreaResponseDTO | PostoAreaResponseDTO[]> {
+    const dto = await ValidateSchema.validate(PostoAreaArraySchema, body);
+
     return this.addPostoAreaOperacaoUseCase.execute(operacaoId, dto);
   }
 

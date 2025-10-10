@@ -34,7 +34,5 @@ export class RemovePostoAreaOperacaoUseCase {
     operacao.postoAreas = operacao.postoAreas.filter(
       (p) => p.id !== postoAreaId,
     );
-
-    await this.operacaoRepository.save(operacao);
   }
 }
