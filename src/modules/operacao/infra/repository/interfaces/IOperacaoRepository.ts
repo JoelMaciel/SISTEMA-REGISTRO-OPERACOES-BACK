@@ -11,6 +11,10 @@ export interface IOperacaoRepository {
   create(data: Partial<Operacao>): Promise<Operacao>;
   findById(id: string, relations?: string[]): Promise<Operacao | null>;
   save(operacao: Operacao): Promise<Operacao>;
+  findByIdWithRelations(
+    id: string,
+    relations?: string[],
+  ): Promise<Operacao | null>;
 
   findAll(
     page: number,

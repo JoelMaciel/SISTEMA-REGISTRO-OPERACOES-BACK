@@ -25,12 +25,15 @@ import {
 import { ListOperacaoUseCase } from '../../application/usecase/operacao/list-operacao';
 import { ShowOperacaoUseCase } from '../../application/usecase/operacao/show-operacao';
 import {
+  PostoAreaArraySchema,
   PostoAreaRequestDTO,
   PostoAreaSchema,
 } from '../../application/dto/schema/PostoAreaSchema';
 import { UpdatePostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/update-posto-area';
 import { PostoAreaResponseDTO } from '../../application/dto/response/PostoAreaResponseDTO';
 import { DeleteOperacaoUseCase } from '../../application/usecase/operacao/delete-operacao';
+import { AddPostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/adicionar-posto-area';
+import { RemovePostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/delete-posto-area';
 
 @Controller('api/operacoes')
 export class OperacaoController {
@@ -41,6 +44,8 @@ export class OperacaoController {
     private readonly findByIdOperacaoUseCase: ShowOperacaoUseCase,
     private readonly updatePostoAreaOperacaoUseCase: UpdatePostoAreaOperacaoUseCase,
     private readonly deleteOperacaoUseCase: DeleteOperacaoUseCase,
+    private readonly addPostoAreaOperacaoUseCase: AddPostoAreaOperacaoUseCase,
+    private readonly removePostoAreaOperacaoUseCase: RemovePostoAreaOperacaoUseCase,
   ) {}
 
   @Get()
@@ -86,6 +91,16 @@ export class OperacaoController {
     return this.criarOperacaoUseCase.execute(dto);
   }
 
+  @Post(':operacaoId/posto-area')
+  async addPostoArea(
+    @Param('operacaoId') operacaoId: string,
+    @Body() body: unknown,
+  ): Promise<PostoAreaResponseDTO | PostoAreaResponseDTO[]> {
+    const dto = await ValidateSchema.validate(PostoAreaArraySchema, body);
+
+    return this.addPostoAreaOperacaoUseCase.execute(operacaoId, dto);
+  }
+
   @Put(':id')
   async atualizarOperacao(
     @Param('id') id: string,
@@ -107,6 +122,15 @@ export class OperacaoController {
       postoAreaId,
       dto,
     );
+  }
+
+  @Delete(':operacaoId/posto-areas/:postoAreaId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async removePostoArea(
+    @Param('operacaoId') operacaoId: string,
+    @Param('postoAreaId') postoAreaId: string,
+  ): Promise<void> {
+    await this.removePostoAreaOperacaoUseCase.execute(operacaoId, postoAreaId);
   }
 
   @Delete(':id')

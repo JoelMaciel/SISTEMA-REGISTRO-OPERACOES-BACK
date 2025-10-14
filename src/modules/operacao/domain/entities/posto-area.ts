@@ -37,6 +37,7 @@ export class PostoArea {
 
   @ManyToOne(() => Operacao, (operacao) => operacao.postoAreas, {
     onDelete: 'CASCADE',
+    nullable: false,
   })
   @JoinColumn({ name: 'operacao_id' })
   operacao: Operacao;
