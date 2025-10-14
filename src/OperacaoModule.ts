@@ -9,6 +9,8 @@ import { ListOperacaoUseCase } from './modules/operacao/application/usecase/oper
 import { ShowOperacaoUseCase } from './modules/operacao/application/usecase/operacao/show-operacao';
 import { UpdatePostoAreaOperacaoUseCase } from './modules/operacao/application/usecase/posto-servico/update-posto-area';
 import { DeleteOperacaoUseCase } from './modules/operacao/application/usecase/operacao/delete-operacao';
+import { AddPostoAreaOperacaoUseCase } from './modules/operacao/application/usecase/posto-servico/adicionar-posto-area';
+import { RemovePostoAreaOperacaoUseCase } from './modules/operacao/application/usecase/posto-servico/delete-posto-area';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Operacao])],
@@ -20,6 +22,8 @@ import { DeleteOperacaoUseCase } from './modules/operacao/application/usecase/op
     ShowOperacaoUseCase,
     UpdatePostoAreaOperacaoUseCase,
     DeleteOperacaoUseCase,
+    AddPostoAreaOperacaoUseCase,
+    RemovePostoAreaOperacaoUseCase,
     {
       provide: 'IOperacaoRepository',
       useClass: OperacaoRepository,
