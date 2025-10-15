@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Operacao } from '../../domain/entities/ocorrencia';
 import {
   IOperacaoRepository,
   IPaginatedResult,
 } from './interfaces/IOperacaoRepository';
-import { PostoArea } from '../../domain/entities/acusado';
+import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
+import { PostoArea } from 'src/modules/operacao/domain/entities/posto-area';
 
 @Injectable()
 export class OperacaoRepository implements IOperacaoRepository {

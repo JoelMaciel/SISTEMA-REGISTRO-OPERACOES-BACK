@@ -22,6 +22,9 @@ export class Vitima {
   @Column({ length: 20 })
   cpf: string;
 
+  @Column({ type: 'int' })
+  idade: number;
+
   @Column({ name: 'data_nascimento', length: 20 })
   dataNascimento: string;
 
@@ -36,12 +39,6 @@ export class Vitima {
 
   @Column({ length: 30 })
   nacionalidade: string;
-
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
 
   @ManyToOne(() => Ocorrencia, (ocorrencia) => ocorrencia.vitimas)
   @JoinColumn({ name: 'ocorrencia_id' })

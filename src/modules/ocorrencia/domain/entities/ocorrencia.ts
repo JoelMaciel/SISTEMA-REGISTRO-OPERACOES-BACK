@@ -23,7 +23,7 @@ export class Ocorrencia {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'm_ocorrencia', type: 'varchar' })
+  @Column()
   m: string;
 
   @Column()

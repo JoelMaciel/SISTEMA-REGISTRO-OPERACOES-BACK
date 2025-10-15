@@ -1,4 +1,4 @@
 export enum SituacaoVeiculo {
-  APREENDIDO = 'apreendido',
-  RECUPERADO = 'recuperado',
+  APREENDIDO = 'APREENDIDO',
+  RECUPERADO = 'RECUPERADO',
 }

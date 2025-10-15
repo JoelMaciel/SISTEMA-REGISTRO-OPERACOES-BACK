@@ -10,10 +10,7 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import {
-  CreateOperacaoRequestDTO,
-  CreateOperacaoSchema,
-} from '../../application/dto/schema/CreateOperacaoSchema';
+
 import { OperacaoResponseDTO } from '../../application/dto/response/OperacaoResponseDTO';
 import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
 import { CriarOperacaoUseCase } from '../../application/usecase/operacao/create-operacao';
@@ -34,6 +31,10 @@ import { PostoAreaResponseDTO } from '../../application/dto/response/PostoAreaRe
 import { DeleteOperacaoUseCase } from '../../application/usecase/operacao/delete-operacao';
 import { AddPostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/adicionar-posto-area';
 import { RemovePostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/delete-posto-area';
+import {
+  CreateOperacaoRequestDTO,
+  CreateOperacaoSchema,
+} from 'src/modules/operacao/application/dto/schema/CreateOperacaoSchema';
 
 @Controller('api/operacoes')
 export class OperacaoController {

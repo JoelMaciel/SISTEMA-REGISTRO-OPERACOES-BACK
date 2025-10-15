@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IOperacaoRepository } from 'src/modules/operacao/infra/repository/interfaces/IOperacaoRepository';
 import { OperacaoResponseDTO } from '../../dto/response/OperacaoResponseDTO';
-import { CreateOperacaoRequestDTO } from '../../dto/schema/CreateOperacaoSchema';
 import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
 import { PostoArea } from 'src/modules/operacao/domain/entities/posto-area';
+import { CreateOperacaoRequestDTO } from 'src/modules/operacao/application/dto/schema/CreateOperacaoSchema';
 
 @Injectable()
 export class CriarOperacaoUseCase {
