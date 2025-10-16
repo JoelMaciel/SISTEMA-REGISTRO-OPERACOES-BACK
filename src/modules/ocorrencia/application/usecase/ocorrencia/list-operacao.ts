@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { OperacaoResponseDTO } from 'src/modules/operacao/application/dto/response/OperacaoResponseDTO';
 import {
   IOperacaoRepository,
   IPaginatedResult,
 } from 'src/modules/operacao/infra/repository/interfaces/IOperacaoRepository';
-import { OperacaoResponseDTO } from '../../dto/response/OperacaoResponseDTO';
 import { parseDate } from 'src/shared/utils/dateUtils';
 
 @Injectable()

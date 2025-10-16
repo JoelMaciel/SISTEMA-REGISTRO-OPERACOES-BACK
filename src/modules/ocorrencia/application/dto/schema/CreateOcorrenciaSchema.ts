@@ -1,91 +1,112 @@
+import { UnidadeMedida } from 'src/modules/ocorrencia/domain/enums/UnidadeMedida';
+import { SituacaoVeiculo } from 'src/modules/ocorrencia/domain/enums/SituacaoVeiculo';
 import { z } from 'zod';
+import { cpf } from 'cpf-cnpj-validator';
+
+const horaRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 
 export const EnderecoSchema = z.object({
-  logradouro: z
-    .string()
-    .min(3, 'O logradouro deve ter pelo menos 3 caracteres.'),
-  numero: z.string().max(10, 'Número inválido.').optional(),
-  bairro: z.string().min(2, 'Bairro é obrigatório.'),
-  cidade: z.string().min(2, 'Cidade é obrigatória.'),
-  estado: z.string().min(2, 'Estado é obrigatório.'),
+  rua: z.string().min(3).max(150),
+  numero: z.string().max(10).optional(),
+  bairro: z.string().min(2).max(80),
+  cidade: z.string().min(2).max(80),
+  uf: z.string().length(2),
 });
 
-export type EnderecoDTO = z.infer<typeof EnderecoSchema>;
+export type EnderecoRequestDTO = z.infer<typeof EnderecoSchema>;
 
 export const VitimaSchema = z.object({
-  nome: z
+  nome: z.string().min(3).max(100),
+  cpf: z
     .string()
-    .min(3, 'Nome é obrigatório e deve ter ao menos 3 caracteres.'),
-  idade: z.number().min(0, 'Idade inválida.').optional(),
-  observacao: z.string().optional(),
+    .refine((value) => cpf.isValid(value), { message: 'CPF inválido' }),
+  idade: z.number().int().min(0).max(120),
+  dataNascimento: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/),
+  nomeMae: z.string().min(3).max(100).optional(),
+  nomePai: z.string().min(3).max(100).optional(),
+  naturalidade: z.string().min(2).max(40),
+  nacionalidade: z.string().min(2).max(40),
+  endereco: EnderecoSchema,
 });
 
-export type VitimaDTO = z.infer<typeof VitimaSchema>;
+export type VitimaRequestDTO = z.infer<typeof VitimaSchema>;
 
 export const AcusadoSchema = z.object({
-  nome: z
+  nome: z.string().min(3).max(100),
+  cpf: z
     .string()
-    .min(3, 'Nome é obrigatório e deve ter ao menos 3 caracteres.'),
-  idade: z.number().min(0, 'Idade inválida.').optional(),
-  observacao: z.string().optional(),
+    .refine((value) => cpf.isValid(value), { message: 'CPF inválido' }),
+  idade: z.number().int().min(0).max(120),
+  dataNascimento: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/),
+  nomeMae: z.string().min(3).max(100).optional(),
+  nomePai: z.string().min(3).max(100).optional(),
+  naturalidade: z.string().min(2).max(50),
+  nacionalidade: z.string().min(2).max(50),
+  endereco: EnderecoSchema,
 });
 
-export type AcusadoDTO = z.infer<typeof AcusadoSchema>;
+export type AcusadoRequestDTO = z.infer<typeof AcusadoSchema>;
 
 export const DrogaSchema = z.object({
-  tipo: z.string().min(2, 'Tipo é obrigatório.'),
-  quantidade: z.number().positive('Quantidade deve ser positiva.'),
-  unidadeMedida: z.enum(['GRAMAS', 'KG', 'LITROS', 'ML']),
+  tipo: z.string().min(2).max(100),
+  quantidade: z.string().min(1).max(10),
+  unidadeMedida: z.nativeEnum(UnidadeMedida),
 });
 
-export type DrogaDTO = z.infer<typeof DrogaSchema>;
+export type DrogaRequestDTO = z.infer<typeof DrogaSchema>;
 
 export const ArmaSchema = z.object({
-  tipo: z.string().min(2, 'Tipo é obrigatório.'),
-  calibre: z.string().optional(),
-  numeroSerie: z.string().optional(),
+  tipo: z.string().min(2).max(50),
+  calibre: z.string().max(10),
+  numeracao: z.string().max(20),
+  capacidade: z.number().int().positive(),
 });
 
-export type ArmaDTO = z.infer<typeof ArmaSchema>;
+export type ArmaRequestDTO = z.infer<typeof ArmaSchema>;
 
 export const MunicaoSchema = z.object({
-  calibre: z.string().min(1, 'Calibre é obrigatório.'),
-  quantidade: z.number().positive('Quantidade deve ser positiva.'),
+  calibre: z.string().min(1).max(25),
+  quantidade: z.string().min(1).max(25),
 });
 
-export type MunicaoDTO = z.infer<typeof MunicaoSchema>;
+export type MunicaoRequestDTO = z.infer<typeof MunicaoSchema>;
 
 export const VeiculoSchema = z.object({
-  placa: z.string().min(7, 'Placa deve ter no mínimo 7 caracteres.'),
-  modelo: z.string().min(2, 'Modelo é obrigatório.'),
-  situacao: z.enum(['APREENDIDO', 'RECUPERADO']),
+  marca: z.string().min(2).max(50),
+  tipo: z.string().min(2).max(50),
+  placa: z.string().min(7).max(10),
+  modelo: z.string().min(2).max(50),
+  cor: z.string().min(2).max(30),
+  situacao: z.nativeEnum(SituacaoVeiculo),
 });
 
-export type VeiculoDTO = z.infer<typeof VeiculoSchema>;
+export type VeiculoRequestDTO = z.infer<typeof VeiculoSchema>;
 
 export const OutroObjetoSchema = z.object({
-  descricao: z.string().min(2, 'Descrição é obrigatória.'),
-  quantidade: z.number().positive('Quantidade deve ser positiva.'),
+  descricao: z.string().min(2).max(2000),
 });
 
-export type OutroObjetoDTO = z.infer<typeof OutroObjetoSchema>;
+export type OutroObjetoRequestDTO = z.infer<typeof OutroObjetoSchema>;
 
 export const DinheiroSchema = z.object({
-  valor: z.number().positive('Valor deve ser positivo.'),
-  moeda: z.enum(['BRL', 'USD', 'EUR']),
+  valor: z.string().min(1).max(15),
 });
 
-export type DinheiroDTO = z.infer<typeof DinheiroSchema>;
+export type DinheiroRequestDTO = z.infer<typeof DinheiroSchema>;
 
 export const OcorrenciaSchema = z.object({
-  m: z.string().min(3, 'Campo M é obrigatório.'),
-  data: z.coerce.date({ required_error: 'Data é obrigatória.' }),
-  horario: z.string().min(4, 'Horário é obrigatório.'),
-  tipo: z.string().min(3, 'Tipo de ocorrência é obrigatório.'),
-  resumo: z.string().min(5, 'Resumo é obrigatório.'),
-
+  m: z.string().min(1).max(50),
+  data: z.preprocess((arg) => {
+    if (typeof arg === 'string' || arg instanceof Date) {
+      const d = new Date(arg);
+      if (!isNaN(d.getTime())) return d;
+    }
+    return undefined;
+  }, z.date()),
+  horario: z.string().regex(horaRegex),
+  tipo: z.string().min(3).max(80),
+  resumo: z.string().min(5).max(4000),
   endereco: EnderecoSchema,
-
   vitimas: z.array(VitimaSchema).optional(),
   acusados: z.array(AcusadoSchema).optional(),
   drogas: z.array(DrogaSchema).optional(),
@@ -97,9 +118,3 @@ export const OcorrenciaSchema = z.object({
 });
 
 export type OcorrenciaRequestDTO = z.infer<typeof OcorrenciaSchema>;
-
-export type OcorrenciaResponseDTO = OcorrenciaRequestDTO & {
-  id: string;
-  createdAt: Date;
-  updatedAt: Date;
-};

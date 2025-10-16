@@ -7,6 +7,7 @@ import {
   OneToOne,
   JoinColumn,
   OneToMany,
+  ManyToOne,
 } from 'typeorm';
 import { Endereco } from './Endereco';
 import { Arma } from './arma';
@@ -17,6 +18,7 @@ import { Municao } from './municao';
 import { Veiculo } from './veiculo';
 import { OutroObjeto } from './outroObjeto';
 import { Dinheiro } from './dinheiro';
+import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
 
 @Entity('ocorrencias')
 export class Ocorrencia {
@@ -37,6 +39,13 @@ export class Ocorrencia {
 
   @Column({ name: 'resumo', type: 'text', nullable: false })
   resumo: string;
+
+  @ManyToOne(() => Operacao, (operacao) => operacao.ocorrencias, {
+    onDelete: 'CASCADE',
+    eager: false,
+  })
+  @JoinColumn({ name: 'operacao_id' })
+  operacao: Operacao;
 
   @OneToMany(() => Vitima, (vitima) => vitima.ocorrencia, {
     cascade: true,

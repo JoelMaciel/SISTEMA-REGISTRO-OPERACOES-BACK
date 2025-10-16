@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
+import { OperacaoResponseDTO } from 'src/modules/operacao/application/dto/response/OperacaoResponseDTO';
 import { IOperacaoRepository } from 'src/modules/operacao/infra/repository/interfaces/IOperacaoRepository';
-import { OperacaoResponseDTO } from '../../dto/response/OperacaoResponseDTO';
 import { AppError } from 'src/shared/errors/AppError';
 
 @Injectable()
