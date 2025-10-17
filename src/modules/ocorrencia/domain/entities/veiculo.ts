@@ -28,7 +28,7 @@ export class Veiculo {
   @Column()
   cor: string;
 
-  @Column({ name: 'unidade_medida', type: 'enum', enum: SituacaoVeiculo })
+  @Column({ name: 'situacao', type: 'enum', enum: SituacaoVeiculo })
   situacao: SituacaoVeiculo;
 
   @ManyToOne(() => Ocorrencia, (ocorrencia) => ocorrencia.veiculos)

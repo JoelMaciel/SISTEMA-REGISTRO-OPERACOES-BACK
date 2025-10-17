@@ -1,10 +1,4 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('enderecos')
 export class Endereco {
@@ -17,12 +11,6 @@ export class Endereco {
   @Column({ length: 20 })
   numero: string;
 
-  @Column({
-    type: 'varchar',
-    length: 150,
-    nullable: true,
-  })
-  complemento: string | null;
   @Column({ length: 80 })
   bairro: string;
 
@@ -35,9 +23,10 @@ export class Endereco {
   @Column({ length: 20 })
   cep: string;
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
+  @Column({
+    type: 'varchar',
+    length: 150,
+    nullable: true,
+  })
+  complemento: string | null;
 }

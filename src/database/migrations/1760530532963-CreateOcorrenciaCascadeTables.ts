@@ -22,21 +22,17 @@ export class CreateOcorrenciaCascadeTables1760530532963
             generationStrategy: 'uuid',
             default: 'uuid_generate_v4()',
           },
+          { name: 'rua', type: 'varchar', length: '80', isNullable: true },
           { name: 'numero', type: 'varchar', length: '20', isNullable: true },
           { name: 'bairro', type: 'varchar', length: '80', isNullable: true },
           { name: 'cidade', type: 'varchar', length: '100', isNullable: false },
-          { name: 'estado', type: 'varchar', length: '2', isNullable: false },
+
           { name: 'cep', type: 'varchar', length: '10', isNullable: false },
+          { name: 'uf', type: 'varchar', length: '2', isNullable: false },
           {
             name: 'complemento',
             type: 'varchar',
             length: '120',
-            isNullable: true,
-          },
-          {
-            name: 'referencia',
-            type: 'varchar',
-            length: '150',
             isNullable: true,
           },
         ],
@@ -56,7 +52,7 @@ export class CreateOcorrenciaCascadeTables1760530532963
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'mW',
+            name: 'm',
             type: 'varchar',
             length: '100',
             isNullable: false,

@@ -10,7 +10,9 @@ export const EnderecoSchema = z.object({
   numero: z.string().max(10).optional(),
   bairro: z.string().min(2).max(80),
   cidade: z.string().min(2).max(80),
+  cep: z.string().min(5).max(15),
   uf: z.string().length(2),
+  complemento: z.string().max(200).optional(),
 });
 
 export type EnderecoRequestDTO = z.infer<typeof EnderecoSchema>;

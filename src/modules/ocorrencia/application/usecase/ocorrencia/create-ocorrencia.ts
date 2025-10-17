@@ -56,6 +56,9 @@ export class CreateOcorrenciaUseCase {
     endereco.numero = dto.endereco.numero;
     endereco.bairro = dto.endereco.bairro;
     endereco.cidade = dto.endereco.cidade;
+    endereco.cidade = dto.endereco.cidade;
+    endereco.complemento = dto.endereco.complemento;
+    endereco.cep = dto.endereco.cep;
     endereco.uf = dto.endereco.uf;
     ocorrencia.endereco = endereco;
 
@@ -75,6 +78,8 @@ export class CreateOcorrenciaUseCase {
       enderecoVitima.numero = v.endereco.numero;
       enderecoVitima.bairro = v.endereco.bairro;
       enderecoVitima.cidade = v.endereco.cidade;
+      enderecoVitima.cep = dto.endereco.cep;
+      enderecoVitima.complemento = dto.endereco.complemento;
       enderecoVitima.uf = v.endereco.uf;
       vitima.endereco = enderecoVitima;
 
@@ -97,7 +102,9 @@ export class CreateOcorrenciaUseCase {
       enderecoAcusado.numero = a.endereco.numero;
       enderecoAcusado.bairro = a.endereco.bairro;
       enderecoAcusado.cidade = a.endereco.cidade;
+      enderecoAcusado.cep = a.endereco.cep;
       enderecoAcusado.uf = a.endereco.uf;
+      enderecoAcusado.complemento = a.endereco.complemento;
       acusado.endereco = enderecoAcusado;
 
       return acusado;
