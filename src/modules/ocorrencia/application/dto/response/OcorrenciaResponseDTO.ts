@@ -22,7 +22,7 @@ export class OcorrenciaResponseDTO {
     nome: string;
     cpf: string;
     idade?: number;
-    dataNascimento: string;
+    dataNascimento: Date;
     nomeMae: string;
     nomePai: string;
     naturalidade: string;
@@ -33,7 +33,7 @@ export class OcorrenciaResponseDTO {
     nome: string;
     idade: number;
     cpf: string;
-    dataNascimento: string;
+    dataNascimento: Date;
     nomaMae: string;
     nomePai: string;
     naturalidade: string;
@@ -103,7 +103,7 @@ export class OcorrenciaResponseDTO {
           nome: v.nome,
           idade: v.idade,
           cpf: v.cpf,
-          dataNascimento: v.dataNascimento,
+          dataNascimento: v.dataNascimento ? new Date(v.dataNascimento) : null,
           nomeMae: v.nomeMae,
           nomePai: v.nomePai,
           naturalidade: v.naturalidade,
@@ -117,7 +117,7 @@ export class OcorrenciaResponseDTO {
           nome: a.nome,
           idade: a.idade,
           cpf: a.cpf,
-          dataNascimento: a.dataNascimento,
+          dataNascimento: a.dataNascimento ? new Date(a.dataNascimento) : null,
           nomaMae: a.nomeMae,
           nomePai: a.nomePai,
           naturalidade: a.naturalidade,

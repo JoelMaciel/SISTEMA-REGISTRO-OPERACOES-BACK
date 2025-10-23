@@ -5,6 +5,16 @@ import { cpf } from 'cpf-cnpj-validator';
 
 const horaRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 
+const parseDate = (value: unknown): Date | undefined => {
+  if (typeof value === 'string') {
+    const [day, month, year] = value.split('/');
+    if (day && month && year) {
+      return new Date(`${year}-${month}-${day}T00:00:00`);
+    }
+  }
+  return undefined;
+};
+
 export const EnderecoSchema = z.object({
   rua: z.string().min(3).max(150),
   numero: z.string().max(10).optional(),
@@ -23,7 +33,10 @@ export const VitimaSchema = z.object({
     .string()
     .refine((value) => cpf.isValid(value), { message: 'CPF inválido' }),
   idade: z.number().int().min(0).max(120),
-  dataNascimento: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/),
+  dataNascimento: z.preprocess(
+    parseDate,
+    z.date({ required_error: 'Data de nascimento é obrigatória.' }),
+  ),
   nomeMae: z.string().min(3).max(100).optional(),
   nomePai: z.string().min(3).max(100).optional(),
   naturalidade: z.string().min(2).max(40),
@@ -39,7 +52,10 @@ export const AcusadoSchema = z.object({
     .string()
     .refine((value) => cpf.isValid(value), { message: 'CPF inválido' }),
   idade: z.number().int().min(0).max(120),
-  dataNascimento: z.string().regex(/^\d{2}\/\d{2}\/\d{4}$/),
+  dataNascimento: z.preprocess(
+    parseDate,
+    z.date({ required_error: 'Data de nascimento é obrigatória.' }),
+  ),
   nomeMae: z.string().min(3).max(100).optional(),
   nomePai: z.string().min(3).max(100).optional(),
   naturalidade: z.string().min(2).max(50),
