@@ -23,8 +23,8 @@ export class Acusado {
   @Column({ length: 14 })
   cpf: string;
 
-  @Column({ name: 'data_nascimento', length: 10 })
-  dataNascimento: string;
+  @Column({ name: 'data_nascimento', type: 'date' })
+  dataNascimento: Date;
 
   @Column({ name: 'nome_mae', length: 100 })
   nomeMae: string;

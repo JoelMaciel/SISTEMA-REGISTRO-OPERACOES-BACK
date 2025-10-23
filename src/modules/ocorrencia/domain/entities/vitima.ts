@@ -23,8 +23,8 @@ export class Vitima {
   @Column({ type: 'int' })
   idade: number;
 
-  @Column({ name: 'data_nascimento', length: 20 })
-  dataNascimento: string;
+  @Column({ name: 'data_nascimento', type: 'date' })
+  dataNascimento: Date;
 
   @Column({ name: 'nome_mae', length: 100 })
   nomeMae: string;
