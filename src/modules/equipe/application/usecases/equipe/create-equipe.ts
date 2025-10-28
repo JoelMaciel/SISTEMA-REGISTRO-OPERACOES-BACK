@@ -29,11 +29,14 @@ export class CriarEquipeUseCase {
 
     if (!vinculo) {
       throw new AppError(
-        'Posto ou  Área não estś vinculado a operação especificada',
+        'Posto ou Área não está vinculado à operação especificada.',
         400,
       );
     }
-    const logradouro = this.montarLogradouro(dto);
+
+    const { postoArea } = vinculo;
+
+    const logradouro = this.obterLogradouro(postoArea);
 
     const data: Partial<Equipe> = {
       ...dto,
@@ -46,19 +49,10 @@ export class CriarEquipeUseCase {
     return new EquipeResponseDTO(novaEquipe);
   }
 
-  private montarLogradouro(dto: CreateEquipeRequestDTO): string {
-    const partes: string[] = [];
-
-    if (dto.nomePosto) partes.push(dto.nomePosto);
-    if (dto.local) partes.push(dto.local);
-
-    let endereco = '';
-    if (dto.numero) endereco += `${dto.numero}, `;
-    if (dto.bairro) endereco += `${dto.bairro} - `;
-    endereco += dto.cidade;
-
-    partes.push(endereco);
-
-    return partes.join(' - ');
+  private obterLogradouro(postoArea: any): string {
+    const partes = [postoArea.nome, postoArea.local, postoArea.cidade].filter(
+      Boolean,
+    );
+    return partes.length ? partes.join(' - ') : 'Endereço não disponível';
   }
 }

@@ -16,12 +16,11 @@ export class UpdateEquipeUseCase {
     id: string,
     dto: CreateEquipeRequestDTO,
   ): Promise<EquipeResponseDTO> {
+    // 1️⃣ Verifica se a equipe existe
     const existingEquipe = await this.equipeRepository.findById(id);
     if (!existingEquipe) {
       throw new AppError('Equipe não encontrada na base de dados', 404);
     }
-
-    const logradouro = this.montarLogradouro(dto);
 
     const updatedData: Partial<Equipe> = {
       email: dto.email,
@@ -36,28 +35,11 @@ export class UpdateEquipeUseCase {
       opmGuarnicao: dto.opmGuarnicao,
       prefixoVtr: dto.prefixoVtr,
       efetivoPolicial: dto.efetivoPolicial,
-      logradouro,
       tipoServico: dto.tipoServico,
       numeroHt: dto.numeroHt,
     };
 
     const updatedEquipe = await this.equipeRepository.update(id, updatedData);
     return new EquipeResponseDTO(updatedEquipe);
-  }
-
-  private montarLogradouro(dto: CreateEquipeRequestDTO): string {
-    const partes: string[] = [];
-
-    if (dto.nomePosto) partes.push(dto.nomePosto);
-    if (dto.local) partes.push(dto.local);
-
-    let endereco = '';
-    if (dto.numero) endereco += `${dto.numero}, `;
-    if (dto.bairro) endereco += `${dto.bairro} - `;
-    endereco += dto.cidade;
-
-    partes.push(endereco);
-
-    return partes.join(' - ');
   }
 }

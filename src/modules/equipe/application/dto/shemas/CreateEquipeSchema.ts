@@ -1,7 +1,7 @@
 import { z } from 'zod';
+import { TipoServico } from '../../../domain/enums/tipo-servico.enum';
 import { PostoComandante } from '../../../domain/enums/posto-comandante.enum';
 import { AtividadeRealizada } from '../../../domain/enums/atividade-realizada.enum';
-import { TipoServico } from '../../../domain/enums/tipo-servico.enum';
 
 const horaRegex = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
 
@@ -9,117 +9,53 @@ export const CreateEquipeSchema = z.object({
   email: z
     .string({ required_error: "O campo 'email' é obrigatório." })
     .email({ message: "O campo 'email' deve ser um endereço de email válido." })
-    .max(50, { message: "O campo 'email' deve ter no máximo 50 caracteres." }),
+    .max(50),
 
   contatoEquipe: z
-    .string({ required_error: "O campo 'contato' é obrigatório." })
-    .min(8, { message: "O campo 'contato' deve ter no mínimo 8 caracteres." })
-    .max(15, {
-      message: "O campo 'contato' deve ter no máximo 15 caracteres.",
-    }),
+    .string({ required_error: "O campo 'contatoEquipe' é obrigatório." })
+    .min(8)
+    .max(15),
 
-  dataOperacao: z.preprocess(
-    (arg) => {
-      if (typeof arg === 'string' || arg instanceof Date) {
-        const date = new Date(arg);
-        if (!isNaN(date.getTime())) {
-          return date;
-        }
-      }
-      return undefined;
-    },
-    z.date({
-      required_error: 'O campo "dataOperacao" é obrigatório.',
-      invalid_type_error: 'O campo "dataOperacao" deve ser uma data válida.',
-    }),
-  ),
+  dataOperacao: z.coerce.date({
+    required_error: 'O campo "dataOperacao" é obrigatório.',
+    invalid_type_error: 'O campo "dataOperacao" deve ser uma data válida.',
+  }),
 
   horarioInicial: z
     .string({ required_error: 'O campo "horarioInicial" é obrigatório.' })
     .regex(horaRegex, {
-      message:
-        'O campo "horarioInicial" deve estar no formato HH:mm (ex: 14:30).',
+      message: 'Deve estar no formato HH:mm (ex: 14:30).',
     }),
 
   horarioFinal: z
     .string({ required_error: 'O campo "horarioFinal" é obrigatório.' })
     .regex(horaRegex, {
-      message:
-        'O campo "horarioFinal" deve estar no formato HH:mm (ex: 18:45).',
+      message: 'Deve estar no formato HH:mm (ex: 18:45).',
     }),
+
   nomeOperacao: z.string().min(2),
+
   postoComandante: z.nativeEnum(PostoComandante),
+
   postoAreaId: z
-    .string({
-      required_error: "O campo 'postoAreaId' é obrigatório.",
-    })
-    .uuid({
-      message: "O campo 'postoAreaId' deve ser um UUID válido.",
-    }),
-  nomeGuerraComandante: z
-    .string()
-    .min(3, {
-      message:
-        "O campo 'nomeGuerraComandante' deve ter no mínimo 3 caracteres.",
-    })
-    .max(60, {
-      message:
-        "O campo 'nomeGuerraComandante' deve ter no máximo 60 caracteres.",
-    }),
+    .string({ required_error: "O campo 'postoAreaId' é obrigatório." })
+    .uuid(),
+
+  nomeGuerraComandante: z.string().min(3).max(60),
 
   matriculaComandante: z.string().min(6).max(12),
-  opmGuarnicao: z
-    .string()
-    .min(2, {
-      message: "O campo 'opmGuarnicao' deve ter no mínimo 2 caracteres.",
-    })
-    .max(30, {
-      message: "O campo 'opmGuarnicao' deve ter no máximo 30 caracteres.",
-    }),
 
-  prefixoVtr: z
-    .string()
-    .min(2, {
-      message: "O campo 'prefixoVtr' deve ter no mínimo 4 caracteres.",
-    })
-    .max(30, {
-      message: "O campo 'numeroHt' deve ter no máximo 20 caracteres.",
-    }),
-  efetivoPolicial: z
-    .number({
-      required_error: "O campo 'efetivoPolicial' é obrigatório.",
-      invalid_type_error:
-        "O campo 'efetivoPolicial' deve ser um número inteiro.",
-    })
-    .int({ message: "O campo 'efetivoPolicial' deve ser um número inteiro." })
-    .min(2, { message: 'O efetivo policial deve ter no mínimo 2 pessoas.' })
-    .max(10, { message: 'O efetivo policial deve ter no máximo 10 pessoas.' }),
+  opmGuarnicao: z.string().min(2).max(30),
 
-  atividadeRealizada: z.nativeEnum(AtividadeRealizada, {
-    required_error: "O campo 'atividadeRealizada' é obrigatório.",
-    invalid_type_error:
-      "O campo 'atividadeRealizada' deve conter um valor válido.",
-  }),
+  prefixoVtr: z.string().min(2).max(30),
 
-  tipoServico: z.nativeEnum(TipoServico, {
-    required_error: "O campo 'tipoServico' é obrigatório.",
-    invalid_type_error: "O campo 'tipoServico' deve conter um valor válido.",
-  }),
+  efetivoPolicial: z.number().int().min(2).max(10),
 
-  numeroHt: z
-    .string()
-    .min(2, { message: "O campo 'numeroHt' deve ter no mínimo 2 caracteres." })
-    .max(30, {
-      message: "O campo 'numeroHt' deve ter no máximo 30 caracteres.",
-    }),
+  atividadeRealizada: z.nativeEnum(AtividadeRealizada),
 
-  nomePosto: z
-    .string()
-    .min(2, { message: "O campo 'nomePosto' é obrigatório." }),
-  local: z.string().min(2, { message: "O campo 'local' é obrigatório." }),
-  numero: z.string().optional(),
-  bairro: z.string().optional(),
-  cidade: z.string().min(2, { message: "O campo 'cidade' é obrigatório." }),
+  tipoServico: z.nativeEnum(TipoServico),
+
+  numeroHt: z.string().min(2).max(30),
 });
 
 export type CreateEquipeRequestDTO = z.infer<typeof CreateEquipeSchema>;
