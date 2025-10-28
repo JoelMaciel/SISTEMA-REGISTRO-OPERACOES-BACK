@@ -7,6 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { PostoArea } from './posto-area';
+import { Ocorrencia } from 'src/modules/ocorrencia/domain/entities/ocorrencia';
 
 @Entity('operacoes')
 export class Operacao {
@@ -39,6 +40,11 @@ export class Operacao {
     eager: false,
   })
   postoAreas: PostoArea[];
+
+  @OneToMany(() => Ocorrencia, (ocorrencia) => ocorrencia.operacao, {
+    cascade: true,
+  })
+  ocorrencias: Ocorrencia[];
 
   @CreateDateColumn({ name: 'criado_em', type: 'timestamp' })
   createdAt: Date;
