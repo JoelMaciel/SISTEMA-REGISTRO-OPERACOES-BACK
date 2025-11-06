@@ -16,15 +16,12 @@ export class UpdatePostoAreaOperacaoUseCase {
     postoAreaId: string,
     dto: PostoAreaRequestDTO,
   ): Promise<PostoAreaResponseDTO> {
-    const operacao = await this.operacaoRepository.findOperacaoWithPostoArea(
+    const operacao = await this.operacaoRepository.findOperacaoComPostoAreas(
       operacaoId,
-      postoAreaId,
     );
 
     if (!operacao) {
-      throw new AppError(
-        `Posto de área ${postoAreaId} não encontrado na operação ${operacaoId}`,
-      );
+      throw new AppError(`Operação ${operacaoId} não encontrada`);
     }
 
     const posto = operacao.postoAreas.find((p) => p.id === postoAreaId);
@@ -32,12 +29,9 @@ export class UpdatePostoAreaOperacaoUseCase {
       throw new AppError(`Posto de área ${postoAreaId} não encontrado`);
     }
 
-    posto.operacao = operacao;
-
     Object.assign(posto, dto);
 
     const operacaoAtualizada = await this.operacaoRepository.save(operacao);
-
     const postoAtualizado = operacaoAtualizada.postoAreas.find(
       (p) => p.id === postoAreaId,
     )!;
