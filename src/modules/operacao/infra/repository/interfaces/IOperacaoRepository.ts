@@ -1,4 +1,5 @@
 import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
+import { PostoArea } from 'src/modules/operacao/domain/entities/posto-area';
 
 export interface IPaginatedResult<T> {
   items: T[];
@@ -11,6 +12,7 @@ export interface IOperacaoRepository {
   create(data: Partial<Operacao>): Promise<Operacao>;
   findById(id: string, relations?: string[]): Promise<Operacao | null>;
   save(operacao: Operacao): Promise<Operacao>;
+
   findByIdWithRelations(
     id: string,
     relations?: string[],
@@ -33,7 +35,9 @@ export interface IOperacaoRepository {
   findOperacaoWithPostoArea(
     operacaoId: string,
     postoAreaId: string,
-  ): Promise<Operacao | null>;
+  ): Promise<{ operacao: Operacao; postoArea: PostoArea } | null>;
+
+  findOperacaoComPostoAreas(operacaoId: string): Promise<Operacao | null>;
 
   delete(id: string): Promise<void>;
 }

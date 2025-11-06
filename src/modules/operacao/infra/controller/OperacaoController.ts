@@ -29,11 +29,11 @@ import {
   PostoAreaRequestDTO,
   PostoAreaSchema,
 } from '../../application/dto/schema/PostoAreaSchema';
-import { UpdatePostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/update-posto-area';
 import { PostoAreaResponseDTO } from '../../application/dto/response/PostoAreaResponseDTO';
 import { DeleteOperacaoUseCase } from '../../application/usecase/operacao/delete-operacao';
 import { AddPostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/adicionar-posto-area';
 import { RemovePostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/delete-posto-area';
+import { UpdatePostoAreaOperacaoUseCase } from '../../application/usecase/posto-servico/update-posto-area';
 
 @Controller('api/operacoes')
 export class OperacaoController {

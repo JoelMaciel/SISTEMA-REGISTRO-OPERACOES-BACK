@@ -131,7 +131,7 @@ export class OperacaoRepository implements IOperacaoRepository {
   async findOperacaoWithPostoArea(
     operacaoId: string,
     postoAreaId: string,
-  ): Promise<Operacao | null> {
+  ): Promise<{ operacao: Operacao; postoArea: PostoArea } | null> {
     const operacao = await this.operacaoRepository.findOne({
       where: { id: operacaoId },
       relations: ['postoAreas'],
@@ -139,10 +139,20 @@ export class OperacaoRepository implements IOperacaoRepository {
 
     if (!operacao) return null;
 
-    const posto = operacao.postoAreas.find((p) => p.id === postoAreaId);
-    if (!posto) return null;
+    const postoArea = operacao.postoAreas.find((p) => p.id === postoAreaId);
 
-    return operacao;
+    if (!postoArea) return null;
+
+    return { operacao, postoArea };
+  }
+
+  async findOperacaoComPostoAreas(
+    operacaoId: string,
+  ): Promise<Operacao | null> {
+    return this.operacaoRepository.findOne({
+      where: { id: operacaoId },
+      relations: ['postoAreas'],
+    });
   }
 
   async delete(id: string): Promise<void> {
