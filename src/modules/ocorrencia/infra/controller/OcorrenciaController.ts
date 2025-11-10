@@ -20,6 +20,7 @@ import {
   UpdateOcorrenciaRequestDTO,
 } from '../../application/dto/schema/UpdateOcorrenciaSchema';
 import { ListOcorrenciasUseCase } from '../../application/usecase/ocorrencia/list-ocorrencia';
+import { ShowOcorrenciaUseCase } from '../../application/usecase/ocorrencia/show-ocorrencia';
 
 @Controller('api/ocorrencias')
 export class OcorrenciaController {
@@ -27,6 +28,7 @@ export class OcorrenciaController {
     private readonly createOcorrenciaUseCase: CreateOcorrenciaUseCase,
     private readonly updateOcorreciaUseCase: UpdateOcorrenciaUseCase,
     private readonly listarOcorrenciasUseCase: ListOcorrenciasUseCase,
+    private readonly showOcorrenciaUseCase: ShowOcorrenciaUseCase,
   ) {}
 
   @Get()
@@ -64,6 +66,11 @@ export class OcorrenciaController {
     };
 
     return this.listarOcorrenciasUseCase.execute(filtros);
+  }
+
+  @Get(':id')
+  async findById(@Param('id') id: string) {
+    return await this.showOcorrenciaUseCase.execute(id);
   }
 
   @Post(':operacaoId')

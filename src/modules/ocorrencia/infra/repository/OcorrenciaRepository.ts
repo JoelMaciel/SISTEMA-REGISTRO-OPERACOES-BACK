@@ -24,13 +24,20 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     return this.ocorrenciaRepository.save(ocorrencia);
   }
 
-  async findById(
-    id: string,
-    relations: string[] = [],
-  ): Promise<Ocorrencia | null> {
-    return this.ocorrenciaRepository.findOne({
+  async findById(id: string): Promise<Ocorrencia | null> {
+    return await this.ocorrenciaRepository.findOne({
       where: { id },
-      relations,
+      relations: [
+        'endereco',
+        'vitimas',
+        'acusados',
+        'armas',
+        'municoes',
+        'drogas',
+        'veiculos',
+        'outrosObjetos',
+        'valoresApreendidos',
+      ],
     });
   }
 
