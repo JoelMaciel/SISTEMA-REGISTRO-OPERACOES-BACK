@@ -1,5 +1,4 @@
 import { Ocorrencia } from 'src/modules/ocorrencia/domain/entities/ocorrencia';
-import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
 
 export interface IPaginatedResult<T> {
   items: T[];
@@ -13,24 +12,26 @@ export interface IOcorrenciaRepository {
   save(ocorrencia: Ocorrencia): Promise<Ocorrencia>;
   findById(id: string, relations?: string[]): Promise<Ocorrencia | null>;
 
+  findAll(
+    page: number,
+    limit: number,
+    m?: string,
+    tipo?: string,
+    dataInicio?: Date,
+    dataFim?: Date,
+    nomeVitima?: string,
+    nomeAcusado?: string,
+    tipoArma?: string,
+    calibreArma?: string,
+    numeracaoArma?: string,
+  ): Promise<IPaginatedResult<Ocorrencia>>;
+
   // findByIdWithRelations(
   //   id: string,
   //   relations?: string[],
   // ): Promise<Operacao | null>;
 
-  // findAll(
-  //   page: number,
-  //   limit: number,
-  //   nome?: string,
-  //   opmDemandante?: string,
-  //   dataInicialStart?: Date,
-  //   dataInicialEnd?: Date,
-  //   dataFinalStart?: Date,
-  //   dataFinalEnd?: Date,
-  //   postoArea?: string,
-  // ): Promise<IPaginatedResult<Operacao>>;
-
-  // update(id: string, data: Partial<Operacao>): Promise<Operacao>;
+  update(id: string, data: Partial<Ocorrencia>): Promise<Ocorrencia>;
 
   // findOperacaoWithPostoArea(
   //   operacaoId: string,

@@ -34,120 +34,113 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     });
   }
 
-  // async save(operacao: Operacao): Promise<Operacao> {
-  //   return this.operacaoRepository.save(operacao);
-  // }
+  async update(id: string, data: Partial<Ocorrencia>): Promise<Ocorrencia> {
+    const ocorrencia = await this.ocorrenciaRepository.findOneOrFail({
+      where: { id },
+      relations: [
+        'endereco',
+        'vitimas',
+        'acusados',
+        'armas',
+        'municoes',
+        'drogas',
+        'veiculos',
+        'outrosObjetos',
+        'valoresApreendidos',
+      ],
+    });
 
-  // public async findAll(
-  //   page = 1,
-  //   limit = 10,
-  //   nome?: string,
-  //   opmDemandante?: string,
-  //   dataInicialStart?: Date,
-  //   dataInicialEnd?: Date,
-  //   dataFinalStart?: Date,
-  //   dataFinalEnd?: Date,
-  //   postoArea?: string,
-  // ): Promise<IPaginatedResult<Operacao>> {
-  //   const skip = (page - 1) * limit;
+    const ocorrenciaAtualizada = this.ocorrenciaRepository.merge(
+      ocorrencia,
+      data,
+    );
 
-  //   const query = this.operacaoRepository
-  //     .createQueryBuilder('operacao')
-  //     .leftJoinAndSelect('operacao.postoAreas', 'postoAreas')
+    return this.ocorrenciaRepository.save(ocorrenciaAtualizada);
+  }
 
-  //     .skip(skip)
-  //     .take(limit)
-  //     .orderBy('operacao.dataInicial', 'DESC');
+  async findAll(
+    page = 1,
+    limit = 10,
+    m?: string,
+    tipo?: string,
+    dataInicio?: Date,
+    dataFim?: Date,
+    nomeVitima?: string,
+    nomeAcusado?: string,
+    tipoArma?: string,
+    calibreArma?: string,
+    numeracaoArma?: string,
+  ): Promise<IPaginatedResult<Ocorrencia>> {
+    const skip = (page - 1) * limit;
 
-  //   if (nome) {
-  //     query.andWhere('operacao.nome ILIKE :nome', { nome: `%${nome}%` });
-  //   }
+    const query = this.ocorrenciaRepository
+      .createQueryBuilder('ocorrencia')
+      .leftJoinAndSelect('ocorrencia.endereco', 'endereco')
+      .leftJoinAndSelect('ocorrencia.vitimas', 'vitima')
+      .leftJoinAndSelect('ocorrencia.acusados', 'acusado')
+      .leftJoinAndSelect('ocorrencia.armas', 'arma')
+      .skip(skip)
+      .take(limit)
+      .orderBy('ocorrencia.data', 'DESC');
 
-  //   if (opmDemandante) {
-  //     query.andWhere('operacao.opmDemandante ILIKE :opmDemandante', {
-  //       opmDemandante: `%${opmDemandante}%`,
-  //     });
-  //   }
+    if (m) {
+      query.andWhere('ocorrencia.m ILIKE :m', { m: `%${m}%` });
+    }
 
-  //   if (dataInicialStart && dataInicialEnd) {
-  //     query.andWhere(
-  //       'operacao.dataInicial BETWEEN :dataInicialStart AND :dataInicialEnd',
-  //       {
-  //         dataInicialStart,
-  //         dataInicialEnd,
-  //       },
-  //     );
-  //   } else if (dataInicialStart) {
-  //     query.andWhere('operacao.dataInicial >= :dataInicialStart', {
-  //       dataInicialStart,
-  //     });
-  //   } else if (dataInicialEnd) {
-  //     query.andWhere('operacao.dataInicial <= :dataInicialEnd', {
-  //       dataInicialEnd,
-  //     });
-  //   }
+    if (tipo) {
+      query.andWhere('ocorrencia.tipo ILIKE :tipo', { tipo: `%${tipo}%` });
+    }
 
-  //   if (dataFinalStart && dataFinalEnd) {
-  //     query.andWhere(
-  //       'operacao.dataFinal BETWEEN :dataFinalStart AND :dataFinalEnd',
-  //       {
-  //         dataFinalStart,
-  //         dataFinalEnd,
-  //       },
-  //     );
-  //   } else if (dataFinalStart) {
-  //     query.andWhere('operacao.dataFinal >= :dataFinalStart', {
-  //       dataFinalStart,
-  //     });
-  //   } else if (dataFinalEnd) {
-  //     query.andWhere('operacao.dataFinal <= :dataFinalEnd', {
-  //       dataFinalEnd,
-  //     });
-  //   }
+    if (dataInicio && dataFim) {
+      query.andWhere('ocorrencia.data BETWEEN :dataInicio AND :dataFim', {
+        dataInicio,
+        dataFim,
+      });
+    } else if (dataInicio) {
+      query.andWhere('ocorrencia.data >= :dataInicio', { dataInicio });
+    } else if (dataFim) {
+      query.andWhere('ocorrencia.data <= :dataFim', { dataFim });
+    }
 
-  //   if (postoArea) {
-  //     query.andWhere('postoServico.nome ILIKE :postoServico', {
-  //       postoServico: `%${postoArea}%`,
-  //     });
-  //   }
+    if (nomeVitima) {
+      query.andWhere('vitima.nome ILIKE :nomeVitima', {
+        nomeVitima: `%${nomeVitima}%`,
+      });
+    }
 
-  //   const [items, total] = await query.getManyAndCount();
+    if (nomeAcusado) {
+      query.andWhere('acusado.nome ILIKE :nomeAcusado', {
+        nomeAcusado: `%${nomeAcusado}%`,
+      });
+    }
 
-  //   return {
-  //     items,
-  //     total,
-  //     pageIndex: page,
-  //     pageSize: limit,
-  //   };
-  // }
+    if (tipoArma) {
+      query.andWhere('arma.tipo ILIKE :tipoArma', {
+        tipoArma: `%${tipoArma}%`,
+      });
+    }
 
-  // async update(id: string, data: Partial<Operacao>): Promise<Operacao> {
-  //   const operacao = await this.operacaoRepository.findOneOrFail({
-  //     where: { id },
-  //     relations: ['postoAreas'],
-  //   });
+    if (calibreArma) {
+      query.andWhere('arma.calibre ILIKE :calibreArma', {
+        calibreArma: `%${calibreArma}%`,
+      });
+    }
 
-  //   const operacaoAtualizada = this.operacaoRepository.merge(operacao, data);
+    if (numeracaoArma) {
+      query.andWhere('arma.numeracao ILIKE :numeracaoArma', {
+        numeracaoArma: `%${numeracaoArma}%`,
+      });
+    }
 
-  //   return this.operacaoRepository.save(operacaoAtualizada);
-  // }
+    const [items, total] = await query.getManyAndCount();
 
-  // async findOperacaoWithPostoArea(
-  //   operacaoId: string,
-  //   postoAreaId: string,
-  // ): Promise<Operacao | null> {
-  //   const operacao = await this.operacaoRepository.findOne({
-  //     where: { id: operacaoId },
-  //     relations: ['postoAreas'],
-  //   });
-
-  //   if (!operacao) return null;
-
-  //   const posto = operacao.postoAreas.find((p) => p.id === postoAreaId);
-  //   if (!posto) return null;
-
-  //   return operacao;
-  // }
+    return {
+      items,
+      total,
+      pageIndex: page,
+      pageSize: limit,
+    };
+  }
 
   // async delete(id: string): Promise<void> {
   //   await this.operacaoRepository.delete(id);

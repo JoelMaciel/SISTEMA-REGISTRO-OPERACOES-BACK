@@ -5,13 +5,16 @@ import { OcorrenciaController } from './modules/ocorrencia/infra/controller/Ocor
 import { CreateOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/create-ocorrencia';
 import { OcorrenciaRepository } from './modules/ocorrencia/infra/repository/OcorrenciaRepository';
 import { Ocorrencia } from './modules/ocorrencia/domain/entities/ocorrencia';
+import { UpdateOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/update-ocorrencia';
+import { ListOcorrenciasUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/list-ocorrencia';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Ocorrencia]), OperacaoModule],
   controllers: [OcorrenciaController],
   providers: [
     CreateOcorrenciaUseCase,
-
+    UpdateOcorrenciaUseCase,
+    ListOcorrenciasUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,
