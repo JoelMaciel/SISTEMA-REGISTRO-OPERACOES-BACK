@@ -26,17 +26,16 @@ export interface IOcorrenciaRepository {
     numeracaoArma?: string,
   ): Promise<IPaginatedResult<Ocorrencia>>;
 
+  update(id: string, data: Partial<Ocorrencia>): Promise<Ocorrencia>;
+  delete(id: string): Promise<void>;
+
   // findByIdWithRelations(
   //   id: string,
   //   relations?: string[],
   // ): Promise<Operacao | null>;
 
-  update(id: string, data: Partial<Ocorrencia>): Promise<Ocorrencia>;
-
   // findOperacaoWithPostoArea(
   //   operacaoId: string,
   //   postoAreaId: string,
   // ): Promise<Operacao | null>;
-
-  // delete(id: string): Promise<void>;
 }

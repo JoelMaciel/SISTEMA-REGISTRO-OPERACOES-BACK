@@ -8,6 +8,7 @@ import { Ocorrencia } from './modules/ocorrencia/domain/entities/ocorrencia';
 import { UpdateOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/update-ocorrencia';
 import { ListOcorrenciasUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/list-ocorrencia';
 import { ShowOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/show-ocorrencia';
+import { DeleteOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/delete-ocorrencia';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Ocorrencia]), OperacaoModule],
@@ -17,6 +18,7 @@ import { ShowOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/
     UpdateOcorrenciaUseCase,
     ListOcorrenciasUseCase,
     ShowOcorrenciaUseCase,
+    DeleteOcorrenciaUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,

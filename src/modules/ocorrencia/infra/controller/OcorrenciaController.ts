@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -21,6 +22,7 @@ import {
 } from '../../application/dto/schema/UpdateOcorrenciaSchema';
 import { ListOcorrenciasUseCase } from '../../application/usecase/ocorrencia/list-ocorrencia';
 import { ShowOcorrenciaUseCase } from '../../application/usecase/ocorrencia/show-ocorrencia';
+import { DeleteOcorrenciaUseCase } from '../../application/usecase/ocorrencia/delete-ocorrencia';
 
 @Controller('api/ocorrencias')
 export class OcorrenciaController {
@@ -29,6 +31,7 @@ export class OcorrenciaController {
     private readonly updateOcorreciaUseCase: UpdateOcorrenciaUseCase,
     private readonly listarOcorrenciasUseCase: ListOcorrenciasUseCase,
     private readonly showOcorrenciaUseCase: ShowOcorrenciaUseCase,
+    private readonly deleteOcorrenciaUseCase: DeleteOcorrenciaUseCase,
   ) {}
 
   @Get()
@@ -91,5 +94,11 @@ export class OcorrenciaController {
   ): Promise<OcorrenciaResponseDTO> {
     const dto = await ValidateSchema.validate(OcorrenciaUpdateSchema, body);
     return this.updateOcorreciaUseCase.execute(id, dto);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@Param('id') id: string) {
+    return await this.deleteOcorrenciaUseCase.execute(id);
   }
 }

@@ -149,46 +149,7 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     };
   }
 
-  // async delete(id: string): Promise<void> {
-  //   await this.operacaoRepository.delete(id);
-  // }
-
-  // async removePostoAreaFromOperacao(
-  //   operacaoId: string,
-  //   postoAreaId: string,
-  // ): Promise<void> {
-  //   const operacao = await this.operacaoRepository.findOne({
-  //     where: { id: operacaoId },
-  //     relations: ['postoAreas'],
-  //   });
-
-  //   if (!operacao) {
-  //     throw new Error('Operação não encontrada');
-  //   }
-
-  //   const postoIndex = operacao.postoAreas.findIndex(
-  //     (p) => p.id === postoAreaId,
-  //   );
-  //   if (postoIndex === -1) {
-  //     throw new Error('Posto/Área não encontrado na operação');
-  //   }
-
-  //   operacao.postoAreas.splice(postoIndex, 1);
-
-  //   await this.operacaoRepository.save(operacao);
-  // }
-
-  // async findByIdWithRelations(
-  //   id: string,
-  //   relations: string[] = ['postoAreas'],
-  // ): Promise<Operacao | null> {
-  //   return this.operacaoRepository.findOne({
-  //     where: { id },
-  //     relations,
-  //   });
-  // }
-
-  // async removePostoArea(postoArea: PostoArea): Promise<void> {
-  //   await this.operacaoRepository.manager.remove(postoArea);
-  // }
+  async delete(id: string): Promise<void> {
+    await this.ocorrenciaRepository.delete(id);
+  }
 }
