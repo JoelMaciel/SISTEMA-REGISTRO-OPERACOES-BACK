@@ -28,14 +28,4 @@ export interface IOcorrenciaRepository {
 
   update(id: string, data: Partial<Ocorrencia>): Promise<Ocorrencia>;
   delete(id: string): Promise<void>;
-
-  // findByIdWithRelations(
-  //   id: string,
-  //   relations?: string[],
-  // ): Promise<Operacao | null>;
-
-  // findOperacaoWithPostoArea(
-  //   operacaoId: string,
-  //   postoAreaId: string,
-  // ): Promise<Operacao | null>;
 }

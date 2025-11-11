@@ -5,7 +5,6 @@ import {
   IOcorrenciaRepository,
   IPaginatedResult,
 } from './interfaces/IOcorrenciaRepository';
-import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
 import { Ocorrencia } from '../../domain/entities/ocorrencia';
 
 @Injectable()
@@ -83,9 +82,18 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     const query = this.ocorrenciaRepository
       .createQueryBuilder('ocorrencia')
       .leftJoinAndSelect('ocorrencia.endereco', 'endereco')
-      .leftJoinAndSelect('ocorrencia.vitimas', 'vitima')
-      .leftJoinAndSelect('ocorrencia.acusados', 'acusado')
-      .leftJoinAndSelect('ocorrencia.armas', 'arma')
+      .select([
+        'ocorrencia.id',
+        'ocorrencia.m',
+        'ocorrencia.data',
+        'ocorrencia.tipo',
+        'ocorrencia.horario',
+        'ocorrencia.resumo',
+        'endereco.rua',
+        'endereco.bairro',
+        'endereco.cidade',
+        'endereco.uf',
+      ])
       .skip(skip)
       .take(limit)
       .orderBy('ocorrencia.data', 'DESC');
@@ -110,32 +118,59 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     }
 
     if (nomeVitima) {
-      query.andWhere('vitima.nome ILIKE :nomeVitima', {
-        nomeVitima: `%${nomeVitima}%`,
-      });
+      query.andWhere(
+        (qb) => {
+          const subQuery = qb
+            .subQuery()
+            .select('1')
+            .from('vitimas', 'v')
+            .where('v.ocorrencia_id = ocorrencia.id')
+            .andWhere('v.nome ILIKE :nomeVitima')
+            .getQuery();
+          return 'EXISTS ' + subQuery;
+        },
+        { nomeVitima: `%${nomeVitima}%` },
+      );
     }
 
     if (nomeAcusado) {
-      query.andWhere('acusado.nome ILIKE :nomeAcusado', {
-        nomeAcusado: `%${nomeAcusado}%`,
-      });
+      query.andWhere(
+        (qb) => {
+          const subQuery = qb
+            .subQuery()
+            .select('1')
+            .from('acusados', 'a')
+            .where('a.ocorrencia_id = ocorrencia.id')
+            .andWhere('a.nome ILIKE :nomeAcusado')
+            .getQuery();
+          return 'EXISTS ' + subQuery;
+        },
+        { nomeAcusado: `%${nomeAcusado}%` },
+      );
     }
 
-    if (tipoArma) {
-      query.andWhere('arma.tipo ILIKE :tipoArma', {
-        tipoArma: `%${tipoArma}%`,
-      });
-    }
+    if (tipoArma || calibreArma || numeracaoArma) {
+      query.andWhere((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('1')
+          .from('armas', 'ar')
+          .where('ar.ocorrencia_id = ocorrencia.id');
 
-    if (calibreArma) {
-      query.andWhere('arma.calibre ILIKE :calibreArma', {
-        calibreArma: `%${calibreArma}%`,
-      });
-    }
+        if (tipoArma)
+          subQuery.andWhere('ar.tipo ILIKE :tipoArma', {
+            tipoArma: `%${tipoArma}%`,
+          });
+        if (calibreArma)
+          subQuery.andWhere('ar.calibre ILIKE :calibreArma', {
+            calibreArma: `%${calibreArma}%`,
+          });
+        if (numeracaoArma)
+          subQuery.andWhere('ar.numeracao ILIKE :numeracaoArma', {
+            numeracaoArma: `%${numeracaoArma}%`,
+          });
 
-    if (numeracaoArma) {
-      query.andWhere('arma.numeracao ILIKE :numeracaoArma', {
-        numeracaoArma: `%${numeracaoArma}%`,
+        return 'EXISTS ' + subQuery.getQuery();
       });
     }
 
