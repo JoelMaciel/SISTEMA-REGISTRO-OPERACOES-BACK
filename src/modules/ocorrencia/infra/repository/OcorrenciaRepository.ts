@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IOcorrenciaRepository,
@@ -182,6 +182,30 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
       pageIndex: page,
       pageSize: limit,
     };
+  }
+
+  async findByMOcorrencia(m: string): Promise<Ocorrencia | null> {
+    if (!m) return null;
+
+    const mNormalized = m.trim();
+
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { m: ILike(`%${mNormalized}%`) },
+      relations: [
+        'endereco',
+        'vitimas',
+        'acusados',
+        'armas',
+        'municoes',
+        'drogas',
+        'veiculos',
+        'outrosObjetos',
+        'valoresApreendidos',
+      ],
+      order: { createdAt: 'DESC' },
+    });
+
+    return ocorrencia ?? null;
   }
 
   async delete(id: string): Promise<void> {

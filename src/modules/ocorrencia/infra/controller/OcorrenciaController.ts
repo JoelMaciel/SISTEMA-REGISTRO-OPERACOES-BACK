@@ -23,6 +23,7 @@ import {
 import { ListOcorrenciasUseCase } from '../../application/usecase/ocorrencia/list-ocorrencia';
 import { ShowOcorrenciaUseCase } from '../../application/usecase/ocorrencia/show-ocorrencia';
 import { DeleteOcorrenciaUseCase } from '../../application/usecase/ocorrencia/delete-ocorrencia';
+import { FindOcorrenciaByMUseCase } from '../../application/usecase/ocorrencia/find-m-ocorrencia';
 
 @Controller('api/ocorrencias')
 export class OcorrenciaController {
@@ -32,6 +33,7 @@ export class OcorrenciaController {
     private readonly listarOcorrenciasUseCase: ListOcorrenciasUseCase,
     private readonly showOcorrenciaUseCase: ShowOcorrenciaUseCase,
     private readonly deleteOcorrenciaUseCase: DeleteOcorrenciaUseCase,
+    private readonly searchMOcorrenciaUseCase: FindOcorrenciaByMUseCase,
   ) {}
 
   @Get()
@@ -69,6 +71,12 @@ export class OcorrenciaController {
     };
 
     return this.listarOcorrenciasUseCase.execute(filtros);
+  }
+
+  @Get('by-m/:m')
+  async findByM(@Param('m') m: string): Promise<OcorrenciaResponseDTO> {
+    const ocorrencia = await this.searchMOcorrenciaUseCase.execute(m);
+    return ocorrencia;
   }
 
   @Get(':id')

@@ -11,6 +11,7 @@ export interface IOcorrenciaRepository {
   create(data: Partial<Ocorrencia>): Promise<Ocorrencia>;
   save(ocorrencia: Ocorrencia): Promise<Ocorrencia>;
   findById(id: string, relations?: string[]): Promise<Ocorrencia | null>;
+  findByMOcorrencia(m: string): Promise<Ocorrencia | null>;
 
   findAll(
     page: number,
