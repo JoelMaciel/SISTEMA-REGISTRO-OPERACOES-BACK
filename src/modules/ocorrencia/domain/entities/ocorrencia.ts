@@ -78,7 +78,6 @@ export class Ocorrencia {
   veiculos: Veiculo[];
 
   @OneToMany(() => Arma, (arma) => arma.ocorrencia, {
-    cascade: true,
     onUpdate: 'CASCADE',
   })
   armas: Arma[];

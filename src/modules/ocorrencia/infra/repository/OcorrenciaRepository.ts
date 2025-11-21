@@ -203,6 +203,7 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
 
     return ocorrencia ?? null;
   }
+
   async findOcorrenciaWithArma(
     ocorrenciaId: string,
     armaId: string,

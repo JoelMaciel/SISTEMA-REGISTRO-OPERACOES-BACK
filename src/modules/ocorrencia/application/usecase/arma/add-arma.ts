@@ -22,7 +22,7 @@ export class AddArmaToOcorrenciaUseCase {
     ]);
 
     if (!ocorrencia) {
-      throw new AppError(`Ocorrência ${ocorrenciaId} não encontrada.`);
+      throw new AppError(`Ocorrência ${ocorrenciaId} não encontrada.`, 404);
     }
 
     const novaArma = new Arma();
