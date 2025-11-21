@@ -43,25 +43,20 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
   async update(id: string, data: Partial<Ocorrencia>): Promise<Ocorrencia> {
     const ocorrencia = await this.ocorrenciaRepository.findOneOrFail({
       where: { id },
-      relations: [
-        'endereco',
-        'vitimas',
-        'acusados',
-        'armas',
-        'municoes',
-        'drogas',
-        'veiculos',
-        'outrosObjetos',
-        'valoresApreendidos',
-      ],
+      relations: ['endereco'],
     });
 
-    const ocorrenciaAtualizada = this.ocorrenciaRepository.merge(
-      ocorrencia,
-      data,
-    );
+    ocorrencia.m = data.m ?? ocorrencia.m;
+    ocorrencia.data = data.data ?? ocorrencia.data;
+    ocorrencia.horario = data.horario ?? ocorrencia.horario;
+    ocorrencia.tipo = data.tipo ?? ocorrencia.tipo;
+    ocorrencia.resumo = data.resumo ?? ocorrencia.resumo;
 
-    return this.ocorrenciaRepository.save(ocorrenciaAtualizada);
+    if (data.endereco) {
+      Object.assign(ocorrencia.endereco, data.endereco);
+    }
+
+    return this.ocorrenciaRepository.save(ocorrencia);
   }
 
   async findAll(

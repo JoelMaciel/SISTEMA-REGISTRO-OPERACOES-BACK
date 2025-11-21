@@ -12,13 +12,13 @@ export class UpdateOcorrenciaUseCase {
   ) {}
 
   async execute(
-    ocorrenciaId: string,
+    id: string,
     dto: UpdateOcorrenciaRequestDTO,
   ): Promise<OcorrenciaResponseDTO> {
     const dadosParaAtualizar = dto as Partial<Ocorrencia>;
 
     const ocorrenciaAtualizada = await this.ocorrenciaRepository.update(
-      ocorrenciaId,
+      id,
       dadosParaAtualizar,
     );
 
