@@ -1,6 +1,6 @@
 import { Arma } from 'src/modules/ocorrencia/domain/entities/arma';
 
-export class ArmaResponseDto {
+export class ArmaResponseDTO {
   id: string;
   tipo: string;
   calibre: string;

@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ArmaRequestDTO } from '../../dto/schema/UpdateOcorrenciaSchema';
-import { ArmaResponseDto } from '../../dto/response/ArmaResponseDTO';
 import { AppError } from 'src/shared/errors/AppError';
 import { IOcorrenciaRepository } from 'src/modules/ocorrencia/infra/repository/interfaces/IOcorrenciaRepository';
+import { ArmaResponseDTO } from '../../dto/response/ArmaResponseDTO';
 
 @Injectable()
 export class UpdateArmaUseCase {
@@ -15,7 +15,7 @@ export class UpdateArmaUseCase {
     ocorrenciaId: string,
     armaId: string,
     data: ArmaRequestDTO,
-  ): Promise<ArmaResponseDto> {
+  ): Promise<ArmaResponseDTO> {
     const result = await this.ocorrenciaRepository.findOcorrenciaWithArma(
       ocorrenciaId,
       armaId,
@@ -36,6 +36,6 @@ export class UpdateArmaUseCase {
 
     await this.ocorrenciaRepository.save(ocorrencia);
 
-    return new ArmaResponseDto(arma);
+    return new ArmaResponseDTO(arma);
   }
 }
