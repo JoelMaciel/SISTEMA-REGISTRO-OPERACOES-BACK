@@ -71,7 +71,7 @@ export class OcorrenciaResponseDTO {
     id?: string;
     descricao: string;
   }[];
-  dinheiro: {
+  valoresApreendidos: {
     id?: string;
     valor: string;
   }[];
@@ -171,7 +171,7 @@ export class OcorrenciaResponseDTO {
         }))
       : [];
 
-    this.dinheiro = ocorrencia.valoresApreendidos
+    this.valoresApreendidos = ocorrencia.valoresApreendidos
       ? ocorrencia.valoresApreendidos.map((d) => ({
           id: (d as any).id,
           valor: d.valor,

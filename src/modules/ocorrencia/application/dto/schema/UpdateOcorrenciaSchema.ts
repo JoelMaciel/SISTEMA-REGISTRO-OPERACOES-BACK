@@ -28,6 +28,7 @@ export const EnderecoSchema = z.object({
 export type EnderecoRequestDTO = z.infer<typeof EnderecoSchema>;
 
 export const VitimaSchema = z.object({
+  id: z.string().optional(),
   nome: z.string().min(3).max(100),
   cpf: z
     .string()
@@ -47,6 +48,7 @@ export const VitimaSchema = z.object({
 export type VitimaRequestDTO = z.infer<typeof VitimaSchema>;
 
 export const AcusadoSchema = z.object({
+  id: z.string().optional(),
   nome: z.string().min(3).max(100),
   cpf: z
     .string()
@@ -66,6 +68,7 @@ export const AcusadoSchema = z.object({
 export type AcusadoRequestDTO = z.infer<typeof AcusadoSchema>;
 
 export const DrogaSchema = z.object({
+  id: z.string().optional(),
   tipo: z.string().min(2).max(100),
   quantidade: z.string().min(1).max(10),
   unidadeMedida: z.nativeEnum(UnidadeMedida),
@@ -74,6 +77,7 @@ export const DrogaSchema = z.object({
 export type DrogaRequestDTO = z.infer<typeof DrogaSchema>;
 
 export const ArmaSchema = z.object({
+  id: z.string().optional(),
   tipo: z.string().min(2).max(50),
   calibre: z.string().max(10),
   numeracao: z.string().max(20),
@@ -83,6 +87,7 @@ export const ArmaSchema = z.object({
 export type ArmaRequestDTO = z.infer<typeof ArmaSchema>;
 
 export const MunicaoSchema = z.object({
+  id: z.string().optional(),
   calibre: z.string().min(1).max(25),
   quantidade: z.string().min(1).max(25),
 });
@@ -90,6 +95,7 @@ export const MunicaoSchema = z.object({
 export type MunicaoRequestDTO = z.infer<typeof MunicaoSchema>;
 
 export const VeiculoSchema = z.object({
+  id: z.string().optional(),
   marca: z.string().min(2).max(50),
   tipo: z.string().min(2).max(50),
   placa: z.string().min(7).max(10),
@@ -101,16 +107,20 @@ export const VeiculoSchema = z.object({
 export type VeiculoRequestDTO = z.infer<typeof VeiculoSchema>;
 
 export const OutroObjetoSchema = z.object({
+  id: z.string().optional(),
   descricao: z.string().min(2).max(2000),
 });
 
 export type OutroObjetoRequestDTO = z.infer<typeof OutroObjetoSchema>;
 
-export const DinheiroSchema = z.object({
+export const ValoresApreendidosSchema = z.object({
+  id: z.string().optional(),
   valor: z.string().min(1).max(15),
 });
 
-export type DinheiroRequestDTO = z.infer<typeof DinheiroSchema>;
+export type ValoresApreendidosRequestDTO = z.infer<
+  typeof ValoresApreendidosSchema
+>;
 
 export const OcorrenciaUpdateSchema = z.object({
   m: z.string().min(1).max(50),
@@ -132,7 +142,7 @@ export const OcorrenciaUpdateSchema = z.object({
   veiculos: z.array(VeiculoSchema).optional(),
   armas: z.array(ArmaSchema).optional(),
   outrosObjetos: z.array(OutroObjetoSchema).optional(),
-  valoresApreendidos: z.array(DinheiroSchema).optional(),
+  valoresApreendidos: z.array(ValoresApreendidosSchema).optional(),
 });
 
 export type UpdateOcorrenciaRequestDTO = z.infer<typeof OcorrenciaUpdateSchema>;

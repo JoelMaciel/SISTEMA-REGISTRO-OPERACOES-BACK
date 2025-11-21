@@ -27,15 +27,15 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     return await this.ocorrenciaRepository.findOne({
       where: { id },
       relations: [
-        'endereco',
         'vitimas',
-        'acusados',
-        'armas',
-        'municoes',
         'drogas',
+        'municoes',
         'veiculos',
+        'armas',
+        'acusados',
         'outrosObjetos',
         'valoresApreendidos',
+        'endereco',
       ],
     });
   }
