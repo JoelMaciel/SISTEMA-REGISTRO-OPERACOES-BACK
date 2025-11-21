@@ -6,6 +6,7 @@ import {
   IPaginatedResult,
 } from './interfaces/IOcorrenciaRepository';
 import { Ocorrencia } from '../../domain/entities/ocorrencia';
+import { Arma } from '../../domain/entities/arma';
 
 @Injectable()
 export class OcorrenciaRepository implements IOcorrenciaRepository {
@@ -38,25 +39,6 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
         'endereco',
       ],
     });
-  }
-
-  async update(id: string, data: Partial<Ocorrencia>): Promise<Ocorrencia> {
-    const ocorrencia = await this.ocorrenciaRepository.findOneOrFail({
-      where: { id },
-      relations: ['endereco'],
-    });
-
-    ocorrencia.m = data.m ?? ocorrencia.m;
-    ocorrencia.data = data.data ?? ocorrencia.data;
-    ocorrencia.horario = data.horario ?? ocorrencia.horario;
-    ocorrencia.tipo = data.tipo ?? ocorrencia.tipo;
-    ocorrencia.resumo = data.resumo ?? ocorrencia.resumo;
-
-    if (data.endereco) {
-      Object.assign(ocorrencia.endereco, data.endereco);
-    }
-
-    return this.ocorrenciaRepository.save(ocorrencia);
   }
 
   async findAll(
@@ -179,6 +161,25 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     };
   }
 
+  async update(id: string, data: Partial<Ocorrencia>): Promise<Ocorrencia> {
+    const ocorrencia = await this.ocorrenciaRepository.findOneOrFail({
+      where: { id },
+      relations: ['endereco'],
+    });
+
+    ocorrencia.m = data.m ?? ocorrencia.m;
+    ocorrencia.data = data.data ?? ocorrencia.data;
+    ocorrencia.horario = data.horario ?? ocorrencia.horario;
+    ocorrencia.tipo = data.tipo ?? ocorrencia.tipo;
+    ocorrencia.resumo = data.resumo ?? ocorrencia.resumo;
+
+    if (data.endereco) {
+      Object.assign(ocorrencia.endereco, data.endereco);
+    }
+
+    return this.ocorrenciaRepository.save(ocorrencia);
+  }
+
   async findByMOcorrencia(m: string): Promise<Ocorrencia | null> {
     if (!m) return null;
 
@@ -201,6 +202,22 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     });
 
     return ocorrencia ?? null;
+  }
+  async findOcorrenciaWithArma(
+    ocorrenciaId: string,
+    armaId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; arma: Arma } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['armas'],
+    });
+
+    if (!ocorrencia) return null;
+
+    const arma = ocorrencia.armas.find((a) => a.id === armaId);
+    if (!arma) return null;
+
+    return { ocorrencia, arma };
   }
 
   async delete(id: string): Promise<void> {

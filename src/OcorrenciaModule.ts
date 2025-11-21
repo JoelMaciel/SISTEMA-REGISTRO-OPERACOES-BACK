@@ -10,10 +10,12 @@ import { ListOcorrenciasUseCase } from './modules/ocorrencia/application/usecase
 import { ShowOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/show-ocorrencia';
 import { DeleteOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/delete-ocorrencia';
 import { FindOcorrenciaByMUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/find-m-ocorrencia';
+import { UpdateArmaUseCase } from './modules/ocorrencia/application/usecase/arma/update-arma';
+import { ArmaController } from './modules/ocorrencia/infra/controller/ArmaController';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Ocorrencia]), OperacaoModule],
-  controllers: [OcorrenciaController],
+  controllers: [OcorrenciaController, ArmaController],
   providers: [
     CreateOcorrenciaUseCase,
     UpdateOcorrenciaUseCase,
@@ -21,6 +23,7 @@ import { FindOcorrenciaByMUseCase } from './modules/ocorrencia/application/useca
     ShowOcorrenciaUseCase,
     DeleteOcorrenciaUseCase,
     FindOcorrenciaByMUseCase,
+    UpdateArmaUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,

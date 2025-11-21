@@ -1,3 +1,4 @@
+import { Arma } from 'src/modules/ocorrencia/domain/entities/arma';
 import { Ocorrencia } from 'src/modules/ocorrencia/domain/entities/ocorrencia';
 
 export interface IPaginatedResult<T> {
@@ -9,9 +10,17 @@ export interface IPaginatedResult<T> {
 
 export interface IOcorrenciaRepository {
   create(data: Partial<Ocorrencia>): Promise<Ocorrencia>;
+
   save(ocorrencia: Ocorrencia): Promise<Ocorrencia>;
+
   findById(id: string, relations?: string[]): Promise<Ocorrencia | null>;
+
   findByMOcorrencia(m: string): Promise<Ocorrencia | null>;
+
+  findOcorrenciaWithArma(
+    ocorrenciaId: string,
+    armaId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; arma: Arma } | null>;
 
   findAll(
     page: number,
