@@ -12,6 +12,7 @@ export interface IOcorrenciaRepository {
   create(data: Partial<Ocorrencia>): Promise<Ocorrencia>;
 
   save(ocorrencia: Ocorrencia): Promise<Ocorrencia>;
+  saveArma(arma: Arma): Promise<Arma>;
 
   findById(id: string, relations?: string[]): Promise<Ocorrencia | null>;
 

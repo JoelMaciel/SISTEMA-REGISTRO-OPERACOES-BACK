@@ -45,6 +45,7 @@ export class ArmaController {
     const dto = await ValidateSchema.validate(ArmaSchema, body);
     return this.updateArmaUseCase.execute(ocorrenciaId, armaId, dto);
   }
+
   @Delete(':ocorrenciaId/armas/:armaId')
   @HttpCode(HttpStatus.NO_CONTENT)
   async deleteArma(

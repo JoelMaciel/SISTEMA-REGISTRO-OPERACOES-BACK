@@ -14,9 +14,10 @@ import { UpdateArmaUseCase } from './modules/ocorrencia/application/usecase/arma
 import { ArmaController } from './modules/ocorrencia/infra/controller/ArmaController';
 import { AddArmaToOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/arma/add-arma';
 import { DeleteArmaFromOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/arma/delete-arma';
+import { Arma } from './modules/ocorrencia/domain/entities/arma';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Ocorrencia]), OperacaoModule],
+  imports: [TypeOrmModule.forFeature([Ocorrencia, Arma]), OperacaoModule],
   controllers: [OcorrenciaController, ArmaController],
   providers: [
     CreateOcorrenciaUseCase,

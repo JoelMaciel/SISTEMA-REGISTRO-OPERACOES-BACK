@@ -13,11 +13,17 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
   constructor(
     @InjectRepository(Ocorrencia)
     private readonly ocorrenciaRepository: Repository<Ocorrencia>,
+    @InjectRepository(Arma)
+    private readonly armaRepository: Repository<Arma>,
   ) {}
 
   async create(data: Partial<Ocorrencia>): Promise<Ocorrencia> {
     const operacao = this.ocorrenciaRepository.create(data);
     return this.ocorrenciaRepository.save(operacao);
+  }
+
+  async saveArma(arma: Arma): Promise<Arma> {
+    return this.armaRepository.save(arma);
   }
 
   async save(ocorrencia: Ocorrencia): Promise<Ocorrencia> {

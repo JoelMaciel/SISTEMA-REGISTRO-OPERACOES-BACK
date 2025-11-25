@@ -27,14 +27,14 @@ export class UpdateArmaUseCase {
       );
     }
 
-    const { ocorrencia, arma } = result;
+    const { arma } = result;
 
     if (data.tipo !== undefined) arma.tipo = data.tipo;
     if (data.calibre !== undefined) arma.calibre = data.calibre;
     if (data.capacidade !== undefined) arma.capacidade = data.capacidade;
     if (data.numeracao !== undefined) arma.numeracao = data.numeracao;
 
-    await this.ocorrenciaRepository.save(ocorrencia);
+    await this.ocorrenciaRepository.saveArma(arma);
 
     return new ArmaResponseDTO(arma);
   }
