@@ -19,6 +19,7 @@ import { Droga } from './modules/ocorrencia/domain/entities/droga';
 import { AddDrogaToOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/droga/add-droga';
 import { DrogaController } from './modules/ocorrencia/infra/controller/DrogaController';
 import { DeleteDrogaFromOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/droga/delete-droga';
+import { UpdateDrogaUseCase } from './modules/ocorrencia/application/usecase/droga/update-droga';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { DeleteDrogaFromOcorrenciaUseCase } from './modules/ocorrencia/applicati
     DeleteArmaFromOcorrenciaUseCase,
     AddDrogaToOcorrenciaUseCase,
     DeleteDrogaFromOcorrenciaUseCase,
+    UpdateDrogaUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,
