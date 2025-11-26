@@ -1,4 +1,5 @@
 import { Arma } from 'src/modules/ocorrencia/domain/entities/arma';
+import { Droga } from 'src/modules/ocorrencia/domain/entities/droga';
 import { Ocorrencia } from 'src/modules/ocorrencia/domain/entities/ocorrencia';
 
 export interface IPaginatedResult<T> {
@@ -13,6 +14,7 @@ export interface IOcorrenciaRepository {
 
   save(ocorrencia: Ocorrencia): Promise<Ocorrencia>;
   saveArma(arma: Arma): Promise<Arma>;
+  saveDroga(droga: Droga): Promise<Droga>;
 
   findById(id: string, relations?: string[]): Promise<Ocorrencia | null>;
 
@@ -22,6 +24,11 @@ export interface IOcorrenciaRepository {
     ocorrenciaId: string,
     armaId: string,
   ): Promise<{ ocorrencia: Ocorrencia; arma: Arma } | null>;
+
+  findOcorrenciaWithDroga(
+    ocorrenciaId: string,
+    drogaId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; droga: Droga } | null>;
 
   findAll(
     page: number,

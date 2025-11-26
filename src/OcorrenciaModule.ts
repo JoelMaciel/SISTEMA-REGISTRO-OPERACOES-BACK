@@ -15,10 +15,17 @@ import { ArmaController } from './modules/ocorrencia/infra/controller/ArmaContro
 import { AddArmaToOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/arma/add-arma';
 import { DeleteArmaFromOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/arma/delete-arma';
 import { Arma } from './modules/ocorrencia/domain/entities/arma';
+import { Droga } from './modules/ocorrencia/domain/entities/droga';
+import { AddDrogaToOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/droga/add-droga';
+import { DrogaController } from './modules/ocorrencia/infra/controller/DrogaController';
+import { DeleteDrogaFromOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/droga/delete-droga';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Ocorrencia, Arma]), OperacaoModule],
-  controllers: [OcorrenciaController, ArmaController],
+  imports: [
+    TypeOrmModule.forFeature([Ocorrencia, Arma, Droga]),
+    OperacaoModule,
+  ],
+  controllers: [OcorrenciaController, ArmaController, DrogaController],
   providers: [
     CreateOcorrenciaUseCase,
     UpdateOcorrenciaUseCase,
@@ -29,6 +36,8 @@ import { Arma } from './modules/ocorrencia/domain/entities/arma';
     UpdateArmaUseCase,
     AddArmaToOcorrenciaUseCase,
     DeleteArmaFromOcorrenciaUseCase,
+    AddDrogaToOcorrenciaUseCase,
+    DeleteDrogaFromOcorrenciaUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,

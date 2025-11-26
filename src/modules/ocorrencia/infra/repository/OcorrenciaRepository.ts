@@ -7,6 +7,7 @@ import {
 } from './interfaces/IOcorrenciaRepository';
 import { Ocorrencia } from '../../domain/entities/ocorrencia';
 import { Arma } from '../../domain/entities/arma';
+import { Droga } from '../../domain/entities/droga';
 
 @Injectable()
 export class OcorrenciaRepository implements IOcorrenciaRepository {
@@ -15,6 +16,8 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     private readonly ocorrenciaRepository: Repository<Ocorrencia>,
     @InjectRepository(Arma)
     private readonly armaRepository: Repository<Arma>,
+    @InjectRepository(Droga)
+    private readonly drogaRepository: Repository<Droga>,
   ) {}
 
   async create(data: Partial<Ocorrencia>): Promise<Ocorrencia> {
@@ -24,6 +27,10 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
 
   async saveArma(arma: Arma): Promise<Arma> {
     return this.armaRepository.save(arma);
+  }
+
+  async saveDroga(droga: Droga): Promise<Droga> {
+    return this.drogaRepository.save(droga);
   }
 
   async save(ocorrencia: Ocorrencia): Promise<Ocorrencia> {
@@ -225,6 +232,23 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     if (!arma) return null;
 
     return { ocorrencia, arma };
+  }
+
+  async findOcorrenciaWithDroga(
+    ocorrenciaId: string,
+    drogaId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; droga: Droga } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['drogas'],
+    });
+
+    if (!ocorrencia) return null;
+
+    const droga = ocorrencia.drogas.find((droga) => droga.id === drogaId);
+    if (!droga) return null;
+
+    return { ocorrencia, droga };
   }
 
   async delete(id: string): Promise<void> {
