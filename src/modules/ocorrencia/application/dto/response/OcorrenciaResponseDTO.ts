@@ -15,6 +15,7 @@ export class OcorrenciaResponseDTO {
     numero?: string;
     bairro: string;
     cidade: string;
+    cep: string;
     uf: string;
   } | null;
   vitimas: {
@@ -93,6 +94,7 @@ export class OcorrenciaResponseDTO {
           numero: ocorrencia.endereco.numero,
           bairro: ocorrencia.endereco.bairro,
           cidade: ocorrencia.endereco.cidade,
+          cep: ocorrencia.endereco.cep,
           uf: ocorrencia.endereco.uf,
         }
       : null;

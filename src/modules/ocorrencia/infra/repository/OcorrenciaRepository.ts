@@ -21,8 +21,7 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
   ) {}
 
   async create(data: Partial<Ocorrencia>): Promise<Ocorrencia> {
-    const operacao = this.ocorrenciaRepository.create(data);
-    return this.ocorrenciaRepository.save(operacao);
+    return this.ocorrenciaRepository.save(data);
   }
 
   async saveArma(arma: Arma): Promise<Arma> {
@@ -82,6 +81,7 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
         'endereco.rua',
         'endereco.bairro',
         'endereco.cidade',
+        'endereco.cep',
         'endereco.uf',
       ])
       .skip(skip)
