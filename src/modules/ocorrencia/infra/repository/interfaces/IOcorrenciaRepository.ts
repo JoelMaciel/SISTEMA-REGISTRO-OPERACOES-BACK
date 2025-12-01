@@ -29,6 +29,11 @@ export interface IOcorrenciaRepository {
     armaId: string,
   ): Promise<{ ocorrencia: Ocorrencia; arma: Arma } | null>;
 
+  findOcorrenciaWithMunicao(
+    ocorrenciaId: string,
+    municaoId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; municao: Municao } | null>;
+
   findOcorrenciaWithVeiculo(
     ocorrenciaId: string,
     veiculoId: string,

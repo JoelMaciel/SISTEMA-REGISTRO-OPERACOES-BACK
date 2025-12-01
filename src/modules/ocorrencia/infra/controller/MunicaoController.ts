@@ -15,12 +15,14 @@ import {
 } from '../../application/dto/schema/CreateOcorrenciaSchema';
 import { AddMunicaoToOcorrenciaUseCase } from '../../application/usecase/municao/add-municao';
 import { MunicaoResponseDTO } from '../../application/dto/response/MunicaoResponseDTO';
+import { DeleteMunicaoFromOcorrenciaUseCase } from '../../application/usecase/municao/delete-municao';
 
 @Controller('api/ocorrencias')
 export class MunicaoController {
   constructor(
     // private readonly updateArmaUseCase: UpdateArmaUseCase,
-    private readonly addMunicaoUseCase: AddMunicaoToOcorrenciaUseCase, // private readonly deleteArmaFromOcorrenciaUseCase: DeleteArmaFromOcorrenciaUseCase,
+    private readonly addMunicaoUseCase: AddMunicaoToOcorrenciaUseCase,
+    private readonly deleteMunicaoUseCase: DeleteMunicaoFromOcorrenciaUseCase,
   ) {}
 
   @Post(':ocorrenciaId/municoes')
@@ -44,12 +46,12 @@ export class MunicaoController {
   //   return this.updateArmaUseCase.execute(ocorrenciaId, armaId, dto);
   // }
 
-  // @Delete(':ocorrenciaId/armas/:armaId')
-  // @HttpCode(HttpStatus.NO_CONTENT)
-  // async deleteArma(
-  //   @Param('ocorrenciaId') ocorrenciaId: string,
-  //   @Param('armaId') armaId: string,
-  // ): Promise<void> {
-  //   await this.deleteArmaFromOcorrenciaUseCase.execute(ocorrenciaId, armaId);
-  // }
+  @Delete(':ocorrenciaId/municoes/:municaoId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteMunicao(
+    @Param('ocorrenciaId') ocorrenciaId: string,
+    @Param('municaoId') municaoId: string,
+  ): Promise<void> {
+    await this.deleteMunicaoUseCase.execute(ocorrenciaId, municaoId);
+  }
 }

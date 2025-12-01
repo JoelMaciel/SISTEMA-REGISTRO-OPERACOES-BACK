@@ -248,6 +248,23 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     return { ocorrencia, arma };
   }
 
+  async findOcorrenciaWithMunicao(
+    ocorrenciaId: string,
+    municaoId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; municao: Municao } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['municoes'],
+    });
+
+    if (!ocorrencia) return null;
+
+    const municao = ocorrencia.municoes.find((m) => m.id === municaoId);
+    if (!municao) return null;
+
+    return { ocorrencia, municao };
+  }
+
   async findOcorrenciaWithVeiculo(
     ocorrenciaId: string,
     veiculoId: string,
