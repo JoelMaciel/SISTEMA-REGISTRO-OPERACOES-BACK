@@ -24,6 +24,7 @@ import { Veiculo } from './modules/ocorrencia/domain/entities/veiculo';
 import { AddVeiculoToOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/veiculo/add-veiculo';
 import { VeiculoController } from './modules/ocorrencia/infra/controller/VeiculoController';
 import { DeleteVeiculoFromOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/veiculo/delete-veiculo';
+import { UpdateVeiculoUseCase } from './modules/ocorrencia/application/usecase/veiculo/update-veiculo';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { DeleteVeiculoFromOcorrenciaUseCase } from './modules/ocorrencia/applica
     UpdateDrogaUseCase,
     AddVeiculoToOcorrenciaUseCase,
     DeleteVeiculoFromOcorrenciaUseCase,
+    UpdateVeiculoUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,
