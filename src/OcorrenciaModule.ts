@@ -25,10 +25,13 @@ import { AddVeiculoToOcorrenciaUseCase } from './modules/ocorrencia/application/
 import { VeiculoController } from './modules/ocorrencia/infra/controller/VeiculoController';
 import { DeleteVeiculoFromOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/veiculo/delete-veiculo';
 import { UpdateVeiculoUseCase } from './modules/ocorrencia/application/usecase/veiculo/update-veiculo';
+import { Municao } from './modules/ocorrencia/domain/entities/municao';
+import { AddMunicaoToOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/municao/add-municao';
+import { MunicaoController } from './modules/ocorrencia/infra/controller/MunicaoController';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Ocorrencia, Arma, Droga, Veiculo]),
+    TypeOrmModule.forFeature([Ocorrencia, Arma, Droga, Veiculo, Municao]),
     OperacaoModule,
   ],
   controllers: [
@@ -36,6 +39,7 @@ import { UpdateVeiculoUseCase } from './modules/ocorrencia/application/usecase/v
     ArmaController,
     DrogaController,
     VeiculoController,
+    MunicaoController,
   ],
   providers: [
     CreateOcorrenciaUseCase,
@@ -53,6 +57,7 @@ import { UpdateVeiculoUseCase } from './modules/ocorrencia/application/usecase/v
     AddVeiculoToOcorrenciaUseCase,
     DeleteVeiculoFromOcorrenciaUseCase,
     UpdateVeiculoUseCase,
+    AddMunicaoToOcorrenciaUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,

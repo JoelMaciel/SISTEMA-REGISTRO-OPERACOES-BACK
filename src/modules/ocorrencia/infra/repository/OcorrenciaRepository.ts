@@ -9,6 +9,7 @@ import { Ocorrencia } from '../../domain/entities/ocorrencia';
 import { Arma } from '../../domain/entities/arma';
 import { Droga } from '../../domain/entities/droga';
 import { Veiculo } from '../../domain/entities/veiculo';
+import { Municao } from '../../domain/entities/municao';
 
 @Injectable()
 export class OcorrenciaRepository implements IOcorrenciaRepository {
@@ -21,6 +22,8 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     private readonly drogaRepository: Repository<Droga>,
     @InjectRepository(Veiculo)
     private readonly veiculoRepository: Repository<Veiculo>,
+    @InjectRepository(Municao)
+    private readonly municaoRepository: Repository<Municao>,
   ) {}
 
   async create(data: Partial<Ocorrencia>): Promise<Ocorrencia> {
@@ -37,6 +40,10 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
 
   async saveVeiculo(veiculo: Veiculo): Promise<Veiculo> {
     return this.veiculoRepository.save(veiculo);
+  }
+
+  async saveMunicao(municao: Municao): Promise<Municao> {
+    return this.municaoRepository.save(municao);
   }
 
   async save(ocorrencia: Ocorrencia): Promise<Ocorrencia> {
