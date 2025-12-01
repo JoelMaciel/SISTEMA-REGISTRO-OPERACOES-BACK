@@ -29,6 +29,7 @@ import { Municao } from './modules/ocorrencia/domain/entities/municao';
 import { AddMunicaoToOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/municao/add-municao';
 import { MunicaoController } from './modules/ocorrencia/infra/controller/MunicaoController';
 import { DeleteMunicaoFromOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/municao/delete-municao';
+import { UpdateMunicaoUseCase } from './modules/ocorrencia/application/usecase/municao/update-municao';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { DeleteMunicaoFromOcorrenciaUseCase } from './modules/ocorrencia/applica
     UpdateVeiculoUseCase,
     AddMunicaoToOcorrenciaUseCase,
     DeleteMunicaoFromOcorrenciaUseCase,
+    UpdateMunicaoUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,

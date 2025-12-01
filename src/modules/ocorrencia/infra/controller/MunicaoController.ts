@@ -16,11 +16,12 @@ import {
 import { AddMunicaoToOcorrenciaUseCase } from '../../application/usecase/municao/add-municao';
 import { MunicaoResponseDTO } from '../../application/dto/response/MunicaoResponseDTO';
 import { DeleteMunicaoFromOcorrenciaUseCase } from '../../application/usecase/municao/delete-municao';
+import { UpdateMunicaoUseCase } from '../../application/usecase/municao/update-municao';
 
 @Controller('api/ocorrencias')
 export class MunicaoController {
   constructor(
-    // private readonly updateArmaUseCase: UpdateArmaUseCase,
+    private readonly updateMunicaoUseCase: UpdateMunicaoUseCase,
     private readonly addMunicaoUseCase: AddMunicaoToOcorrenciaUseCase,
     private readonly deleteMunicaoUseCase: DeleteMunicaoFromOcorrenciaUseCase,
   ) {}
@@ -35,16 +36,16 @@ export class MunicaoController {
     return this.addMunicaoUseCase.execute(ocorrenciaId, dto);
   }
 
-  // @Patch(':ocorrenciaId/armas/:armaId')
-  // @HttpCode(HttpStatus.OK)
-  // async updateArma(
-  //   @Param('ocorrenciaId') ocorrenciaId: string,
-  //   @Param('armaId') armaId: string,
-  //   @Body() body: ArmaRequestDTO,
-  // ): Promise<ArmaResponseDTO> {
-  //   const dto = await ValidateSchema.validate(ArmaSchema, body);
-  //   return this.updateArmaUseCase.execute(ocorrenciaId, armaId, dto);
-  // }
+  @Patch(':ocorrenciaId/municoes/:municaoId')
+  @HttpCode(HttpStatus.OK)
+  async updateMunicao(
+    @Param('ocorrenciaId') ocorrenciaId: string,
+    @Param('municaoId') municaoId: string,
+    @Body() body: MunicaoRequestDTO,
+  ): Promise<MunicaoResponseDTO> {
+    const dto = await ValidateSchema.validate(MunicaoSchema, body);
+    return this.updateMunicaoUseCase.execute(ocorrenciaId, municaoId, dto);
+  }
 
   @Delete(':ocorrenciaId/municoes/:municaoId')
   @HttpCode(HttpStatus.NO_CONTENT)
