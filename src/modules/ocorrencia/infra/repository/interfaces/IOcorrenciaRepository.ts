@@ -1,4 +1,5 @@
 import { Arma } from 'src/modules/ocorrencia/domain/entities/arma';
+import { Dinheiro } from 'src/modules/ocorrencia/domain/entities/dinheiro';
 import { Droga } from 'src/modules/ocorrencia/domain/entities/droga';
 import { Municao } from 'src/modules/ocorrencia/domain/entities/municao';
 import { Ocorrencia } from 'src/modules/ocorrencia/domain/entities/ocorrencia';
@@ -16,6 +17,7 @@ export interface IOcorrenciaRepository {
 
   save(ocorrencia: Ocorrencia): Promise<Ocorrencia>;
   saveArma(arma: Arma): Promise<Arma>;
+  saveDinheiro(dinheiro: Dinheiro): Promise<Dinheiro>;
   saveVeiculo(veiculo: Veiculo): Promise<Veiculo>;
   saveMunicao(municao: Municao): Promise<Municao>;
   saveDroga(droga: Droga): Promise<Droga>;
