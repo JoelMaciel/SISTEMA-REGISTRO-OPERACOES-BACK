@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { VitimaRequestDTO } from '../../dto/schema/CreateOcorrenciaSchema';
+import { AcusadoRequestDTO } from '../../dto/schema/CreateOcorrenciaSchema';
 import { AppError } from 'src/shared/errors/AppError';
 import { IOcorrenciaRepository } from 'src/modules/ocorrencia/infra/repository/interfaces/IOcorrenciaRepository';
-import { VitimaResponseDTO } from '../../dto/response/VitimaResponseDTO';
+import { AcusadoResponseDTO } from '../../dto/response/AcusadoResponseDTO';
 
 @Injectable()
-export class UpdateVitimaUseCase {
+export class UpdateAcusadoUseCase {
   constructor(
     @Inject('IOcorrenciaRepository')
     private readonly ocorrenciaRepository: IOcorrenciaRepository,
@@ -13,41 +13,41 @@ export class UpdateVitimaUseCase {
 
   async execute(
     ocorrenciaId: string,
-    vitimaId: string,
-    data: VitimaRequestDTO,
-  ): Promise<VitimaResponseDTO> {
-    const result = await this.ocorrenciaRepository.findOcorrenciaWithVitima(
+    acusadoId: string,
+    data: AcusadoRequestDTO,
+  ): Promise<AcusadoResponseDTO> {
+    const result = await this.ocorrenciaRepository.findOcorrenciaWithAcusado(
       ocorrenciaId,
-      vitimaId,
+      acusadoId,
     );
 
     if (!result) {
       throw new AppError(
-        `Vítima ${vitimaId} não pertence à ocorrência ${ocorrenciaId} ou não foi encontrada.`,
+        `Acusado ${acusadoId} não pertence à ocorrência ${ocorrenciaId} ou não foi encontrado.`,
         404,
       );
     }
 
-    const { vitima } = result;
+    const { acusado } = result;
 
-    vitima.nome = data.nome;
-    vitima.cpf = data.cpf;
-    vitima.idade = data.idade;
-    vitima.dataNascimento = data.dataNascimento;
-    vitima.nomePai = data.nomePai;
-    vitima.nomeMae = data.nomeMae;
-    vitima.naturalidade = data.naturalidade;
-    vitima.nacionalidade = data.nacionalidade;
+    acusado.nome = data.nome;
+    acusado.cpf = data.cpf;
+    acusado.idade = data.idade;
+    acusado.dataNascimento = data.dataNascimento;
+    acusado.nomePai = data.nomePai;
+    acusado.nomeMae = data.nomeMae;
+    acusado.naturalidade = data.naturalidade;
+    acusado.nacionalidade = data.nacionalidade;
 
     if (data.endereco) {
-      if (!vitima.endereco) {
+      if (!acusado.endereco) {
         throw new AppError(
-          'Endereço da vítima não encontrado para atualização. Contate o suporte.',
+          'Endereço do acusado não encontrado para atualização. Contate o suporte.',
           400,
         );
       }
 
-      const enderecoExistente = vitima.endereco;
+      const enderecoExistente = acusado.endereco;
 
       if (data.endereco.rua !== undefined)
         enderecoExistente.rua = data.endereco.rua;
@@ -67,8 +67,10 @@ export class UpdateVitimaUseCase {
       await this.ocorrenciaRepository.saveEndereco(enderecoExistente);
     }
 
-    const vitimaAtualizada = await this.ocorrenciaRepository.saveVitima(vitima);
+    const acusadoAtualizado = await this.ocorrenciaRepository.saveAcusado(
+      acusado,
+    );
 
-    return new VitimaResponseDTO(vitimaAtualizada);
+    return new AcusadoResponseDTO(acusadoAtualizado);
   }
 }

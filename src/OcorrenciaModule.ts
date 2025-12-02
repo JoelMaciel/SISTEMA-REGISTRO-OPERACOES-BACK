@@ -45,6 +45,7 @@ import { AddAcusadoUseCase } from './modules/ocorrencia/application/usecase/acus
 import { Acusado } from './modules/ocorrencia/domain/entities/acusado';
 import { AcusadoController } from './modules/ocorrencia/infra/controller/AcusadoController ';
 import { DeleteAcusadoUseCase } from './modules/ocorrencia/application/usecase/acusados/delete-acusado';
+import { UpdateAcusadoUseCase } from './modules/ocorrencia/application/usecase/acusados/update-acusado';
 
 @Module({
   imports: [
@@ -98,6 +99,7 @@ import { DeleteAcusadoUseCase } from './modules/ocorrencia/application/usecase/a
     UpdateVitimaUseCase,
     AddAcusadoUseCase,
     DeleteAcusadoUseCase,
+    UpdateAcusadoUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,
