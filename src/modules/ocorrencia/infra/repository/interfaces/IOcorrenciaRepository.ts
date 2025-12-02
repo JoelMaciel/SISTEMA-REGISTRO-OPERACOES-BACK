@@ -1,9 +1,11 @@
 import { Arma } from 'src/modules/ocorrencia/domain/entities/arma';
 import { Dinheiro } from 'src/modules/ocorrencia/domain/entities/dinheiro';
 import { Droga } from 'src/modules/ocorrencia/domain/entities/droga';
+import { Endereco } from 'src/modules/ocorrencia/domain/entities/Endereco';
 import { Municao } from 'src/modules/ocorrencia/domain/entities/municao';
 import { Ocorrencia } from 'src/modules/ocorrencia/domain/entities/ocorrencia';
 import { Veiculo } from 'src/modules/ocorrencia/domain/entities/veiculo';
+import { Vitima } from 'src/modules/ocorrencia/domain/entities/vitima';
 
 export interface IPaginatedResult<T> {
   items: T[];
@@ -17,6 +19,8 @@ export interface IOcorrenciaRepository {
 
   save(ocorrencia: Ocorrencia): Promise<Ocorrencia>;
   saveArma(arma: Arma): Promise<Arma>;
+  saveEndereco(endereco: Endereco): Promise<Endereco>;
+  saveVitima(vitima: Vitima): Promise<Vitima>;
   saveDinheiro(dinheiro: Dinheiro): Promise<Dinheiro>;
   saveVeiculo(veiculo: Veiculo): Promise<Veiculo>;
   saveMunicao(municao: Municao): Promise<Municao>;
@@ -25,6 +29,11 @@ export interface IOcorrenciaRepository {
   findById(id: string, relations?: string[]): Promise<Ocorrencia | null>;
 
   findByMOcorrencia(m: string): Promise<Ocorrencia | null>;
+
+  findOcorrenciaWithVitima(
+    ocorrenciaId: string,
+    vitimaId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; vitima: Vitima } | null>;
 
   findOcorrenciaWithArma(
     ocorrenciaId: string,

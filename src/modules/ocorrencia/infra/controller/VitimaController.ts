@@ -1,0 +1,55 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
+import {
+  VitimaRequestDTO,
+  VitimaSchema,
+} from '../../application/dto/schema/CreateOcorrenciaSchema';
+import { VitimaResponseDTO } from '../../application/dto/response/VitimaResponseDTO';
+import { AddVitimaUseCase } from '../../application/usecase/vitimas/add-vitima';
+
+@Controller('api/ocorrencias')
+export class VitimaController {
+  constructor(
+    // private readonly updateArmaUseCase: UpdateArmaUseCase,
+    private readonly addVitimaUseCase: AddVitimaUseCase, // private readonly deleteArmaFromOcorrenciaUseCase: DeleteArmaFromOcorrenciaUseCase,
+  ) {}
+
+  @Post(':ocorrenciaId/vitimas')
+  @HttpCode(HttpStatus.CREATED)
+  async addVitima(
+    @Param('ocorrenciaId') ocorrenciaId: string,
+    @Body() body: VitimaRequestDTO,
+  ): Promise<VitimaResponseDTO> {
+    const dto = await ValidateSchema.validate(VitimaSchema, body);
+    return this.addVitimaUseCase.execute(ocorrenciaId, dto);
+  }
+
+  // @Patch(':ocorrenciaId/armas/:armaId')
+  // @HttpCode(HttpStatus.OK)
+  // async updateArma(
+  //   @Param('ocorrenciaId') ocorrenciaId: string,
+  //   @Param('armaId') armaId: string,
+  //   @Body() body: ArmaRequestDTO,
+  // ): Promise<ArmaResponseDTO> {
+  //   const dto = await ValidateSchema.validate(ArmaSchema, body);
+  //   return this.updateArmaUseCase.execute(ocorrenciaId, armaId, dto);
+  // }
+
+  // @Delete(':ocorrenciaId/armas/:armaId')
+  // @HttpCode(HttpStatus.NO_CONTENT)
+  // async deleteArma(
+  //   @Param('ocorrenciaId') ocorrenciaId: string,
+  //   @Param('armaId') armaId: string,
+  // ): Promise<void> {
+  //   await this.deleteArmaFromOcorrenciaUseCase.execute(ocorrenciaId, armaId);
+  // }
+}

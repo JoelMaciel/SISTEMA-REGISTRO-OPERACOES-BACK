@@ -11,6 +11,8 @@ import { Droga } from '../../domain/entities/droga';
 import { Veiculo } from '../../domain/entities/veiculo';
 import { Municao } from '../../domain/entities/municao';
 import { Dinheiro } from '../../domain/entities/dinheiro';
+import { Vitima } from '../../domain/entities/vitima';
+import { Endereco } from '../../domain/entities/Endereco';
 
 @Injectable()
 export class OcorrenciaRepository implements IOcorrenciaRepository {
@@ -27,6 +29,10 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     private readonly municaoRepository: Repository<Municao>,
     @InjectRepository(Dinheiro)
     private readonly dinheiroRepository: Repository<Dinheiro>,
+    @InjectRepository(Vitima)
+    private readonly vitimaRepository: Repository<Vitima>,
+    @InjectRepository(Endereco)
+    private readonly enderecoRepository: Repository<Endereco>,
   ) {}
 
   async create(data: Partial<Ocorrencia>): Promise<Ocorrencia> {
@@ -52,6 +58,16 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
   async saveDinheiro(dinheiro: Dinheiro): Promise<Dinheiro> {
     dinheiro;
     return this.dinheiroRepository.save(dinheiro);
+  }
+
+  async saveVitima(vitima: Vitima): Promise<Vitima> {
+    vitima;
+    return this.vitimaRepository.save(vitima);
+  }
+
+  async saveEndereco(endereco: Endereco): Promise<Endereco> {
+    endereco;
+    return this.enderecoRepository.save(endereco);
   }
 
   async save(ocorrencia: Ocorrencia): Promise<Ocorrencia> {
@@ -290,6 +306,23 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     if (!municao) return null;
 
     return { ocorrencia, municao };
+  }
+
+  async findOcorrenciaWithVitima(
+    ocorrenciaId: string,
+    vitimaId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; vitima: Vitima } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['vitimas'],
+    });
+
+    if (!ocorrencia) return null;
+
+    const vitima = ocorrencia.vitimas.find((vitima) => vitima.id === vitimaId);
+    if (!vitima) return null;
+
+    return { ocorrencia, vitima };
   }
 
   async findOcorrenciaWithVeiculo(
