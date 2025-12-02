@@ -1,13 +1,13 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IOcorrenciaRepository } from 'src/modules/ocorrencia/infra/repository/interfaces/IOcorrenciaRepository';
-import { VitimaRequestDTO } from '../../dto/schema/CreateOcorrenciaSchema';
+import { AcusadoRequestDTO } from '../../dto/schema/CreateOcorrenciaSchema';
 import { AppError } from 'src/shared/errors/AppError';
-import { Vitima } from 'src/modules/ocorrencia/domain/entities/vitima';
 import { Endereco } from 'src/modules/ocorrencia/domain/entities/Endereco';
-import { VitimaResponseDTO } from '../../dto/response/VitimaResponseDTO';
+import { Acusado } from 'src/modules/ocorrencia/domain/entities/acusado';
+import { AcusadoResponseDTO } from '../../dto/response/AcusadoResponseDTO';
 
 @Injectable()
-export class AddVitimaUseCase {
+export class AddAcusadoUseCase {
   constructor(
     @Inject('IOcorrenciaRepository')
     private readonly ocorrenciaRepository: IOcorrenciaRepository,
@@ -15,8 +15,8 @@ export class AddVitimaUseCase {
 
   async execute(
     ocorrenciaId: string,
-    dto: VitimaRequestDTO,
-  ): Promise<VitimaResponseDTO> {
+    dto: AcusadoRequestDTO,
+  ): Promise<AcusadoResponseDTO> {
     const ocorrencia = await this.ocorrenciaRepository.findById(ocorrenciaId);
 
     if (!ocorrencia) {
@@ -36,23 +36,25 @@ export class AddVitimaUseCase {
       novoEndereco,
     );
 
-    const novaVitima = new Vitima();
+    const novaAcusado = new Acusado();
 
-    novaVitima.nome = dto.nome;
-    novaVitima.cpf = dto.cpf;
-    novaVitima.idade = dto.idade;
-    novaVitima.dataNascimento = dto.dataNascimento;
-    novaVitima.nomePai = dto.nomePai;
-    novaVitima.nomeMae = dto.nomeMae;
-    novaVitima.naturalidade = dto.naturalidade;
-    novaVitima.nacionalidade = dto.nacionalidade;
+    novaAcusado.nome = dto.nome;
+    novaAcusado.cpf = dto.cpf;
+    novaAcusado.idade = dto.idade;
+    novaAcusado.dataNascimento = dto.dataNascimento;
+    novaAcusado.nomePai = dto.nomePai;
+    novaAcusado.nomeMae = dto.nomeMae;
+    novaAcusado.naturalidade = dto.naturalidade;
+    novaAcusado.nacionalidade = dto.nacionalidade;
 
-    novaVitima.endereco = enderecoSalvo;
+    novaAcusado.endereco = enderecoSalvo;
 
-    novaVitima.ocorrencia = ocorrencia;
+    novaAcusado.ocorrencia = ocorrencia;
 
-    const vitimaSalva = await this.ocorrenciaRepository.saveVitima(novaVitima);
+    const acusadoSalvo = await this.ocorrenciaRepository.saveAcusado(
+      novaAcusado,
+    );
 
-    return new VitimaResponseDTO(vitimaSalva);
+    return new AcusadoResponseDTO(acusadoSalvo);
   }
 }

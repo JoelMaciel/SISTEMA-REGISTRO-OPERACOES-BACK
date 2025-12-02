@@ -13,10 +13,10 @@ import {
   VitimaRequestDTO,
   VitimaSchema,
 } from '../../application/dto/schema/CreateOcorrenciaSchema';
-import { VitimaResponseDTO } from '../../application/dto/response/VitimaResponseDTO';
 import { AddVitimaUseCase } from '../../application/usecase/vitimas/add-vitima';
 import { DeleteVitimaUseCase } from '../../application/usecase/vitimas/delete-vitima';
 import { UpdateVitimaUseCase } from '../../application/usecase/vitimas/update-vitima';
+import { VitimaResponseDTO } from '../../application/dto/response/VitimaResponseDTO';
 
 @Controller('api/ocorrencias')
 export class VitimaController {
@@ -38,7 +38,7 @@ export class VitimaController {
 
   @Patch(':ocorrenciaId/vitimas/:vitimasId')
   @HttpCode(HttpStatus.OK)
-  async updateArma(
+  async updateVitimas(
     @Param('ocorrenciaId') ocorrenciaId: string,
     @Param('vitimasId') vitimasId: string,
     @Body() body: VitimaRequestDTO,
@@ -49,7 +49,7 @@ export class VitimaController {
 
   @Delete(':ocorrenciaId/vitimas/:vitimaId')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteArma(
+  async deleteVitimas(
     @Param('ocorrenciaId') ocorrenciaId: string,
     @Param('vitimaId') vitimaId: string,
   ): Promise<void> {

@@ -41,6 +41,10 @@ import { VitimaController } from './modules/ocorrencia/infra/controller/VitimaCo
 import { Endereco } from './modules/ocorrencia/domain/entities/Endereco';
 import { DeleteVitimaUseCase } from './modules/ocorrencia/application/usecase/vitimas/delete-vitima';
 import { UpdateVitimaUseCase } from './modules/ocorrencia/application/usecase/vitimas/update-vitima';
+import { AddAcusadoUseCase } from './modules/ocorrencia/application/usecase/acusados/add-acusado';
+import { Acusado } from './modules/ocorrencia/domain/entities/acusado';
+import { AcusadoController } from './modules/ocorrencia/infra/controller/AcusadoController ';
+import { DeleteAcusadoUseCase } from './modules/ocorrencia/application/usecase/acusados/delete-acusado';
 
 @Module({
   imports: [
@@ -52,6 +56,7 @@ import { UpdateVitimaUseCase } from './modules/ocorrencia/application/usecase/vi
       Municao,
       Dinheiro,
       Vitima,
+      Acusado,
       Endereco,
     ]),
     OperacaoModule,
@@ -64,6 +69,7 @@ import { UpdateVitimaUseCase } from './modules/ocorrencia/application/usecase/vi
     MunicaoController,
     DinheiroController,
     VitimaController,
+    AcusadoController,
   ],
   providers: [
     CreateOcorrenciaUseCase,
@@ -90,6 +96,8 @@ import { UpdateVitimaUseCase } from './modules/ocorrencia/application/usecase/vi
     AddVitimaUseCase,
     DeleteVitimaUseCase,
     UpdateVitimaUseCase,
+    AddAcusadoUseCase,
+    DeleteAcusadoUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,

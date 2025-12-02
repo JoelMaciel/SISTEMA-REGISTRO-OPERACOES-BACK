@@ -13,6 +13,7 @@ import { Municao } from '../../domain/entities/municao';
 import { Dinheiro } from '../../domain/entities/dinheiro';
 import { Vitima } from '../../domain/entities/vitima';
 import { Endereco } from '../../domain/entities/Endereco';
+import { Acusado } from '../../domain/entities/acusado';
 
 @Injectable()
 export class OcorrenciaRepository implements IOcorrenciaRepository {
@@ -35,6 +36,9 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
 
     @InjectRepository(Vitima)
     private readonly vitimaRepository: Repository<Vitima>,
+
+    @InjectRepository(Acusado)
+    private readonly acusadoRepository: Repository<Acusado>,
 
     @InjectRepository(Endereco)
     private readonly enderecoRepository: Repository<Endereco>,
@@ -68,6 +72,11 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
   async saveVitima(vitima: Vitima): Promise<Vitima> {
     vitima;
     return this.vitimaRepository.save(vitima);
+  }
+
+  async saveAcusado(acusado: Acusado): Promise<Acusado> {
+    acusado;
+    return this.acusadoRepository.save(acusado);
   }
 
   async saveEndereco(endereco: Endereco): Promise<Endereco> {
@@ -328,6 +337,25 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     if (!vitima) return null;
 
     return { ocorrencia, vitima };
+  }
+
+  async findOcorrenciaWithAcusado(
+    ocorrenciaId: string,
+    acusadoId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; acusado: Acusado } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['acusados'],
+    });
+
+    if (!ocorrencia) return null;
+
+    const acusado = ocorrencia.acusados.find(
+      (acusado) => acusado.id === acusadoId,
+    );
+    if (!acusado) return null;
+
+    return { ocorrencia, acusado };
   }
 
   async findOcorrenciaWithVeiculo(
