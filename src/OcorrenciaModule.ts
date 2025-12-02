@@ -34,6 +34,7 @@ import { Dinheiro } from './modules/ocorrencia/domain/entities/dinheiro';
 import { AddDinheiroOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/dinheiro/add-dinheiro';
 import { DinheiroController } from './modules/ocorrencia/infra/controller/DinheiroController';
 import { DeleteDinheiroOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/dinheiro/delete-dinheiro';
+import { UpdateDinheiroUseCase } from './modules/ocorrencia/application/usecase/dinheiro/update-dinheiro';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { DeleteDinheiroOcorrenciaUseCase } from './modules/ocorrencia/applicatio
     UpdateMunicaoUseCase,
     AddDinheiroOcorrenciaUseCase,
     DeleteDinheiroOcorrenciaUseCase,
+    UpdateDinheiroUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,
