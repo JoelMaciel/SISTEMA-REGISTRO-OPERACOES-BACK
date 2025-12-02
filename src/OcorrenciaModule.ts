@@ -40,6 +40,7 @@ import { Vitima } from './modules/ocorrencia/domain/entities/vitima';
 import { VitimaController } from './modules/ocorrencia/infra/controller/VitimaController';
 import { Endereco } from './modules/ocorrencia/domain/entities/Endereco';
 import { DeleteVitimaUseCase } from './modules/ocorrencia/application/usecase/vitimas/delete-vitima';
+import { UpdateVitimaUseCase } from './modules/ocorrencia/application/usecase/vitimas/update-vitima';
 
 @Module({
   imports: [
@@ -88,6 +89,7 @@ import { DeleteVitimaUseCase } from './modules/ocorrencia/application/usecase/vi
     UpdateDinheiroUseCase,
     AddVitimaUseCase,
     DeleteVitimaUseCase,
+    UpdateVitimaUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,

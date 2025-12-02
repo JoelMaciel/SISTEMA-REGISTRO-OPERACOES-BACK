@@ -16,11 +16,12 @@ import {
 import { VitimaResponseDTO } from '../../application/dto/response/VitimaResponseDTO';
 import { AddVitimaUseCase } from '../../application/usecase/vitimas/add-vitima';
 import { DeleteVitimaUseCase } from '../../application/usecase/vitimas/delete-vitima';
+import { UpdateVitimaUseCase } from '../../application/usecase/vitimas/update-vitima';
 
 @Controller('api/ocorrencias')
 export class VitimaController {
   constructor(
-    // private readonly updateArmaUseCase: UpdateArmaUseCase,
+    private readonly updateVitimaUseCase: UpdateVitimaUseCase,
     private readonly addVitimaUseCase: AddVitimaUseCase,
     private readonly deleteVeiculoUseCase: DeleteVitimaUseCase,
   ) {}
@@ -35,16 +36,16 @@ export class VitimaController {
     return this.addVitimaUseCase.execute(ocorrenciaId, dto);
   }
 
-  // @Patch(':ocorrenciaId/armas/:armaId')
-  // @HttpCode(HttpStatus.OK)
-  // async updateArma(
-  //   @Param('ocorrenciaId') ocorrenciaId: string,
-  //   @Param('armaId') armaId: string,
-  //   @Body() body: ArmaRequestDTO,
-  // ): Promise<ArmaResponseDTO> {
-  //   const dto = await ValidateSchema.validate(ArmaSchema, body);
-  //   return this.updateArmaUseCase.execute(ocorrenciaId, armaId, dto);
-  // }
+  @Patch(':ocorrenciaId/vitimas/:vitimasId')
+  @HttpCode(HttpStatus.OK)
+  async updateArma(
+    @Param('ocorrenciaId') ocorrenciaId: string,
+    @Param('vitimasId') vitimasId: string,
+    @Body() body: VitimaRequestDTO,
+  ): Promise<VitimaResponseDTO> {
+    const dto = await ValidateSchema.validate(VitimaSchema, body);
+    return this.updateVitimaUseCase.execute(ocorrenciaId, vitimasId, dto);
+  }
 
   @Delete(':ocorrenciaId/vitimas/:vitimaId')
   @HttpCode(HttpStatus.NO_CONTENT)
