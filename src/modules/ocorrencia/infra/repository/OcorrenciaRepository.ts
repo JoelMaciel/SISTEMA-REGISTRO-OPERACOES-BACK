@@ -50,6 +50,7 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
   }
 
   async saveDinheiro(dinheiro: Dinheiro): Promise<Dinheiro> {
+    dinheiro;
     return this.dinheiroRepository.save(dinheiro);
   }
 
@@ -253,6 +254,25 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     if (!arma) return null;
 
     return { ocorrencia, arma };
+  }
+
+  async findOcorrenciaWithDinheiro(
+    ocorrenciaId: string,
+    dinheiroId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; dinheiro: Dinheiro } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['valoresApreendidos'],
+    });
+
+    if (!ocorrencia) return null;
+
+    const dinheiro = ocorrencia.valoresApreendidos.find(
+      (valores) => valores.id === dinheiroId,
+    );
+    if (!dinheiro) return null;
+
+    return { ocorrencia, dinheiro };
   }
 
   async findOcorrenciaWithMunicao(

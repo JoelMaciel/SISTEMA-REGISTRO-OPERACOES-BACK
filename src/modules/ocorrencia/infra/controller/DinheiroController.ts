@@ -16,12 +16,14 @@ import {
 
 import { AddDinheiroOcorrenciaUseCase } from '../../application/usecase/dinheiro/add-dinheiro';
 import { DinheiroResponseDTO } from '../../application/dto/response/DinheiroResponseDTO';
+import { DeleteDinheiroOcorrenciaUseCase } from '../../application/usecase/dinheiro/delete-dinheiro';
 
 @Controller('api/ocorrencias')
 export class DinheiroController {
   constructor(
     // private readonly updateArmaUseCase: UpdateArmaUseCase,
-    private readonly addDinheiroUseCase: AddDinheiroOcorrenciaUseCase, // private readonly deleteArmaFromOcorrenciaUseCase: DeleteArmaFromOcorrenciaUseCase,
+    private readonly addDinheiroUseCase: AddDinheiroOcorrenciaUseCase,
+    private readonly deleteDinheiroaUseCase: DeleteDinheiroOcorrenciaUseCase,
   ) {}
 
   @Post(':ocorrenciaId/dinheiro')
@@ -45,12 +47,12 @@ export class DinheiroController {
   //   return this.updateArmaUseCase.execute(ocorrenciaId, armaId, dto);
   // }
 
-  // @Delete(':ocorrenciaId/armas/:armaId')
-  // @HttpCode(HttpStatus.NO_CONTENT)
-  // async deleteArma(
-  //   @Param('ocorrenciaId') ocorrenciaId: string,
-  //   @Param('armaId') armaId: string,
-  // ): Promise<void> {
-  //   await this.deleteArmaFromOcorrenciaUseCase.execute(ocorrenciaId, armaId);
-  // }
+  @Delete(':ocorrenciaId/dinheiro/:dinheiroId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteArma(
+    @Param('ocorrenciaId') ocorrenciaId: string,
+    @Param('dinheiroId') dinheiroId: string,
+  ): Promise<void> {
+    await this.deleteDinheiroaUseCase.execute(ocorrenciaId, dinheiroId);
+  }
 }
