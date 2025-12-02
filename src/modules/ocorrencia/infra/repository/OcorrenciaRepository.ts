@@ -23,14 +23,19 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     private readonly armaRepository: Repository<Arma>,
     @InjectRepository(Droga)
     private readonly drogaRepository: Repository<Droga>,
+
     @InjectRepository(Veiculo)
     private readonly veiculoRepository: Repository<Veiculo>,
+
     @InjectRepository(Municao)
     private readonly municaoRepository: Repository<Municao>,
+
     @InjectRepository(Dinheiro)
     private readonly dinheiroRepository: Repository<Dinheiro>,
+
     @InjectRepository(Vitima)
     private readonly vitimaRepository: Repository<Vitima>,
+
     @InjectRepository(Endereco)
     private readonly enderecoRepository: Repository<Endereco>,
   ) {}

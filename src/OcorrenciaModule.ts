@@ -39,6 +39,7 @@ import { AddVitimaUseCase } from './modules/ocorrencia/application/usecase/vitim
 import { Vitima } from './modules/ocorrencia/domain/entities/vitima';
 import { VitimaController } from './modules/ocorrencia/infra/controller/VitimaController';
 import { Endereco } from './modules/ocorrencia/domain/entities/Endereco';
+import { DeleteVitimaUseCase } from './modules/ocorrencia/application/usecase/vitimas/delete-vitima';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { Endereco } from './modules/ocorrencia/domain/entities/Endereco';
     DeleteDinheiroOcorrenciaUseCase,
     UpdateDinheiroUseCase,
     AddVitimaUseCase,
+    DeleteVitimaUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,
