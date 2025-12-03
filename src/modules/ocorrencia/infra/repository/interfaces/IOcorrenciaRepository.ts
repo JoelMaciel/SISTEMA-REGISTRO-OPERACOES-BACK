@@ -5,6 +5,7 @@ import { Droga } from 'src/modules/ocorrencia/domain/entities/droga';
 import { Endereco } from 'src/modules/ocorrencia/domain/entities/Endereco';
 import { Municao } from 'src/modules/ocorrencia/domain/entities/municao';
 import { Ocorrencia } from 'src/modules/ocorrencia/domain/entities/ocorrencia';
+import { OutroObjeto } from 'src/modules/ocorrencia/domain/entities/outroObjeto';
 import { Veiculo } from 'src/modules/ocorrencia/domain/entities/veiculo';
 import { Vitima } from 'src/modules/ocorrencia/domain/entities/vitima';
 
@@ -23,6 +24,7 @@ export interface IOcorrenciaRepository {
   saveEndereco(endereco: Endereco): Promise<Endereco>;
   saveVitima(vitima: Vitima): Promise<Vitima>;
   saveAcusado(acusado: Acusado): Promise<Acusado>;
+  saveOutroObjeto(outroObjeto: OutroObjeto): Promise<OutroObjeto>;
   saveDinheiro(dinheiro: Dinheiro): Promise<Dinheiro>;
   saveVeiculo(veiculo: Veiculo): Promise<Veiculo>;
   saveMunicao(municao: Municao): Promise<Municao>;
@@ -36,6 +38,11 @@ export interface IOcorrenciaRepository {
     ocorrenciaId: string,
     vitimaId: string,
   ): Promise<{ ocorrencia: Ocorrencia; vitima: Vitima } | null>;
+
+  findOcorrenciaWithOutroObjeto(
+    ocorrenciaId: string,
+    outroObjetoId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; outroObjeto: OutroObjeto } | null>;
 
   findOcorrenciaWithAcusado(
     ocorrenciaId: string,

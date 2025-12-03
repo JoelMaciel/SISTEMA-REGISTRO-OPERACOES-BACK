@@ -46,6 +46,11 @@ import { Acusado } from './modules/ocorrencia/domain/entities/acusado';
 import { AcusadoController } from './modules/ocorrencia/infra/controller/AcusadoController ';
 import { DeleteAcusadoUseCase } from './modules/ocorrencia/application/usecase/acusados/delete-acusado';
 import { UpdateAcusadoUseCase } from './modules/ocorrencia/application/usecase/acusados/update-acusado';
+import { OutroObjeto } from './modules/ocorrencia/domain/entities/outroObjeto';
+import { OutroObjetoController } from './modules/ocorrencia/infra/controller/OutroObjetoController';
+import { AddOutroObjetoUseCase } from './modules/ocorrencia/application/usecase/outrosObjetos/add-outro-objeto';
+import { DeleteOutroObjetoUseCase } from './modules/ocorrencia/application/usecase/outrosObjetos/delete-outro-objetots';
+import { UpdateObjetoUseCase } from './modules/ocorrencia/application/usecase/outrosObjetos/update-outro-objeto';
 
 @Module({
   imports: [
@@ -59,6 +64,7 @@ import { UpdateAcusadoUseCase } from './modules/ocorrencia/application/usecase/a
       Vitima,
       Acusado,
       Endereco,
+      OutroObjeto,
     ]),
     OperacaoModule,
   ],
@@ -71,6 +77,7 @@ import { UpdateAcusadoUseCase } from './modules/ocorrencia/application/usecase/a
     DinheiroController,
     VitimaController,
     AcusadoController,
+    OutroObjetoController,
   ],
   providers: [
     CreateOcorrenciaUseCase,
@@ -100,6 +107,9 @@ import { UpdateAcusadoUseCase } from './modules/ocorrencia/application/usecase/a
     AddAcusadoUseCase,
     DeleteAcusadoUseCase,
     UpdateAcusadoUseCase,
+    AddOutroObjetoUseCase,
+    DeleteOutroObjetoUseCase,
+    UpdateObjetoUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,
