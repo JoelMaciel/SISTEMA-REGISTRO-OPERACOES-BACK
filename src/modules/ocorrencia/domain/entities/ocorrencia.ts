@@ -49,41 +49,49 @@ export class Ocorrencia {
 
   @OneToMany(() => Vitima, (vitima) => vitima.ocorrencia, {
     cascade: true,
+    onUpdate: 'CASCADE',
   })
   vitimas: Vitima[];
 
   @OneToMany(() => Acusado, (acusado) => acusado.ocorrencia, {
     cascade: true,
+    onUpdate: 'CASCADE',
   })
   acusados: Acusado[];
 
   @OneToMany(() => Droga, (droga) => droga.ocorrencia, {
     cascade: true,
+    onUpdate: 'CASCADE',
   })
   drogas: Droga[];
 
   @OneToMany(() => Municao, (municao) => municao.ocorrencia, {
     cascade: true,
+    onUpdate: 'CASCADE',
   })
   municoes: Municao[];
 
   @OneToMany(() => Veiculo, (veiculo) => veiculo.ocorrencia, {
     cascade: true,
+    onUpdate: 'CASCADE',
   })
   veiculos: Veiculo[];
 
   @OneToMany(() => Arma, (arma) => arma.ocorrencia, {
     cascade: true,
+    onUpdate: 'CASCADE',
   })
   armas: Arma[];
 
   @OneToMany(() => OutroObjeto, (objeto) => objeto.ocorrencia, {
     cascade: true,
+    onUpdate: 'CASCADE',
   })
   outrosObjetos: OutroObjeto[];
 
   @OneToMany(() => Dinheiro, (dinheiro) => dinheiro.ocorrencia, {
     cascade: true,
+    onUpdate: 'CASCADE',
   })
   valoresApreendidos: Dinheiro[];
 

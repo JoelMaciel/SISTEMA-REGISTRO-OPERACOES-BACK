@@ -15,8 +15,10 @@ export class OcorrenciaResponseDTO {
     numero?: string;
     bairro: string;
     cidade: string;
+    cep: string;
     uf: string;
   } | null;
+
   vitimas: {
     id?: string;
     nome: string;
@@ -27,18 +29,38 @@ export class OcorrenciaResponseDTO {
     nomePai: string;
     naturalidade: string;
     nacionalidade: string;
+    endereco: {
+      id?: string;
+      rua: string;
+      numero?: string;
+      bairro: string;
+      cidade: string;
+      cep: string;
+      uf: string;
+      complemento?: string;
+    } | null;
   }[];
+
   acusados: {
     id?: string;
     nome: string;
-    idade: number;
     cpf: string;
+    idade?: number;
     dataNascimento: Date;
-    nomaMae: string;
+    nomeMae: string;
     nomePai: string;
     naturalidade: string;
     nacionalidade: string;
-    observacao?: string;
+    endereco: {
+      id?: string;
+      rua: string;
+      numero?: string;
+      bairro: string;
+      cidade: string;
+      cep: string;
+      uf: string;
+      complemento?: string;
+    } | null;
   }[];
   drogas: {
     id?: string;
@@ -71,7 +93,7 @@ export class OcorrenciaResponseDTO {
     id?: string;
     descricao: string;
   }[];
-  dinheiro: {
+  valoresApreendidos: {
     id?: string;
     valor: string;
   }[];
@@ -93,6 +115,7 @@ export class OcorrenciaResponseDTO {
           numero: ocorrencia.endereco.numero,
           bairro: ocorrencia.endereco.bairro,
           cidade: ocorrencia.endereco.cidade,
+          cep: ocorrencia.endereco.cep,
           uf: ocorrencia.endereco.uf,
         }
       : null;
@@ -108,20 +131,44 @@ export class OcorrenciaResponseDTO {
           nomePai: v.nomePai,
           naturalidade: v.naturalidade,
           nacionalidade: v.nacionalidade,
+          endereco: v.endereco
+            ? {
+                id: (v.endereco as any).id,
+                rua: v.endereco.rua,
+                numero: v.endereco.numero,
+                bairro: v.endereco.bairro,
+                cidade: v.endereco.cidade,
+                cep: v.endereco.cep,
+                uf: v.endereco.uf,
+                complemento: v.endereco.complemento,
+              }
+            : null,
         }))
       : [];
 
     this.acusados = ocorrencia.acusados
-      ? ocorrencia.acusados.map((a) => ({
-          id: (a as any).id,
-          nome: a.nome,
-          idade: a.idade,
-          cpf: a.cpf,
-          dataNascimento: a.dataNascimento ? new Date(a.dataNascimento) : null,
-          nomaMae: a.nomeMae,
-          nomePai: a.nomePai,
-          naturalidade: a.naturalidade,
-          nacionalidade: a.nacionalidade,
+      ? ocorrencia.acusados.map((v) => ({
+          id: (v as any).id,
+          nome: v.nome,
+          idade: v.idade,
+          cpf: v.cpf,
+          dataNascimento: v.dataNascimento ? new Date(v.dataNascimento) : null,
+          nomeMae: v.nomeMae,
+          nomePai: v.nomePai,
+          naturalidade: v.naturalidade,
+          nacionalidade: v.nacionalidade,
+          endereco: v.endereco
+            ? {
+                id: (v.endereco as any).id,
+                rua: v.endereco.rua,
+                numero: v.endereco.numero,
+                bairro: v.endereco.bairro,
+                cidade: v.endereco.cidade,
+                cep: v.endereco.cep,
+                uf: v.endereco.uf,
+                complemento: v.endereco.complemento,
+              }
+            : null,
         }))
       : [];
 
@@ -171,7 +218,7 @@ export class OcorrenciaResponseDTO {
         }))
       : [];
 
-    this.dinheiro = ocorrencia.valoresApreendidos
+    this.valoresApreendidos = ocorrencia.valoresApreendidos
       ? ocorrencia.valoresApreendidos.map((d) => ({
           id: (d as any).id,
           valor: d.valor,

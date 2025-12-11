@@ -5,13 +5,111 @@ import { OcorrenciaController } from './modules/ocorrencia/infra/controller/Ocor
 import { CreateOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/create-ocorrencia';
 import { OcorrenciaRepository } from './modules/ocorrencia/infra/repository/OcorrenciaRepository';
 import { Ocorrencia } from './modules/ocorrencia/domain/entities/ocorrencia';
+import { UpdateOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/update-ocorrencia';
+import { ListOcorrenciasUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/list-ocorrencia';
+import { ShowOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/show-ocorrencia';
+import { DeleteOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/delete-ocorrencia';
+import { FindOcorrenciaByMUseCase } from './modules/ocorrencia/application/usecase/ocorrencia/find-m-ocorrencia';
+import { UpdateArmaUseCase } from './modules/ocorrencia/application/usecase/arma/update-arma';
+import { ArmaController } from './modules/ocorrencia/infra/controller/ArmaController';
+import { AddArmaToOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/arma/add-arma';
+import { DeleteArmaFromOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/arma/delete-arma';
+import { Arma } from './modules/ocorrencia/domain/entities/arma';
+import { Droga } from './modules/ocorrencia/domain/entities/droga';
+import { AddDrogaToOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/droga/add-droga';
+import { DrogaController } from './modules/ocorrencia/infra/controller/DrogaController';
+import { DeleteDrogaFromOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/droga/delete-droga';
+import { UpdateDrogaUseCase } from './modules/ocorrencia/application/usecase/droga/update-droga';
+import { Veiculo } from './modules/ocorrencia/domain/entities/veiculo';
+import { AddVeiculoToOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/veiculo/add-veiculo';
+import { VeiculoController } from './modules/ocorrencia/infra/controller/VeiculoController';
+import { DeleteVeiculoFromOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/veiculo/delete-veiculo';
+import { UpdateVeiculoUseCase } from './modules/ocorrencia/application/usecase/veiculo/update-veiculo';
+import { Municao } from './modules/ocorrencia/domain/entities/municao';
+import { AddMunicaoToOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/municao/add-municao';
+import { MunicaoController } from './modules/ocorrencia/infra/controller/MunicaoController';
+import { DeleteMunicaoFromOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/municao/delete-municao';
+import { UpdateMunicaoUseCase } from './modules/ocorrencia/application/usecase/municao/update-municao';
+import { Dinheiro } from './modules/ocorrencia/domain/entities/dinheiro';
+import { AddDinheiroOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/dinheiro/add-dinheiro';
+import { DinheiroController } from './modules/ocorrencia/infra/controller/DinheiroController';
+import { DeleteDinheiroOcorrenciaUseCase } from './modules/ocorrencia/application/usecase/dinheiro/delete-dinheiro';
+import { UpdateDinheiroUseCase } from './modules/ocorrencia/application/usecase/dinheiro/update-dinheiro';
+import { AddVitimaUseCase } from './modules/ocorrencia/application/usecase/vitimas/add-vitima';
+import { Vitima } from './modules/ocorrencia/domain/entities/vitima';
+import { VitimaController } from './modules/ocorrencia/infra/controller/VitimaController';
+import { Endereco } from './modules/ocorrencia/domain/entities/Endereco';
+import { DeleteVitimaUseCase } from './modules/ocorrencia/application/usecase/vitimas/delete-vitima';
+import { UpdateVitimaUseCase } from './modules/ocorrencia/application/usecase/vitimas/update-vitima';
+import { AddAcusadoUseCase } from './modules/ocorrencia/application/usecase/acusados/add-acusado';
+import { Acusado } from './modules/ocorrencia/domain/entities/acusado';
+import { AcusadoController } from './modules/ocorrencia/infra/controller/AcusadoController ';
+import { DeleteAcusadoUseCase } from './modules/ocorrencia/application/usecase/acusados/delete-acusado';
+import { UpdateAcusadoUseCase } from './modules/ocorrencia/application/usecase/acusados/update-acusado';
+import { OutroObjeto } from './modules/ocorrencia/domain/entities/outroObjeto';
+import { OutroObjetoController } from './modules/ocorrencia/infra/controller/OutroObjetoController';
+import { AddOutroObjetoUseCase } from './modules/ocorrencia/application/usecase/outrosObjetos/add-outro-objeto';
+import { DeleteOutroObjetoUseCase } from './modules/ocorrencia/application/usecase/outrosObjetos/delete-outro-objetots';
+import { UpdateObjetoUseCase } from './modules/ocorrencia/application/usecase/outrosObjetos/update-outro-objeto';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Ocorrencia]), OperacaoModule],
-  controllers: [OcorrenciaController],
+  imports: [
+    TypeOrmModule.forFeature([
+      Ocorrencia,
+      Arma,
+      Droga,
+      Veiculo,
+      Municao,
+      Dinheiro,
+      Vitima,
+      Acusado,
+      Endereco,
+      OutroObjeto,
+    ]),
+    OperacaoModule,
+  ],
+  controllers: [
+    OcorrenciaController,
+    ArmaController,
+    DrogaController,
+    VeiculoController,
+    MunicaoController,
+    DinheiroController,
+    VitimaController,
+    AcusadoController,
+    OutroObjetoController,
+  ],
   providers: [
     CreateOcorrenciaUseCase,
-
+    UpdateOcorrenciaUseCase,
+    ListOcorrenciasUseCase,
+    ShowOcorrenciaUseCase,
+    DeleteOcorrenciaUseCase,
+    FindOcorrenciaByMUseCase,
+    UpdateArmaUseCase,
+    AddArmaToOcorrenciaUseCase,
+    DeleteArmaFromOcorrenciaUseCase,
+    AddDrogaToOcorrenciaUseCase,
+    DeleteDrogaFromOcorrenciaUseCase,
+    UpdateDrogaUseCase,
+    AddVeiculoToOcorrenciaUseCase,
+    DeleteVeiculoFromOcorrenciaUseCase,
+    UpdateVeiculoUseCase,
+    AddMunicaoToOcorrenciaUseCase,
+    DeleteMunicaoFromOcorrenciaUseCase,
+    UpdateMunicaoUseCase,
+    AddDinheiroOcorrenciaUseCase,
+    DeleteDinheiroOcorrenciaUseCase,
+    UpdateDinheiroUseCase,
+    AddVitimaUseCase,
+    DeleteVitimaUseCase,
+    UpdateVitimaUseCase,
+    AddAcusadoUseCase,
+    DeleteAcusadoUseCase,
+    UpdateAcusadoUseCase,
+    AddOutroObjetoUseCase,
+    DeleteOutroObjetoUseCase,
+    UpdateObjetoUseCase,
     {
       provide: 'IOcorrenciaRepository',
       useClass: OcorrenciaRepository,

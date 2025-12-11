@@ -1,194 +1,425 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IOcorrenciaRepository,
   IPaginatedResult,
 } from './interfaces/IOcorrenciaRepository';
-import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
 import { Ocorrencia } from '../../domain/entities/ocorrencia';
+import { Arma } from '../../domain/entities/arma';
+import { Droga } from '../../domain/entities/droga';
+import { Veiculo } from '../../domain/entities/veiculo';
+import { Municao } from '../../domain/entities/municao';
+import { Dinheiro } from '../../domain/entities/dinheiro';
+import { Vitima } from '../../domain/entities/vitima';
+import { Endereco } from '../../domain/entities/Endereco';
+import { Acusado } from '../../domain/entities/acusado';
+import { OutroObjeto } from '../../domain/entities/outroObjeto';
 
 @Injectable()
 export class OcorrenciaRepository implements IOcorrenciaRepository {
   constructor(
     @InjectRepository(Ocorrencia)
     private readonly ocorrenciaRepository: Repository<Ocorrencia>,
+    @InjectRepository(Arma)
+    private readonly armaRepository: Repository<Arma>,
+    @InjectRepository(Droga)
+    private readonly drogaRepository: Repository<Droga>,
+
+    @InjectRepository(Veiculo)
+    private readonly veiculoRepository: Repository<Veiculo>,
+
+    @InjectRepository(Municao)
+    private readonly municaoRepository: Repository<Municao>,
+
+    @InjectRepository(Dinheiro)
+    private readonly dinheiroRepository: Repository<Dinheiro>,
+
+    @InjectRepository(Vitima)
+    private readonly vitimaRepository: Repository<Vitima>,
+
+    @InjectRepository(Acusado)
+    private readonly acusadoRepository: Repository<Acusado>,
+
+    @InjectRepository(Endereco)
+    private readonly enderecoRepository: Repository<Endereco>,
+
+    @InjectRepository(OutroObjeto)
+    private readonly outroObjetoRepository: Repository<OutroObjeto>,
   ) {}
 
   async create(data: Partial<Ocorrencia>): Promise<Ocorrencia> {
-    const operacao = this.ocorrenciaRepository.create(data);
-    return this.ocorrenciaRepository.save(operacao);
+    return this.ocorrenciaRepository.save(data);
+  }
+
+  async saveArma(arma: Arma): Promise<Arma> {
+    return this.armaRepository.save(arma);
+  }
+
+  async saveDroga(droga: Droga): Promise<Droga> {
+    return this.drogaRepository.save(droga);
+  }
+
+  async saveOutroObjeto(outroObjeto: OutroObjeto): Promise<OutroObjeto> {
+    return this.outroObjetoRepository.save(outroObjeto);
+  }
+
+  async saveVeiculo(veiculo: Veiculo): Promise<Veiculo> {
+    return this.veiculoRepository.save(veiculo);
+  }
+
+  async saveMunicao(municao: Municao): Promise<Municao> {
+    return this.municaoRepository.save(municao);
+  }
+
+  async saveDinheiro(dinheiro: Dinheiro): Promise<Dinheiro> {
+    dinheiro;
+    return this.dinheiroRepository.save(dinheiro);
+  }
+
+  async saveVitima(vitima: Vitima): Promise<Vitima> {
+    vitima;
+    return this.vitimaRepository.save(vitima);
+  }
+
+  async saveAcusado(acusado: Acusado): Promise<Acusado> {
+    acusado;
+    return this.acusadoRepository.save(acusado);
+  }
+
+  async saveEndereco(endereco: Endereco): Promise<Endereco> {
+    endereco;
+    return this.enderecoRepository.save(endereco);
   }
 
   async save(ocorrencia: Ocorrencia): Promise<Ocorrencia> {
     return this.ocorrenciaRepository.save(ocorrencia);
   }
 
-  async findById(
-    id: string,
-    relations: string[] = [],
-  ): Promise<Ocorrencia | null> {
-    return this.ocorrenciaRepository.findOne({
+  async findById(id: string): Promise<Ocorrencia | null> {
+    return await this.ocorrenciaRepository.findOne({
       where: { id },
-      relations,
+      relations: [
+        'vitimas',
+        'drogas',
+        'municoes',
+        'veiculos',
+        'armas',
+        'acusados',
+        'outrosObjetos',
+        'valoresApreendidos',
+        'endereco',
+      ],
     });
   }
 
-  // async save(operacao: Operacao): Promise<Operacao> {
-  //   return this.operacaoRepository.save(operacao);
-  // }
+  async findAll(
+    page = 1,
+    limit = 10,
+    m?: string,
+    tipo?: string,
+    dataInicio?: Date,
+    dataFim?: Date,
+    nomeVitima?: string,
+    nomeAcusado?: string,
+    tipoArma?: string,
+    calibreArma?: string,
+    numeracaoArma?: string,
+  ): Promise<IPaginatedResult<Ocorrencia>> {
+    const skip = (page - 1) * limit;
 
-  // public async findAll(
-  //   page = 1,
-  //   limit = 10,
-  //   nome?: string,
-  //   opmDemandante?: string,
-  //   dataInicialStart?: Date,
-  //   dataInicialEnd?: Date,
-  //   dataFinalStart?: Date,
-  //   dataFinalEnd?: Date,
-  //   postoArea?: string,
-  // ): Promise<IPaginatedResult<Operacao>> {
-  //   const skip = (page - 1) * limit;
+    const query = this.ocorrenciaRepository
+      .createQueryBuilder('ocorrencia')
+      .leftJoinAndSelect('ocorrencia.endereco', 'endereco')
+      .select([
+        'ocorrencia.id',
+        'ocorrencia.m',
+        'ocorrencia.data',
+        'ocorrencia.tipo',
+        'ocorrencia.horario',
+        'ocorrencia.resumo',
+        'endereco.rua',
+        'endereco.bairro',
+        'endereco.cidade',
+        'endereco.cep',
+        'endereco.uf',
+      ])
+      .skip(skip)
+      .take(limit)
+      .orderBy('ocorrencia.data', 'DESC');
 
-  //   const query = this.operacaoRepository
-  //     .createQueryBuilder('operacao')
-  //     .leftJoinAndSelect('operacao.postoAreas', 'postoAreas')
+    if (m) {
+      query.andWhere('ocorrencia.m ILIKE :m', { m: `%${m}%` });
+    }
 
-  //     .skip(skip)
-  //     .take(limit)
-  //     .orderBy('operacao.dataInicial', 'DESC');
+    if (tipo) {
+      query.andWhere('ocorrencia.tipo ILIKE :tipo', { tipo: `%${tipo}%` });
+    }
 
-  //   if (nome) {
-  //     query.andWhere('operacao.nome ILIKE :nome', { nome: `%${nome}%` });
-  //   }
+    if (dataInicio && dataFim) {
+      query.andWhere('ocorrencia.data BETWEEN :dataInicio AND :dataFim', {
+        dataInicio,
+        dataFim,
+      });
+    } else if (dataInicio) {
+      query.andWhere('ocorrencia.data >= :dataInicio', { dataInicio });
+    } else if (dataFim) {
+      query.andWhere('ocorrencia.data <= :dataFim', { dataFim });
+    }
 
-  //   if (opmDemandante) {
-  //     query.andWhere('operacao.opmDemandante ILIKE :opmDemandante', {
-  //       opmDemandante: `%${opmDemandante}%`,
-  //     });
-  //   }
+    if (nomeVitima) {
+      query.andWhere(
+        (qb) => {
+          const subQuery = qb
+            .subQuery()
+            .select('1')
+            .from('vitimas', 'v')
+            .where('v.ocorrencia_id = ocorrencia.id')
+            .andWhere('v.nome ILIKE :nomeVitima')
+            .getQuery();
+          return 'EXISTS ' + subQuery;
+        },
+        { nomeVitima: `%${nomeVitima}%` },
+      );
+    }
 
-  //   if (dataInicialStart && dataInicialEnd) {
-  //     query.andWhere(
-  //       'operacao.dataInicial BETWEEN :dataInicialStart AND :dataInicialEnd',
-  //       {
-  //         dataInicialStart,
-  //         dataInicialEnd,
-  //       },
-  //     );
-  //   } else if (dataInicialStart) {
-  //     query.andWhere('operacao.dataInicial >= :dataInicialStart', {
-  //       dataInicialStart,
-  //     });
-  //   } else if (dataInicialEnd) {
-  //     query.andWhere('operacao.dataInicial <= :dataInicialEnd', {
-  //       dataInicialEnd,
-  //     });
-  //   }
+    if (nomeAcusado) {
+      query.andWhere(
+        (qb) => {
+          const subQuery = qb
+            .subQuery()
+            .select('1')
+            .from('acusados', 'a')
+            .where('a.ocorrencia_id = ocorrencia.id')
+            .andWhere('a.nome ILIKE :nomeAcusado')
+            .getQuery();
+          return 'EXISTS ' + subQuery;
+        },
+        { nomeAcusado: `%${nomeAcusado}%` },
+      );
+    }
 
-  //   if (dataFinalStart && dataFinalEnd) {
-  //     query.andWhere(
-  //       'operacao.dataFinal BETWEEN :dataFinalStart AND :dataFinalEnd',
-  //       {
-  //         dataFinalStart,
-  //         dataFinalEnd,
-  //       },
-  //     );
-  //   } else if (dataFinalStart) {
-  //     query.andWhere('operacao.dataFinal >= :dataFinalStart', {
-  //       dataFinalStart,
-  //     });
-  //   } else if (dataFinalEnd) {
-  //     query.andWhere('operacao.dataFinal <= :dataFinalEnd', {
-  //       dataFinalEnd,
-  //     });
-  //   }
+    if (tipoArma || calibreArma || numeracaoArma) {
+      query.andWhere((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('1')
+          .from('armas', 'ar')
+          .where('ar.ocorrencia_id = ocorrencia.id');
 
-  //   if (postoArea) {
-  //     query.andWhere('postoServico.nome ILIKE :postoServico', {
-  //       postoServico: `%${postoArea}%`,
-  //     });
-  //   }
+        if (tipoArma)
+          subQuery.andWhere('ar.tipo ILIKE :tipoArma', {
+            tipoArma: `%${tipoArma}%`,
+          });
+        if (calibreArma)
+          subQuery.andWhere('ar.calibre ILIKE :calibreArma', {
+            calibreArma: `%${calibreArma}%`,
+          });
+        if (numeracaoArma)
+          subQuery.andWhere('ar.numeracao ILIKE :numeracaoArma', {
+            numeracaoArma: `%${numeracaoArma}%`,
+          });
 
-  //   const [items, total] = await query.getManyAndCount();
+        return 'EXISTS ' + subQuery.getQuery();
+      });
+    }
 
-  //   return {
-  //     items,
-  //     total,
-  //     pageIndex: page,
-  //     pageSize: limit,
-  //   };
-  // }
+    const [items, total] = await query.getManyAndCount();
 
-  // async update(id: string, data: Partial<Operacao>): Promise<Operacao> {
-  //   const operacao = await this.operacaoRepository.findOneOrFail({
-  //     where: { id },
-  //     relations: ['postoAreas'],
-  //   });
+    return {
+      items,
+      total,
+      pageIndex: page,
+      pageSize: limit,
+    };
+  }
 
-  //   const operacaoAtualizada = this.operacaoRepository.merge(operacao, data);
+  async update(id: string, data: Partial<Ocorrencia>): Promise<Ocorrencia> {
+    const ocorrencia = await this.ocorrenciaRepository.findOneOrFail({
+      where: { id },
+      relations: ['endereco'],
+    });
 
-  //   return this.operacaoRepository.save(operacaoAtualizada);
-  // }
+    ocorrencia.m = data.m ?? ocorrencia.m;
+    ocorrencia.data = data.data ?? ocorrencia.data;
+    ocorrencia.horario = data.horario ?? ocorrencia.horario;
+    ocorrencia.tipo = data.tipo ?? ocorrencia.tipo;
+    ocorrencia.resumo = data.resumo ?? ocorrencia.resumo;
 
-  // async findOperacaoWithPostoArea(
-  //   operacaoId: string,
-  //   postoAreaId: string,
-  // ): Promise<Operacao | null> {
-  //   const operacao = await this.operacaoRepository.findOne({
-  //     where: { id: operacaoId },
-  //     relations: ['postoAreas'],
-  //   });
+    if (data.endereco) {
+      Object.assign(ocorrencia.endereco, data.endereco);
+    }
 
-  //   if (!operacao) return null;
+    return this.ocorrenciaRepository.save(ocorrencia);
+  }
 
-  //   const posto = operacao.postoAreas.find((p) => p.id === postoAreaId);
-  //   if (!posto) return null;
+  async findByMOcorrencia(m: string): Promise<Ocorrencia | null> {
+    if (!m) return null;
 
-  //   return operacao;
-  // }
+    const mNormalized = m.trim();
 
-  // async delete(id: string): Promise<void> {
-  //   await this.operacaoRepository.delete(id);
-  // }
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { m: ILike(`%${mNormalized}%`) },
+      relations: [
+        'endereco',
+        'vitimas',
+        'acusados',
+        'armas',
+        'municoes',
+        'drogas',
+        'veiculos',
+        'outrosObjetos',
+        'valoresApreendidos',
+      ],
+      order: { createdAt: 'DESC' },
+    });
 
-  // async removePostoAreaFromOperacao(
-  //   operacaoId: string,
-  //   postoAreaId: string,
-  // ): Promise<void> {
-  //   const operacao = await this.operacaoRepository.findOne({
-  //     where: { id: operacaoId },
-  //     relations: ['postoAreas'],
-  //   });
+    return ocorrencia ?? null;
+  }
 
-  //   if (!operacao) {
-  //     throw new Error('Operação não encontrada');
-  //   }
+  async findOcorrenciaWithArma(
+    ocorrenciaId: string,
+    armaId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; arma: Arma } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['armas'],
+    });
 
-  //   const postoIndex = operacao.postoAreas.findIndex(
-  //     (p) => p.id === postoAreaId,
-  //   );
-  //   if (postoIndex === -1) {
-  //     throw new Error('Posto/Área não encontrado na operação');
-  //   }
+    if (!ocorrencia) return null;
 
-  //   operacao.postoAreas.splice(postoIndex, 1);
+    const arma = ocorrencia.armas.find((a) => a.id === armaId);
+    if (!arma) return null;
 
-  //   await this.operacaoRepository.save(operacao);
-  // }
+    return { ocorrencia, arma };
+  }
 
-  // async findByIdWithRelations(
-  //   id: string,
-  //   relations: string[] = ['postoAreas'],
-  // ): Promise<Operacao | null> {
-  //   return this.operacaoRepository.findOne({
-  //     where: { id },
-  //     relations,
-  //   });
-  // }
+  async findOcorrenciaWithDinheiro(
+    ocorrenciaId: string,
+    dinheiroId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; dinheiro: Dinheiro } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['valoresApreendidos'],
+    });
 
-  // async removePostoArea(postoArea: PostoArea): Promise<void> {
-  //   await this.operacaoRepository.manager.remove(postoArea);
-  // }
+    if (!ocorrencia) return null;
+
+    const dinheiro = ocorrencia.valoresApreendidos.find(
+      (valores) => valores.id === dinheiroId,
+    );
+    if (!dinheiro) return null;
+
+    return { ocorrencia, dinheiro };
+  }
+
+  async findOcorrenciaWithMunicao(
+    ocorrenciaId: string,
+    municaoId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; municao: Municao } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['municoes'],
+    });
+
+    if (!ocorrencia) return null;
+
+    const municao = ocorrencia.municoes.find((m) => m.id === municaoId);
+    if (!municao) return null;
+
+    return { ocorrencia, municao };
+  }
+
+  async findOcorrenciaWithVitima(
+    ocorrenciaId: string,
+    vitimaId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; vitima: Vitima } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['vitimas'],
+    });
+
+    if (!ocorrencia) return null;
+
+    const vitima = ocorrencia.vitimas.find((vitima) => vitima.id === vitimaId);
+    if (!vitima) return null;
+
+    return { ocorrencia, vitima };
+  }
+
+  async findOcorrenciaWithOutroObjeto(
+    ocorrenciaId: string,
+    outroObjetoId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; outroObjeto: OutroObjeto } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['outrosObjetos'],
+    });
+
+    if (!ocorrencia) return null;
+
+    const outroObjeto = ocorrencia.outrosObjetos.find(
+      (outroObjeto) => outroObjeto.id === outroObjetoId,
+    );
+    if (!outroObjeto) return null;
+
+    return { ocorrencia, outroObjeto };
+  }
+
+  async findOcorrenciaWithAcusado(
+    ocorrenciaId: string,
+    acusadoId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; acusado: Acusado } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['acusados'],
+    });
+
+    if (!ocorrencia) return null;
+
+    const acusado = ocorrencia.acusados.find(
+      (acusado) => acusado.id === acusadoId,
+    );
+    if (!acusado) return null;
+
+    return { ocorrencia, acusado };
+  }
+
+  async findOcorrenciaWithVeiculo(
+    ocorrenciaId: string,
+    veiculoId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; veiculo: Veiculo } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['veiculos'],
+    });
+
+    if (!ocorrencia) return null;
+
+    const veiculo = ocorrencia.veiculos.find((v) => v.id === veiculoId);
+    if (!veiculo) return null;
+
+    return { ocorrencia, veiculo };
+  }
+
+  async findOcorrenciaWithDroga(
+    ocorrenciaId: string,
+    drogaId: string,
+  ): Promise<{ ocorrencia: Ocorrencia; droga: Droga } | null> {
+    const ocorrencia = await this.ocorrenciaRepository.findOne({
+      where: { id: ocorrenciaId },
+      relations: ['drogas'],
+    });
+
+    if (!ocorrencia) return null;
+
+    const droga = ocorrencia.drogas.find((droga) => droga.id === drogaId);
+    if (!droga) return null;
+
+    return { ocorrencia, droga };
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.ocorrenciaRepository.delete(id);
+  }
 }
