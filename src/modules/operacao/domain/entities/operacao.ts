@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { PostoArea } from './posto-area';
 import { Ocorrencia } from 'src/modules/ocorrencia/domain/entities/ocorrencia';
+import { Relatorio } from 'src/modules/relatorio/domain/entities/relatorio';
 
 @Entity('operacoes')
 export class Operacao {
@@ -45,6 +46,11 @@ export class Operacao {
     cascade: true,
   })
   ocorrencias: Ocorrencia[];
+
+  @OneToMany(() => Relatorio, (relatorio) => relatorio.operacao, {
+    eager: false,
+  })
+  relatorios: Relatorio[];
 
   @CreateDateColumn({ name: 'criado_em', type: 'timestamp' })
   createdAt: Date;

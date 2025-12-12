@@ -1,19 +1,13 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
-
+import { Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { PostoComandante } from 'src/modules/equipe/domain/enums/posto-comandante.enum';
+import { Relatorio } from './relatorio';
 
 @Entity('fiscais')
 export class Fiscal {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: false, length: 40 })
+  @Column({ nullable: false, length: 30 })
   postoGraduação: PostoComandante;
 
   @Column({ nullable: false, length: 40 })
@@ -25,9 +19,8 @@ export class Fiscal {
   @Column({ nullable: false, length: 40 })
   opm: string;
 
-  // @ManyToOne(() => Veiculo, (veiculo) => veiculo.relatorio, {
-  //   eager: false,
-  // })
-  // @JoinColumn({ name: 'veiculo_id' })
-  // veiculo: Veiculo;
+  @OneToMany(() => Relatorio, (relatorio) => relatorio.fiscal, {
+    eager: false,
+  })
+  relatorios: Relatorio[];
 }
