@@ -16,10 +16,14 @@ import {
   CreateFiscalSchema,
 } from '../../application/dto/shemas/CreateFiscalSchema';
 import { FiscalResponseDTO } from '../../application/dto/response/FiscalResponseDTO';
+import { ShowFiscalUseCase } from '../../application/usecases/equipe/show-fiscal';
 
 @Controller('api/fiscais')
 export class FiscalController {
-  constructor(private readonly createFiscalUseCase: CreateFiscalUseCase) {}
+  constructor(
+    private readonly createFiscalUseCase: CreateFiscalUseCase,
+    private readonly showFiscalUseCase: ShowFiscalUseCase,
+  ) {}
 
   @Post()
   async create(
@@ -29,8 +33,6 @@ export class FiscalController {
       CreateFiscalSchema,
       body,
     );
-    // Note que, diferente de 'Equipe', 'Fiscal' não depende de um operacaoId na URL,
-    // mas sim de um body com os dados do Fiscal.
     return this.createFiscalUseCase.execute(dto);
   }
 
@@ -53,14 +55,10 @@ export class FiscalController {
   //   );
   // }
 
-  // /**
-  //  * Retorna um Fiscal por ID.
-  //  * Rota: GET /api/fiscais/:id
-  //  */
-  // @Get(':id')
-  // async findById(@Param('id') id: string): Promise<FiscalResponseDTO> {
-  //   return this.showFiscalUseCase.execute(id);
-  // }
+  @Get(':id')
+  async findById(@Param('id') id: string): Promise<FiscalResponseDTO> {
+    return this.showFiscalUseCase.execute(id);
+  }
 
   // /**
   //  * Atualiza um Fiscal por ID.
