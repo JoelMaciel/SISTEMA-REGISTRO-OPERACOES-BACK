@@ -6,7 +6,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-
 import { AspectoPositivo } from './aspectosPositivos';
 import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
 import { MelhoriaIdentificada } from './melhoriaIndentificada';
