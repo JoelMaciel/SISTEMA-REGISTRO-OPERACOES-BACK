@@ -12,12 +12,12 @@ export class MelhoriaIdentificada {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: false })
-  descricao: Text;
+  @Column({ type: 'text' })
+  descricao: string;
 
-  @ManyToOne(() => Veiculo, (veiculo) => veiculo.relatorio, {
+  @ManyToOne(() => Relatorio, (relatorio) => relatorio.melhoriasIdentificadas, {
     eager: false,
   })
-  @JoinColumn({ name: 'veiculo_id' })
-  realtorio: Relatorio;
+  @JoinColumn({ name: 'relatorio_id' })
+  relatorio: Relatorio;
 }

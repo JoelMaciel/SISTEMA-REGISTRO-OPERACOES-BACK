@@ -13,6 +13,12 @@ import { Municao } from 'src/modules/ocorrencia/domain/entities/municao';
 import { Dinheiro } from 'src/modules/ocorrencia/domain/entities/dinheiro';
 import { Arma } from 'src/modules/ocorrencia/domain/entities/arma';
 import { Veiculo } from 'src/modules/ocorrencia/domain/entities/veiculo';
+import { Relatorio } from 'src/modules/relatorio/domain/entities/relatorio';
+import { Fiscal } from 'src/modules/relatorio/domain/entities/fiscal';
+import { AspectoPositivo } from 'src/modules/relatorio/domain/entities/aspectosPositivos';
+import { MelhoriaIdentificada } from 'src/modules/relatorio/domain/entities/melhoriaIndentificada';
+import { AlteracaoEfetivo } from 'src/modules/relatorio/domain/entities/alteracaoEfetivo';
+import { OutraAlteracao } from 'src/modules/relatorio/domain/entities/outraAlteracao';
 
 dotenv.config();
 
@@ -39,6 +45,12 @@ export const databaseConfig: DataSourceOptions = {
     Dinheiro,
     Arma,
     Veiculo,
+    Relatorio,
+    Fiscal,
+    AspectoPositivo,
+    MelhoriaIdentificada,
+    AlteracaoEfetivo,
+    OutraAlteracao,
   ],
   migrations: ['src/database/migrations/*.ts'],
   subscribers: [],
