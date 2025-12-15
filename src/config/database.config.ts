@@ -14,7 +14,7 @@ import { Dinheiro } from 'src/modules/ocorrencia/domain/entities/dinheiro';
 import { Arma } from 'src/modules/ocorrencia/domain/entities/arma';
 import { Veiculo } from 'src/modules/ocorrencia/domain/entities/veiculo';
 import { Relatorio } from 'src/modules/relatorio/domain/entities/relatorio';
-import { Fiscal } from 'src/modules/relatorio/domain/entities/fiscal';
+import { Fiscal } from 'src/modules/fiscal/domain/entities/fiscal';
 import { AspectoPositivo } from 'src/modules/relatorio/domain/entities/aspectosPositivos';
 import { MelhoriaIdentificada } from 'src/modules/relatorio/domain/entities/melhoriaIndentificada';
 import { AlteracaoEfetivo } from 'src/modules/relatorio/domain/entities/alteracaoEfetivo';

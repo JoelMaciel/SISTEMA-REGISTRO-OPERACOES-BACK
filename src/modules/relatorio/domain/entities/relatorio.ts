@@ -9,7 +9,7 @@ import {
 import { AspectoPositivo } from './aspectosPositivos';
 import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
 import { MelhoriaIdentificada } from './melhoriaIndentificada';
-import { Fiscal } from './fiscal';
+import { Fiscal } from '../../../fiscal/domain/entities/fiscal';
 import { AlteracaoEfetivo } from './alteracaoEfetivo';
 import { OutraAlteracao } from './outraAlteracao';
 

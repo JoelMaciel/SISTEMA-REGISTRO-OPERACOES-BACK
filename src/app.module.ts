@@ -19,11 +19,12 @@ import { Dinheiro } from './modules/ocorrencia/domain/entities/dinheiro';
 import { Arma } from './modules/ocorrencia/domain/entities/arma';
 import { Veiculo } from './modules/ocorrencia/domain/entities/veiculo';
 import { Relatorio } from './modules/relatorio/domain/entities/relatorio';
-import { Fiscal } from './modules/relatorio/domain/entities/fiscal';
+import { Fiscal } from './modules/fiscal/domain/entities/fiscal';
 import { AspectoPositivo } from './modules/relatorio/domain/entities/aspectosPositivos';
 import { MelhoriaIdentificada } from './modules/relatorio/domain/entities/melhoriaIndentificada';
 import { AlteracaoEfetivo } from './modules/relatorio/domain/entities/alteracaoEfetivo';
 import { OutraAlteracao } from './modules/relatorio/domain/entities/outraAlteracao';
+import { FiscalModule } from './FiscalModule';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { OutraAlteracao } from './modules/relatorio/domain/entities/outraAlterac
     EquipeModule,
     OperacaoModule,
     OcorrenciaModule,
+    FiscalModule,
   ],
   controllers: [],
   providers: [],
