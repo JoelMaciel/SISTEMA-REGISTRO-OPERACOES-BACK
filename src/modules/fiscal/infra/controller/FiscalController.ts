@@ -17,12 +17,14 @@ import {
 } from '../../application/dto/shemas/CreateFiscalSchema';
 import { FiscalResponseDTO } from '../../application/dto/response/FiscalResponseDTO';
 import { ShowFiscalUseCase } from '../../application/usecases/equipe/show-fiscal';
+import { ListarFiscalUseCase } from '../../application/usecases/equipe/list-fiscal';
 
 @Controller('api/fiscais')
 export class FiscalController {
   constructor(
     private readonly createFiscalUseCase: CreateFiscalUseCase,
     private readonly showFiscalUseCase: ShowFiscalUseCase,
+    private readonly listarFiscalUseCase: ListarFiscalUseCase,
   ) {}
 
   @Post()
@@ -36,24 +38,25 @@ export class FiscalController {
     return this.createFiscalUseCase.execute(dto);
   }
 
-  /**
-   * Lista Fiscais com paginação e filtros.
-   * Rota: GET /api/fiscais?page=...&matricula=...
-   */
-  // @Get()
-  // async listar(
-  //   @Query('page') page = 1,
-  //   @Query('limit') limit = 10,
-  //   @Query('nome') nome?: string,
-  //   @Query('matricula') matricula?: string,
-  // ) {
-  //   return this.listarFiscalUseCase.execute(
-  //     Number(page), // Garantir que page e limit são números
-  //     Number(limit),
-  //     nome,
-  //     matricula,
-  //   );
-  // }
+  @Get()
+  async listar(
+    @Query('page') page = '1',
+    @Query('limit') limit = '10',
+    @Query('nome') nome?: string,
+    @Query('matricula') matricula?: string,
+    @Query('operacaoId') operacaoId?: string,
+  ) {
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
+    return this.listarFiscalUseCase.execute(
+      pageNumber,
+      limitNumber,
+      nome,
+      matricula,
+      operacaoId,
+    );
+  }
 
   @Get(':id')
   async findById(@Param('id') id: string): Promise<FiscalResponseDTO> {

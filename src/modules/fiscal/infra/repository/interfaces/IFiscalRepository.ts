@@ -16,6 +16,7 @@ export interface IFiscalRepository {
     limit: number,
     nome?: string,
     matricula?: string,
+    operacaoId?: string,
   ): Promise<IPaginatedResult<Fiscal>>;
   delete(id: string): Promise<void>;
   update(id: string, data: Partial<Fiscal>): Promise<Fiscal>;

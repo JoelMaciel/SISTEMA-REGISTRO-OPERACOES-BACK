@@ -35,6 +35,7 @@ export class FiscalRepository implements IFiscalRepository {
     limit = 10,
     nome?: string,
     matricula?: string,
+    operacaoId?: string,
   ): Promise<IPaginatedResult<Fiscal>> {
     const skip = (page - 1) * limit;
 
@@ -54,6 +55,13 @@ export class FiscalRepository implements IFiscalRepository {
       });
     }
 
+    if (operacaoId) {
+      query
+        .innerJoin('fiscal.relatorios', 'relatorio')
+        .andWhere('relatorio.operacao_id = :operacaoId', { operacaoId })
+        .distinct(true);
+    }
+
     const [items, total] = await query.getManyAndCount();
 
     return {
@@ -63,7 +71,6 @@ export class FiscalRepository implements IFiscalRepository {
       pageSize: limit,
     };
   }
-
   async update(id: string, data: Partial<Fiscal>): Promise<Fiscal> {
     const fiscal = await this.fiscalRepository.findOneOrFail({ where: { id } });
     const fiscalAtualizado = this.fiscalRepository.merge(fiscal, data);
