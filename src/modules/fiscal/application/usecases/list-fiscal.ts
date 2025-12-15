@@ -3,8 +3,8 @@ import {
   IFiscalRepository,
   IPaginatedResult,
 } from 'src/modules/fiscal/infra/repository/interfaces/IFiscalRepository';
-import { FiscalResponseDTO } from '../../dto/response/FiscalResponseDTO';
 import { Fiscal } from 'src/modules/fiscal/domain/entities/fiscal';
+import { FiscalResponseDTO } from '../dto/response/FiscalResponseDTO';
 
 @Injectable()
 export class ListarFiscalUseCase {

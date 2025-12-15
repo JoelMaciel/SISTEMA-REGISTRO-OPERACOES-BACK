@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Repository, ILike } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Fiscal } from '../../domain/entities/fiscal';
 import {
   IFiscalRepository,
