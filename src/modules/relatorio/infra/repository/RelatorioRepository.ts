@@ -1,15 +1,15 @@
-// src/modules/relatorio/infra/repository/RelatorioRepository.ts
-
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Relatorio } from '../../domain/entities/relatorio';
 import { AspectoPositivo } from '../../domain/entities/aspectosPositivos';
 import { MelhoriaIdentificada } from '../../domain/entities/melhoriaIndentificada';
 import { AlteracaoEfetivo } from '../../domain/entities/alteracaoEfetivo';
 import { OutraAlteracao } from '../../domain/entities/outraAlteracao';
-import { IRelatorioRepository } from './interfaces/IRetalorioRepository';
+import {
+  IPaginatedResult,
+  IRelatorioRepository,
+} from './interfaces/IRetalorioRepository';
 
 @Injectable()
 export class RelatorioRepository implements IRelatorioRepository {
@@ -30,6 +30,80 @@ export class RelatorioRepository implements IRelatorioRepository {
     return this.relatorioRepository.save(data);
   }
 
+  async findAll(
+    page = 1,
+    limit = 10,
+    dataInicial?: Date,
+    dataFinal?: Date,
+    local?: string,
+    operacaoId?: string,
+    fiscalId?: string,
+  ): Promise<IPaginatedResult<Relatorio>> {
+    const skip = (page - 1) * limit;
+
+    const query = this.relatorioRepository
+      .createQueryBuilder('relatorio')
+      .leftJoinAndSelect('relatorio.operacao', 'operacao')
+      .leftJoinAndSelect('relatorio.fiscal', 'fiscal')
+      .skip(skip)
+      .take(limit)
+      .orderBy('relatorio.dataInicial', 'DESC');
+
+    if (dataInicial && dataFinal) {
+      query.andWhere(
+        'relatorio.dataInicial BETWEEN :dataInicial AND :dataFinal',
+        {
+          dataInicial,
+          dataFinal,
+        },
+      );
+    }
+
+    if (local) {
+      query.andWhere('relatorio.local ILIKE :local', { local: `%${local}%` });
+    }
+
+    if (operacaoId) {
+      query.andWhere('operacao.id = :operacaoId', { operacaoId });
+    }
+
+    if (fiscalId) {
+      query.andWhere('fiscal.id = :fiscalId', { fiscalId });
+    }
+
+    const [items, total] = await query.getManyAndCount();
+
+    return {
+      items,
+      total,
+      pageIndex: page,
+      pageSize: limit,
+    };
+  }
+
+  async update(id: string, data: Partial<Relatorio>): Promise<Relatorio> {
+    const relatorioExistente = await this.relatorioRepository.findOneBy({ id });
+
+    if (!relatorioExistente) {
+      throw new Error('Relatório não encontrado para atualização.');
+    }
+
+    const relatorioMesclado = this.relatorioRepository.merge(
+      relatorioExistente,
+      data,
+    );
+
+    return this.relatorioRepository.save(relatorioMesclado);
+  }
+
+  async delete(id: string): Promise<void> {
+    const result = await this.relatorioRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new Error('Relatório não encontrado para exclusão.');
+    }
+  }
+
   async findById(id: string): Promise<Relatorio | null> {
     return await this.relatorioRepository.findOne({
       where: { id },
@@ -44,7 +118,6 @@ export class RelatorioRepository implements IRelatorioRepository {
     });
   }
 
-  // Implementação dos métodos de salvamento individual (se o TypeORM precisar ou para uso externo)
   async saveAspectoPositivo(
     aspecto: AspectoPositivo,
   ): Promise<AspectoPositivo> {
