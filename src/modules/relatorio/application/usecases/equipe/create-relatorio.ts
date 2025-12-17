@@ -6,6 +6,8 @@ import { RelatorioResponseDTO } from '../../dto/response/RelatorioResponseDTO';
 import { Relatorio } from 'src/modules/relatorio/domain/entities/relatorio';
 import { IOperacaoRepository } from 'src/modules/operacao/infra/repository/interfaces/IOperacaoRepository';
 import { IFiscalRepository } from 'src/modules/fiscal/infra/repository/interfaces/IFiscalRepository';
+import { IEquipeRepository } from 'src/modules/equipe/infra/repository/interfaces/IEquipeRepository';
+import { IOcorrenciaRepository } from 'src/modules/ocorrencia/infra/repository/interfaces/IOcorrenciaRepository';
 
 @Injectable()
 export class CreateRelatorioUseCase {
@@ -16,6 +18,10 @@ export class CreateRelatorioUseCase {
     private readonly operacaoRepository: IOperacaoRepository,
     @Inject('IFiscalRepository')
     private readonly fiscalRepository: IFiscalRepository,
+    @Inject('IEquipeRepository')
+    private readonly equipeRepository: IEquipeRepository,
+    @Inject('IOcorrenciaRepository')
+    private readonly ocorrenciaRepository: IOcorrenciaRepository,
   ) {}
 
   async execute(dto: CreateRelatorioRequestDTO): Promise<RelatorioResponseDTO> {
@@ -34,14 +40,31 @@ export class CreateRelatorioUseCase {
       throw new AppError(`Fiscal com ID ${dto.fiscalId} não encontrado.`, 404);
     }
 
+    const summary = await this.equipeRepository.getSummaryByOperacaoAndPeriod(
+      dto.operacaoId,
+      dto.dataInicial,
+      dto.dataFinal,
+    );
+
+    const efetivoCalculado = summary.totalEfetivo;
+    const postosCalculados = summary.totalPostosDistintos;
+
+    const ocorrencias =
+      await this.ocorrenciaRepository.findOcorrenciasByOperacaoAndPeriod(
+        dto.operacaoId,
+        dto.dataInicial,
+        dto.dataFinal,
+      );
+
     const novoRelatorioData: Partial<Relatorio> = {
       dataInicial: dto.dataInicial,
       dataFinal: dto.dataFinal,
       horarioInicial: dto.horarioInicial,
       horarioFinal: dto.horarioFinal,
       local: dto.local,
-      totalPosto: dto.totalPosto,
-      efetivoTotal: dto.efetivoTotal,
+
+      totalPosto: postosCalculados,
+      efetivoTotal: efetivoCalculado,
 
       operacao: operacao,
       fiscal: fiscal,
@@ -56,6 +79,6 @@ export class CreateRelatorioUseCase {
       novoRelatorioData,
     );
 
-    return new RelatorioResponseDTO(novoRelatorio);
+    return new RelatorioResponseDTO(novoRelatorio, ocorrencias);
   }
 }

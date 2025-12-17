@@ -12,6 +12,19 @@ import { AlteracaoEfetivo } from './modules/relatorio/domain/entities/alteracaoE
 import { OutraAlteracao } from './modules/relatorio/domain/entities/outraAlteracao';
 import { Fiscal } from './modules/fiscal/domain/entities/fiscal';
 import { Operacao } from './modules/operacao/domain/entities/operacao';
+import { Equipe } from './modules/equipe/domain/entities/equipe';
+import { EquipeRepository } from './modules/equipe/infra/repository/EquipeRepository';
+import { Ocorrencia } from './modules/ocorrencia/domain/entities/ocorrencia';
+import { OcorrenciaRepository } from './modules/ocorrencia/infra/repository/OcorrenciaRepository';
+import { Arma } from './modules/ocorrencia/domain/entities/arma';
+import { Droga } from './modules/ocorrencia/domain/entities/droga';
+import { Veiculo } from './modules/ocorrencia/domain/entities/veiculo';
+import { Municao } from './modules/ocorrencia/domain/entities/municao';
+import { Dinheiro } from './modules/ocorrencia/domain/entities/dinheiro';
+import { Vitima } from './modules/ocorrencia/domain/entities/vitima';
+import { Acusado } from './modules/ocorrencia/domain/entities/acusado';
+import { Endereco } from './modules/ocorrencia/domain/entities/Endereco';
+import { OutroObjeto } from './modules/ocorrencia/domain/entities/outroObjeto';
 
 @Module({
   imports: [
@@ -22,7 +35,18 @@ import { Operacao } from './modules/operacao/domain/entities/operacao';
       AlteracaoEfetivo,
       OutraAlteracao,
       Fiscal,
+      Equipe,
       Operacao,
+      Ocorrencia,
+      Arma,
+      Droga,
+      Veiculo,
+      Municao,
+      Dinheiro,
+      Vitima,
+      Acusado,
+      Endereco,
+      OutroObjeto,
     ]),
   ],
   controllers: [RelatorioController],
@@ -39,6 +63,14 @@ import { Operacao } from './modules/operacao/domain/entities/operacao';
     {
       provide: 'IOperacaoRepository',
       useClass: OperacaoRepository,
+    },
+    {
+      provide: 'IEquipeRepository',
+      useClass: EquipeRepository,
+    },
+    {
+      provide: 'IOcorrenciaRepository',
+      useClass: OcorrenciaRepository,
     },
   ],
   exports: ['IRelatorioRepository', 'IFiscalRepository', 'IOperacaoRepository'],

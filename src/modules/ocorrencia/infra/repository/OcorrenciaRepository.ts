@@ -419,6 +419,27 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     return { ocorrencia, droga };
   }
 
+  async findOcorrenciasByOperacaoAndPeriod(
+    operacaoId: string,
+    dataInicial: Date,
+    dataFinal: Date,
+  ): Promise<Ocorrencia[]> {
+    const dataInicioFormatada = dataInicial.toISOString().split('T')[0];
+    const dataFimFormatada = dataFinal.toISOString().split('T')[0];
+
+    return await this.ocorrenciaRepository
+      .createQueryBuilder('ocorrencia')
+      .where('ocorrencia.operacao_id = :operacaoId', { operacaoId })
+      .andWhere('ocorrencia.data >= :dataInicio', {
+        dataInicio: dataInicioFormatada,
+      })
+      .andWhere('ocorrencia.data <= :dataFim', { dataFim: dataFimFormatada })
+
+      .orderBy('ocorrencia.data', 'ASC')
+      .addOrderBy('ocorrencia.horario', 'ASC')
+      .getMany();
+  }
+
   async delete(id: string): Promise<void> {
     await this.ocorrenciaRepository.delete(id);
   }

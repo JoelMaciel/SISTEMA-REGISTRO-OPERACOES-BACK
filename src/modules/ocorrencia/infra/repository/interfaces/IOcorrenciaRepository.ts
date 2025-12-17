@@ -74,6 +74,12 @@ export interface IOcorrenciaRepository {
     drogaId: string,
   ): Promise<{ ocorrencia: Ocorrencia; droga: Droga } | null>;
 
+  findOcorrenciasByOperacaoAndPeriod(
+    operacaoId: string,
+    dataInicial: Date,
+    dataFinal: Date,
+  ): Promise<Ocorrencia[]>;
+
   findAll(
     page: number,
     limit: number,

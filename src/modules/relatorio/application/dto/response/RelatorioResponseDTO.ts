@@ -5,6 +5,8 @@ import { AspectoPositivoResponseDTO } from './AspectoPositivoResponseDTO';
 import { MelhoriaIdentificadaResponseDTO } from './MelhoriaIdentificadaResponseDTO';
 import { AlteracaoEfetivoResponseDTO } from './AlteracaoEfetivoResponseDTO.ts';
 import { OutraAlteracaoResponseDTO } from './OutraAlteracaoResponseDTO.ts';
+import { OcorrenciaResponseDTO } from 'src/modules/ocorrencia/application/dto/response/OcorrenciaResponseDTO';
+import { Ocorrencia } from 'src/modules/ocorrencia/domain/entities/ocorrencia';
 
 export class RelatorioResponseDTO {
   id: string;
@@ -32,12 +34,14 @@ export class RelatorioResponseDTO {
     'id' | 'nome' | 'postoGraduacao' | 'matricula' | 'opm'
   >;
 
+  ocorrencias: OcorrenciaResponseDTO[];
+
   aspectosPositivos: AspectoPositivoResponseDTO[];
   melhoriasIdentificadas: MelhoriaIdentificadaResponseDTO[];
   alteracoesEfetivo: AlteracaoEfetivoResponseDTO[];
   outrasAlteracoes: OutraAlteracaoResponseDTO[];
 
-  constructor(entity: Relatorio) {
+  constructor(entity: Relatorio, ocorrenciasEncontradas: Ocorrencia[] = []) {
     this.id = entity.id;
     this.dataInicial = entity.dataInicial;
     this.dataFinal = entity.dataFinal;
@@ -67,6 +71,10 @@ export class RelatorioResponseDTO {
           opm: entity.fiscal.opm,
         }
       : null;
+
+    this.ocorrencias = ocorrenciasEncontradas.map(
+      (oc) => new OcorrenciaResponseDTO(oc),
+    );
 
     this.aspectosPositivos = (entity.aspectosPositivos || []).map(
       (ap) => new AspectoPositivoResponseDTO(ap),
