@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { RelatorioRepository } from './modules/relatorio/infra/repository/RelatorioRepository';
 import { Relatorio } from './modules/relatorio/domain/entities/relatorio';
 import { RelatorioController } from './modules/relatorio/infra/controller/RelatorioController';
-import { CreateRelatorioUseCase } from './modules/relatorio/application/usecases/equipe/create-relatorio';
+import { CreateRelatorioUseCase } from './modules/relatorio/application/usecases/create-relatorio';
 import { FiscalRepository } from './modules/fiscal/infra/repository/FiscalRepository';
 import { OperacaoRepository } from './modules/operacao/infra/repository/OperacaoRepository';
 import { AspectoPositivo } from './modules/relatorio/domain/entities/aspectosPositivos';
@@ -25,7 +25,9 @@ import { Vitima } from './modules/ocorrencia/domain/entities/vitima';
 import { Acusado } from './modules/ocorrencia/domain/entities/acusado';
 import { Endereco } from './modules/ocorrencia/domain/entities/Endereco';
 import { OutroObjeto } from './modules/ocorrencia/domain/entities/outroObjeto';
-import { ListarRelatoriosUseCase } from './modules/relatorio/application/usecases/equipe/list-relatorio';
+import { ListarRelatoriosUseCase } from './modules/relatorio/application/usecases/list-relatorio';
+import { ShowRelatoriodUseCase } from './modules/relatorio/application/usecases/show-relatorio';
+import { DeleteRelatorioUseCase } from './modules/relatorio/application/usecases/delete-relatorio';
 
 @Module({
   imports: [
@@ -54,6 +56,8 @@ import { ListarRelatoriosUseCase } from './modules/relatorio/application/usecase
   providers: [
     CreateRelatorioUseCase,
     ListarRelatoriosUseCase,
+    ShowRelatoriodUseCase,
+    DeleteRelatorioUseCase,
     {
       provide: 'IRelatorioRepository',
       useClass: RelatorioRepository,

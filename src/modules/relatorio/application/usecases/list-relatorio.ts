@@ -1,8 +1,6 @@
-// src/modules/relatorio/application/usecases/relatorio/listar-relatorios.usecase.ts
-
 import { Inject, Injectable } from '@nestjs/common';
-import { IRelatorioRepository } from '../../../infra/repository/interfaces/IRetalorioRepository';
-import { RelatorioResponseDTO } from '../../dto/response/RelatorioResponseDTO';
+import { IRelatorioRepository } from '../../infra/repository/interfaces/IRetalorioRepository';
+import { RelatorioResponseDTO } from '../dto/response/RelatorioResponseDTO';
 import { IPaginatedResult } from 'src/modules/equipe/infra/repository/interfaces/IEquipeRepository';
 
 @Injectable()

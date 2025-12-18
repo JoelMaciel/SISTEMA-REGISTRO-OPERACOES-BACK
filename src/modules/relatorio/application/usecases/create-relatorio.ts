@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AppError } from 'src/shared/errors/AppError';
 import { IRelatorioRepository } from 'src/modules/relatorio/infra/repository/interfaces/IRetalorioRepository';
-import { CreateRelatorioRequestDTO } from '../../dto/shemas/CreateRelatorioSchema';
-import { RelatorioResponseDTO } from '../../dto/response/RelatorioResponseDTO';
+import { CreateRelatorioRequestDTO } from '../dto/shemas/CreateRelatorioSchema';
+import { RelatorioResponseDTO } from '../dto/response/RelatorioResponseDTO';
 import { Relatorio } from 'src/modules/relatorio/domain/entities/relatorio';
 import { IOperacaoRepository } from 'src/modules/operacao/infra/repository/interfaces/IOperacaoRepository';
 import { IFiscalRepository } from 'src/modules/fiscal/infra/repository/interfaces/IFiscalRepository';

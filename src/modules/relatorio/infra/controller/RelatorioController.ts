@@ -1,26 +1,32 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Param,
   Post,
   Query,
 } from '@nestjs/common';
 import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
 import { RelatorioResponseDTO } from '../../application/dto/response/RelatorioResponseDTO';
-import { CreateRelatorioUseCase } from '../../application/usecases/equipe/create-relatorio';
+import { CreateRelatorioUseCase } from '../../application/usecases/create-relatorio';
 import {
   CreateRelatorioRequestDTO,
   CreateRelatorioSchema,
 } from '../../application/dto/shemas/CreateRelatorioSchema';
-import { ListarRelatoriosUseCase } from '../../application/usecases/equipe/list-relatorio';
+import { ListarRelatoriosUseCase } from '../../application/usecases/list-relatorio';
+import { ShowRelatoriodUseCase } from '../../application/usecases/show-relatorio';
+import { DeleteRelatorioUseCase } from '../../application/usecases/delete-relatorio';
 
 @Controller('api/relatorios')
 export class RelatorioController {
   constructor(
     private readonly createRelatorioUseCase: CreateRelatorioUseCase,
     private readonly listRelatorioUseCase: ListarRelatoriosUseCase,
+    private readonly showRelatorioUseCase: ShowRelatoriodUseCase,
+    private readonly deleteRelatorioUseCase: DeleteRelatorioUseCase,
   ) {}
 
   @Get()
@@ -47,6 +53,11 @@ export class RelatorioController {
     );
   }
 
+  @Get(':id')
+  async findById(@Param('id') id: string) {
+    return await this.showRelatorioUseCase.execute(id);
+  }
+
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(
@@ -56,7 +67,12 @@ export class RelatorioController {
       CreateRelatorioSchema,
       body,
     );
-
     return this.createRelatorioUseCase.execute(dto);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async delete(@Param('id') id: string) {
+    return await this.deleteRelatorioUseCase.execute(id);
   }
 }
