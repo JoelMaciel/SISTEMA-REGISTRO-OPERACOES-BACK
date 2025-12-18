@@ -25,6 +25,7 @@ import { Vitima } from './modules/ocorrencia/domain/entities/vitima';
 import { Acusado } from './modules/ocorrencia/domain/entities/acusado';
 import { Endereco } from './modules/ocorrencia/domain/entities/Endereco';
 import { OutroObjeto } from './modules/ocorrencia/domain/entities/outroObjeto';
+import { ListarRelatoriosUseCase } from './modules/relatorio/application/usecases/equipe/list-relatorio';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { OutroObjeto } from './modules/ocorrencia/domain/entities/outroObjeto';
   controllers: [RelatorioController],
   providers: [
     CreateRelatorioUseCase,
+    ListarRelatoriosUseCase,
     {
       provide: 'IRelatorioRepository',
       useClass: RelatorioRepository,

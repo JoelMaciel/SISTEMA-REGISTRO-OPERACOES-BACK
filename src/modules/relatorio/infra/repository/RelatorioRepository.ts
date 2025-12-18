@@ -45,6 +45,13 @@ export class RelatorioRepository implements IRelatorioRepository {
       .createQueryBuilder('relatorio')
       .leftJoinAndSelect('relatorio.operacao', 'operacao')
       .leftJoinAndSelect('relatorio.fiscal', 'fiscal')
+      .leftJoinAndSelect('relatorio.aspectosPositivos', 'aspectosPositivos')
+      .leftJoinAndSelect(
+        'relatorio.melhoriasIdentificadas',
+        'melhoriasIdentificadas',
+      )
+      .leftJoinAndSelect('relatorio.alteracoesEfetivo', 'alteracoesEfetivo')
+      .leftJoinAndSelect('relatorio.outrasAlteracoes', 'outrasAlteracoes')
       .skip(skip)
       .take(limit)
       .orderBy('relatorio.dataInicial', 'DESC');
