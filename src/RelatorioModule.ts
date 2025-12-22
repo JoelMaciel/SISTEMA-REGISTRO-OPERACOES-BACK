@@ -28,6 +28,7 @@ import { OutroObjeto } from './modules/ocorrencia/domain/entities/outroObjeto';
 import { ListarRelatoriosUseCase } from './modules/relatorio/application/usecases/list-relatorio';
 import { ShowRelatoriodUseCase } from './modules/relatorio/application/usecases/show-relatorio';
 import { DeleteRelatorioUseCase } from './modules/relatorio/application/usecases/delete-relatorio';
+import { GerarPdfRelatorioUseCase } from './modules/relatorio/application/usecases/relatorio-pdf';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { DeleteRelatorioUseCase } from './modules/relatorio/application/usecases
     ListarRelatoriosUseCase,
     ShowRelatoriodUseCase,
     DeleteRelatorioUseCase,
+    GerarPdfRelatorioUseCase,
     {
       provide: 'IRelatorioRepository',
       useClass: RelatorioRepository,

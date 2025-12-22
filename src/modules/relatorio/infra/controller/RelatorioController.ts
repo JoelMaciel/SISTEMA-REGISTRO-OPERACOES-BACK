@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Query,
+  Res,
 } from '@nestjs/common';
 import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
 import { RelatorioResponseDTO } from '../../application/dto/response/RelatorioResponseDTO';
@@ -19,6 +20,8 @@ import {
 import { ListarRelatoriosUseCase } from '../../application/usecases/list-relatorio';
 import { ShowRelatoriodUseCase } from '../../application/usecases/show-relatorio';
 import { DeleteRelatorioUseCase } from '../../application/usecases/delete-relatorio';
+import { GerarPdfRelatorioUseCase } from '../../application/usecases/relatorio-pdf';
+import { Response } from 'express';
 
 @Controller('api/relatorios')
 export class RelatorioController {
@@ -27,6 +30,7 @@ export class RelatorioController {
     private readonly listRelatorioUseCase: ListarRelatoriosUseCase,
     private readonly showRelatorioUseCase: ShowRelatoriodUseCase,
     private readonly deleteRelatorioUseCase: DeleteRelatorioUseCase,
+    private readonly gerarPdfRelatorioUseCase: GerarPdfRelatorioUseCase,
   ) {}
 
   @Get()
@@ -74,5 +78,17 @@ export class RelatorioController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async delete(@Param('id') id: string) {
     return await this.deleteRelatorioUseCase.execute(id);
+  }
+
+  @Get(':id/pdf')
+  async exportPdf(@Param('id') id: string, @Res() res: Response) {
+    const pdfDoc = await this.gerarPdfRelatorioUseCase.execute(id);
+
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `attachment; filename=relatorio-${id}.pdf`,
+    });
+
+    pdfDoc.pipe(res);
   }
 }
