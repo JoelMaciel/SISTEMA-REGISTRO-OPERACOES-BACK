@@ -116,10 +116,17 @@ export class RelatorioRepository implements IRelatorioRepository {
       where: { id },
       relations: [
         'operacao',
+        'operacao.ocorrencias',
+        'operacao.ocorrencias.vitimas',
+        'operacao.ocorrencias.acusados',
+        'operacao.ocorrencias.veiculos',
+        'operacao.ocorrencias.armas',
+        'operacao.ocorrencias.drogas',
+        'operacao.ocorrencias.municoes',
+        'operacao.ocorrencias.valoresApreendidos',
         'fiscal',
         'aspectosPositivos',
         'melhoriasIdentificadas',
-        'alteracoesEfetivo',
         'outrasAlteracoes',
       ],
     });
