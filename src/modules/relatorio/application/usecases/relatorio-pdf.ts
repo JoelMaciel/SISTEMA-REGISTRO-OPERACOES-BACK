@@ -1,8 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { IRelatorioRepository } from '../../infra/repository/interfaces/IRetalorioRepository';
 import { RelatorioResponseDTO } from '../dto/response/RelatorioResponseDTO';
 import * as PDFDocument from 'pdfkit';
 import * as path from 'path';
+import { AppError } from 'src/shared/errors/AppError';
 
 @Injectable()
 export class GerarPdfRelatorioUseCase {
@@ -15,7 +16,7 @@ export class GerarPdfRelatorioUseCase {
     const entity = await this.relatorioRepository.findById(id);
 
     if (!entity) {
-      throw new NotFoundException('Relatório não encontrado');
+      throw new AppError('Relatório não encontrado', 404);
     }
 
     const relatorio = new RelatorioResponseDTO(
@@ -76,6 +77,39 @@ export class GerarPdfRelatorioUseCase {
     doc.text(
       `EFETIVO TOTAL: ${relatorio.efetivoTotal} PMS | TOTAL DE POSTOS: ${relatorio.totalPosto}`,
     );
+    doc.moveDown();
+
+    this.drawSectionHeader(doc, '2. DETALHAMENTO DOS POSTOS E EFETIVO');
+
+    if (relatorio.postoAreas?.length > 0) {
+      relatorio.postoAreas.forEach((posto) => {
+        this.checkNewPage(doc);
+
+        doc
+          .font('Helvetica-Bold')
+          .fontSize(9)
+          .fillColor('#2D3748')
+          .text(`POSTO/ÁREA: ${posto.nome.toUpperCase()}`);
+
+        posto.equipes?.forEach((equipe) => {
+          doc
+            .font('Helvetica')
+            .fontSize(8)
+            .fillColor('black')
+            .text(
+              `  • COMANDANTE: ${equipe.comandante.toUpperCase()} (MAT: ${
+                equipe.matricula
+              }) | EFETIVO: ${equipe.efetivo} PMS`,
+            );
+        });
+        doc.moveDown(0.5);
+      });
+    } else {
+      doc
+        .font('Helvetica')
+        .fontSize(9)
+        .text('Nenhum posto ou equipe vinculada à operação.');
+    }
     doc.moveDown();
 
     this.drawSectionHeader(

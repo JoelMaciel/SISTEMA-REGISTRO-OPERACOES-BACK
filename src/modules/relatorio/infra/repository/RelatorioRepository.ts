@@ -117,6 +117,8 @@ export class RelatorioRepository implements IRelatorioRepository {
       relations: [
         'operacao',
         'operacao.ocorrencias',
+        'operacao.postoAreas',
+        'operacao.postoAreas.equipes',
         'operacao.ocorrencias.vitimas',
         'operacao.ocorrencias.acusados',
         'operacao.ocorrencias.veiculos',

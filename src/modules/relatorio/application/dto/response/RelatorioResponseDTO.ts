@@ -17,6 +17,7 @@ export class RelatorioResponseDTO {
   local: string;
   totalPosto: number;
   efetivoTotal: number;
+  postoAreas: any[];
 
   operacao: Pick<
     OperacaoResponseDTO,
@@ -71,6 +72,16 @@ export class RelatorioResponseDTO {
           opm: entity.fiscal.opm,
         }
       : null;
+
+    this.postoAreas =
+      entity.operacao?.postoAreas?.map((posto) => ({
+        nome: posto.nome,
+        equipes: posto.equipes?.map((equipe) => ({
+          comandante: `${equipe.postoComandante} ${equipe.nomeGuerraComandante}`,
+          matricula: equipe.matriculaComandante,
+          efetivo: equipe.efetivoPolicial,
+        })),
+      })) || [];
 
     this.ocorrencias = ocorrenciasEncontradas.map(
       (oc) => new OcorrenciaResponseDTO(oc),
