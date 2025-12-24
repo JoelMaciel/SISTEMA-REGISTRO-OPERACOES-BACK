@@ -60,16 +60,18 @@ export class GerarPdfRelatorioUseCase {
     doc.text(
       `FISCAL: ${
         relatorio.fiscal?.postoGraduacao
-      } ${relatorio.fiscal?.nome?.toUpperCase()} (MAT: ${
-        relatorio.fiscal?.matricula
-      })`,
+      } ${relatorio.fiscal?.nome?.toUpperCase()} ` +
+        `(MAT: ${
+          relatorio.fiscal?.matricula
+        }) - OPM: ${relatorio.fiscal?.opm?.toUpperCase()}`,
     );
     doc.text(
       `PERÍODO: ${new Date(relatorio.dataInicial).toLocaleDateString(
         'pt-BR',
-      )} ${relatorio.horarioInicial} ATÉ ${new Date(
-        relatorio.dataFinal,
-      ).toLocaleDateString('pt-BR')} ${relatorio.horarioFinal}`,
+      )} ${relatorio.horarioInicial} ATÉ ` +
+        `${new Date(relatorio.dataFinal).toLocaleDateString('pt-BR')} ${
+          relatorio.horarioFinal
+        }`,
     );
     doc.text(
       `EFETIVO TOTAL: ${relatorio.efetivoTotal} PMS | TOTAL DE POSTOS: ${relatorio.totalPosto}`,
@@ -82,10 +84,7 @@ export class GerarPdfRelatorioUseCase {
     );
 
     relatorio.ocorrencias.forEach((oc, index) => {
-      if (doc.y > 650) {
-        doc.addPage();
-        doc.moveDown(6);
-      }
+      this.checkNewPage(doc);
 
       doc
         .font('Helvetica-Bold')
@@ -107,23 +106,67 @@ export class GerarPdfRelatorioUseCase {
         doc.text(
           `LOCAL: ${oc.endereco.rua?.toUpperCase()}, ${
             oc.endereco.numero || 'S/N'
-          } - ${oc.endereco.bairro?.toUpperCase()} | ${oc.endereco.cidade?.toUpperCase()}-${
-            oc.endereco.uf
-          }`,
+          } - ` +
+            `${oc.endereco.bairro?.toUpperCase()} | ${oc.endereco.cidade?.toUpperCase()}-${
+              oc.endereco.uf
+            }`,
         );
       }
       doc.moveDown(0.3);
 
-      doc.font('Helvetica-Bold').text('RESUMO DO FATO:');
+      if (oc.vitimas?.length > 0) {
+        doc.font('Helvetica-Bold').text('VÍTIMAS:');
+        oc.vitimas.forEach((v) => {
+          doc
+            .font('Helvetica')
+            .text(
+              `  • ${v.nome?.toUpperCase()} | CPF: ${v.cpf || 'N/I'} | IDADE: ${
+                v.idade || 'N/I'
+              } | ` + `MÃE: ${v.nomeMae?.toUpperCase() || 'N/I'}`,
+            );
+        });
+      }
+
+      if (oc.acusados?.length > 0) {
+        doc.font('Helvetica-Bold').fillColor('#C53030').text('ACUSADOS:');
+        oc.acusados.forEach((a) => {
+          doc
+            .font('Helvetica')
+            .fillColor('black')
+            .text(
+              `  • ${a.nome?.toUpperCase()} | CPF: ${a.cpf} | IDADE: ${
+                a.idade || 'N/I'
+              } | ` +
+                `NATURAL: ${
+                  a.naturalidade?.toUpperCase() || 'N/I'
+                } | NACIONALIDADE: ${a.nacionalidade?.toUpperCase() || 'N/I'}`,
+            );
+          doc.text(
+            `    PAI: ${a.nomePai?.toUpperCase() || 'N/I'} | MÃE: ${
+              a.nomeMae?.toUpperCase() || 'N/I'
+            }`,
+          );
+          if (a.endereco) {
+            doc.text(
+              `    END: ${a.endereco.rua?.toUpperCase()}, ${
+                a.endereco.numero || 'S/N'
+              } - ${a.endereco.bairro?.toUpperCase()}`,
+            );
+          }
+        });
+      }
+
+      doc.moveDown(0.3).font('Helvetica-Bold').text('RESUMO DO FATO:');
       doc.font('Helvetica').text(oc.resumo.toUpperCase(), { align: 'justify' });
-      doc.moveDown(0.8);
+
       doc
+        .moveDown(0.8)
         .moveTo(40, doc.y)
         .lineTo(555, doc.y)
         .strokeColor('#E2E8F0')
         .lineWidth(0.5)
-        .stroke();
-      doc.moveDown();
+        .stroke()
+        .moveDown();
     });
 
     if (relatorio.aspectosPositivos?.length > 0) {
@@ -150,12 +193,14 @@ export class GerarPdfRelatorioUseCase {
 
     if (relatorio.alteracoesEfetivo?.length > 0) {
       this.drawSectionHeader(doc, '5. ALTERAÇÕES DE EFETIVO');
-      relatorio.alteracoesEfetivo.forEach((ae) =>
+      relatorio.alteracoesEfetivo.forEach((ae) => {
         doc
-          .font('Helvetica')
+          .font('Helvetica-Bold')
           .fontSize(9)
-          .text(`• ${ae.descricao.toUpperCase()}`),
-      );
+          .text(`[${ae.status?.toUpperCase()}] `, { continued: true })
+          .font('Helvetica')
+          .text(ae.descricao.toUpperCase());
+      });
       doc.moveDown();
     }
 
@@ -170,6 +215,38 @@ export class GerarPdfRelatorioUseCase {
       doc.moveDown();
     }
 
+    this.addOverlays(doc, pathCabecalho, pathRodape, pageWidth, pageHeight);
+
+    doc.end();
+    return doc;
+  }
+
+  private drawSectionHeader(doc: PDFKit.PDFDocument, text: string) {
+    this.checkNewPage(doc, 700);
+    const y = doc.y;
+    doc.rect(40, y, 515, 15).fill('#EDF2F7');
+    doc
+      .fillColor('#2D3748')
+      .font('Helvetica-Bold')
+      .fontSize(10)
+      .text(text, 45, y + 3);
+    doc.moveDown();
+  }
+
+  private checkNewPage(doc: PDFKit.PDFDocument, limit = 650) {
+    if (doc.y > limit) {
+      doc.addPage();
+      doc.moveDown(6);
+    }
+  }
+
+  private addOverlays(
+    doc: PDFKit.PDFDocument,
+    pathCabecalho: string,
+    pathRodape: string,
+    pageWidth: number,
+    pageHeight: number,
+  ) {
     const range = doc.bufferedPageRange();
     const logoWidth = 280;
     const xPosCabecalho = (pageWidth - logoWidth) / 2;
@@ -177,14 +254,11 @@ export class GerarPdfRelatorioUseCase {
 
     for (let i = range.start; i < range.start + range.count; i++) {
       doc.switchToPage(i);
-
       doc.image(pathCabecalho, xPosCabecalho, 15, { width: logoWidth });
-
       doc.image(pathRodape, 0, pageHeight - footerHeight, {
         width: pageWidth,
         height: footerHeight,
       });
-
       doc
         .fontSize(7)
         .fillColor('#999')
@@ -195,23 +269,5 @@ export class GerarPdfRelatorioUseCase {
           { align: 'center' },
         );
     }
-
-    doc.end();
-    return doc;
-  }
-
-  private drawSectionHeader(doc: PDFKit.PDFDocument, text: string) {
-    if (doc.y > 700) {
-      doc.addPage();
-      doc.moveDown(6);
-    }
-    const y = doc.y;
-    doc.rect(40, y, 515, 15).fill('#EDF2F7');
-    doc
-      .fillColor('#2D3748')
-      .font('Helvetica-Bold')
-      .fontSize(10)
-      .text(text, 45, y + 3);
-    doc.moveDown();
   }
 }
