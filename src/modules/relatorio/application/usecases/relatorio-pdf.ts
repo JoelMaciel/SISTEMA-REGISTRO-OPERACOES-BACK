@@ -81,8 +81,25 @@ export class GerarPdfRelatorioUseCase {
 
     this.drawSectionHeader(doc, '2. DETALHAMENTO DOS POSTOS E EFETIVO');
 
-    if (relatorio.postoAreas?.length > 0) {
-      relatorio.postoAreas.forEach((posto) => {
+    const inicioRelatorio = new Date(relatorio.dataInicial);
+    const fimRelatorio = new Date(relatorio.dataFinal);
+
+    const postosNoPeriodo =
+      relatorio.postoAreas?.filter((posto) => {
+        const equipesNoPeriodo = posto.equipes?.filter((equipe) => {
+          const dataEquipe = new Date(equipe.data);
+          return dataEquipe >= inicioRelatorio && dataEquipe <= fimRelatorio;
+        });
+
+        if (equipesNoPeriodo && equipesNoPeriodo.length > 0) {
+          posto.equipes = equipesNoPeriodo;
+          return true;
+        }
+        return false;
+      }) || [];
+
+    if (postosNoPeriodo.length > 0) {
+      postosNoPeriodo.forEach((posto) => {
         this.checkNewPage(doc);
 
         doc
@@ -91,7 +108,7 @@ export class GerarPdfRelatorioUseCase {
           .fillColor('#2D3748')
           .text(`POSTO/ÁREA: ${posto.nome.toUpperCase()}`);
 
-        posto.equipes?.forEach((equipe) => {
+        posto.equipes.forEach((equipe) => {
           doc
             .font('Helvetica')
             .fontSize(8)
@@ -99,7 +116,9 @@ export class GerarPdfRelatorioUseCase {
             .text(
               `  • COMANDANTE: ${equipe.comandante.toUpperCase()} (MAT: ${
                 equipe.matricula
-              }) | EFETIVO: ${equipe.efetivo} PMS`,
+              }) | DATA: ${new Date(equipe.data).toLocaleDateString(
+                'pt-BR',
+              )} | EFETIVO: ${equipe.efetivo} PMS`,
             );
         });
         doc.moveDown(0.5);
@@ -108,8 +127,11 @@ export class GerarPdfRelatorioUseCase {
       doc
         .font('Helvetica')
         .fontSize(9)
-        .text('Nenhum posto ou equipe vinculada à operação.');
+        .text(
+          'Nenhum posto ou equipe escalada para esta operação no período informado.',
+        );
     }
+
     doc.moveDown();
 
     this.drawSectionHeader(
