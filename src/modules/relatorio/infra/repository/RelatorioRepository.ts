@@ -36,8 +36,8 @@ export class RelatorioRepository implements IRelatorioRepository {
     dataInicial?: Date,
     dataFinal?: Date,
     local?: string,
-    operacaoId?: string,
-    fiscalId?: string,
+    nomeOperacao?: string,
+    matriculaFiscal?: string,
   ): Promise<IPaginatedResult<Relatorio>> {
     const skip = (page - 1) * limit;
 
@@ -59,10 +59,7 @@ export class RelatorioRepository implements IRelatorioRepository {
     if (dataInicial && dataFinal) {
       query.andWhere(
         'relatorio.dataInicial BETWEEN :dataInicial AND :dataFinal',
-        {
-          dataInicial,
-          dataFinal,
-        },
+        { dataInicial, dataFinal },
       );
     }
 
@@ -70,12 +67,16 @@ export class RelatorioRepository implements IRelatorioRepository {
       query.andWhere('relatorio.local ILIKE :local', { local: `%${local}%` });
     }
 
-    if (operacaoId) {
-      query.andWhere('operacao.id = :operacaoId', { operacaoId });
+    if (nomeOperacao) {
+      query.andWhere('operacao.nome ILIKE :nomeOperacao', {
+        nomeOperacao: `%${nomeOperacao}%`,
+      });
     }
 
-    if (fiscalId) {
-      query.andWhere('fiscal.id = :fiscalId', { fiscalId });
+    if (matriculaFiscal) {
+      query.andWhere('fiscal.matricula ILIKE :matriculaFiscal', {
+        matriculaFiscal: `%${matriculaFiscal}%`,
+      });
     }
 
     const [items, total] = await query.getManyAndCount();

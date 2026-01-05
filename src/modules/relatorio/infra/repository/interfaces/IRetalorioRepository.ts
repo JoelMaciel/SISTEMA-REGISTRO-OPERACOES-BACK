@@ -20,9 +20,10 @@ export interface IRelatorioRepository {
     dataInicial?: Date,
     dataFinal?: Date,
     local?: string,
-    operacao?: string,
-    fiscal?: string,
+    nomeOperacao?: string,
+    matriculaFiscal?: string,
   ): Promise<IPaginatedResult<Relatorio>>;
+
   delete(id: string): Promise<void>;
   update(id: string, data: Partial<Relatorio>): Promise<Relatorio>;
   saveAspectoPositivo(aspecto: AspectoPositivo): Promise<AspectoPositivo>;

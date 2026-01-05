@@ -16,8 +16,8 @@ export class ListarRelatoriosUseCase {
     dataInicial?: Date,
     dataFinal?: Date,
     local?: string,
-    operacaoId?: string,
-    fiscalId?: string,
+    nomeOperacao?: string,
+    matriculaFiscal?: string,
   ): Promise<IPaginatedResult<RelatorioResponseDTO>> {
     const result = await this.relatorioRepository.findAll(
       page,
@@ -25,8 +25,8 @@ export class ListarRelatoriosUseCase {
       dataInicial,
       dataFinal,
       local,
-      operacaoId,
-      fiscalId,
+      nomeOperacao,
+      matriculaFiscal,
     );
 
     const items = result.items.map(

@@ -40,8 +40,8 @@ export class RelatorioController {
     @Query('dataInicial') dataInicial?: string,
     @Query('dataFinal') dataFinal?: string,
     @Query('local') local?: string,
-    @Query('operacaoId') operacaoId?: string,
-    @Query('fiscalId') fiscalId?: string,
+    @Query('nomeOperacao') nomeOperacao?: string,
+    @Query('matriculaFiscal') matriculaFiscal?: string,
   ) {
     const dInicial = dataInicial ? new Date(dataInicial) : undefined;
     const dFinal = dataFinal ? new Date(dataFinal) : undefined;
@@ -52,8 +52,8 @@ export class RelatorioController {
       dInicial,
       dFinal,
       local,
-      operacaoId,
-      fiscalId,
+      nomeOperacao,
+      matriculaFiscal,
     );
   }
 
