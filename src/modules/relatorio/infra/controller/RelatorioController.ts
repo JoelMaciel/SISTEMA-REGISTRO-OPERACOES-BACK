@@ -15,8 +15,10 @@ import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
 import { RelatorioResponseDTO } from '../../application/dto/response/RelatorioResponseDTO';
 import { CreateRelatorioUseCase } from '../../application/usecases/create-relatorio';
 import {
+  AlteracaoEfetivoSchema,
   CreateRelatorioRequestDTO,
   CreateRelatorioSchema,
+  UpdateAlteracaoEfetivoSchema,
   UpdateDadosGeraisRelatorioSchema,
   UpdateRelatorioRequestDTO,
 } from '../../application/dto/shemas/types';
@@ -26,6 +28,9 @@ import { DeleteRelatorioUseCase } from '../../application/usecases/delete-relato
 import { GerarPdfRelatorioUseCase } from '../../application/usecases/relatorio-pdf';
 import { Response } from 'express';
 import { UpdateDadosGeraisRelatorioUseCase } from '../../application/usecases/UpdateDadosGeraisRelatorioUseCase.ts';
+import { UpdateAlteracaoEfetivoUseCase } from '../../application/usecases/alteraca-efetivo/update-alteracao-efetivo';
+import { DeleteAlteracaoEfetivoUseCase } from '../../application/usecases/alteraca-efetivo/delete-alteracao-efetico';
+import { CreateAlteracaoEfetivoUseCase } from '../../application/usecases/alteraca-efetivo/create-alteracao-efetivo';
 
 @Controller('api/relatorios')
 export class RelatorioController {
@@ -36,6 +41,9 @@ export class RelatorioController {
     private readonly deleteRelatorioUseCase: DeleteRelatorioUseCase,
     private readonly gerarPdfRelatorioUseCase: GerarPdfRelatorioUseCase,
     private readonly updateDadosGeraisUseCase: UpdateDadosGeraisRelatorioUseCase,
+    private readonly updateAlteracaoEfetivoUse: UpdateAlteracaoEfetivoUseCase,
+    private readonly deleteAlteracaoEfetivoUse: DeleteAlteracaoEfetivoUseCase,
+    private readonly createAlteracaoEfetivoUse: CreateAlteracaoEfetivoUseCase,
   ) {}
 
   @Get()
@@ -108,5 +116,45 @@ export class RelatorioController {
     });
 
     pdfDoc.pipe(res);
+  }
+
+  @Patch(':relatorioId/alteracoes-efetivo/:alteracaoId')
+  async updateAlteracao(
+    @Param('relatorioId') relatorioId: string,
+    @Param('alteracaoId') alteracaoId: string,
+    @Body() body: any,
+  ) {
+    const dto = await ValidateSchema.validate(
+      UpdateAlteracaoEfetivoSchema,
+      body,
+    );
+    return await this.updateAlteracaoEfetivoUse.execute(
+      relatorioId,
+      alteracaoId,
+      dto,
+    );
+  }
+
+  @Delete(':relatorioId/alteracoes-efetivo/:alteracaoId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteAlteracao(
+    @Param('relatorioId') relatorioId: string,
+    @Param('alteracaoId') alteracaoId: string,
+  ) {
+    return await this.deleteAlteracaoEfetivoUse.execute(
+      relatorioId,
+      alteracaoId,
+    );
+  }
+
+  @Post(':relatorioId/alteracoes-efetivo')
+  @HttpCode(HttpStatus.CREATED)
+  async createAlteracao(
+    @Param('relatorioId') relatorioId: string,
+    @Body() body: any,
+  ) {
+    const dto = await ValidateSchema.validate(AlteracaoEfetivoSchema, body);
+
+    return await this.createAlteracaoEfetivoUse.execute(relatorioId, dto);
   }
 }

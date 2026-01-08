@@ -32,4 +32,11 @@ export interface IRelatorioRepository {
   ): Promise<MelhoriaIdentificada>;
   saveAlteracaoEfetivo(alteracao: AlteracaoEfetivo): Promise<AlteracaoEfetivo>;
   saveOutraAlteracao(alteracao: OutraAlteracao): Promise<OutraAlteracao>;
+
+  findAlteracaoEfetivoById(
+    id: string,
+    relatorioId: string,
+  ): Promise<AlteracaoEfetivo | null>;
+
+  deleteAlteracaoEfetivo(id: string): Promise<void>;
 }

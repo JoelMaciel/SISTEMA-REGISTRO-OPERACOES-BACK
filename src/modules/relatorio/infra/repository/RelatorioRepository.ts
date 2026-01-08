@@ -156,4 +156,20 @@ export class RelatorioRepository implements IRelatorioRepository {
   async saveOutraAlteracao(alteracao: OutraAlteracao): Promise<OutraAlteracao> {
     return this.outraAlteracaoRepository.save(alteracao);
   }
+
+  async findAlteracaoEfetivoById(
+    id: string,
+    relatorioId: string,
+  ): Promise<AlteracaoEfetivo | null> {
+    return await this.alteracaoEfetivoRepository.findOne({
+      where: {
+        id,
+        relatorio: { id: relatorioId },
+      },
+    });
+  }
+
+  async deleteAlteracaoEfetivo(id: string): Promise<void> {
+    await this.alteracaoEfetivoRepository.delete(id);
+  }
 }

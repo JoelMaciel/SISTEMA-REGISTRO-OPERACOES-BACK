@@ -15,6 +15,9 @@ export const AlteracaoEfetivoSchema = z.object({
   }),
   descricao: z.string().min(5, 'A descrição deve ter no mínimo 5 caracteres.'),
 });
+
+export type AlteracaoEfetivoRequestDTO = z.infer<typeof AlteracaoEfetivoSchema>;
+
 export const OutraAlteracaoSchema = z.object({
   descricao: z.string().min(5, 'A descrição deve ter no mínimo 5 caracteres.'),
 });
@@ -55,21 +58,28 @@ export const CreateRelatorioSchema = z.object({
 export type CreateRelatorioRequestDTO = z.infer<typeof CreateRelatorioSchema>;
 
 export const UpdateDadosGeraisRelatorioSchema = z.object({
-  dataInicial: z.coerce.date().optional(),
-  dataFinal: z.coerce.date().optional(),
+  dataInicial: z.coerce.date(),
+  dataFinal: z.coerce.date(),
   horarioInicial: z
     .string()
-    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Horário inicial inválido.')
-    .optional(),
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Horário inicial inválido.'),
   horarioFinal: z
     .string()
-    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Horário final inválido.')
-    .optional(),
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Horário final inválido.'),
   local: z.string().min(5).max(100).optional(),
-  operacaoId: z.string().uuid('operacaoId deve ser um UUID válido.').optional(),
-  fiscalId: z.string().uuid('fiscalId deve ser um UUID válido.').optional(),
+  operacaoId: z.string().uuid('operacaoId deve ser um UUID válido.'),
+  fiscalId: z.string().uuid('fiscalId deve ser um UUID válido.'),
 });
 
 export type UpdateRelatorioRequestDTO = z.infer<
   typeof UpdateDadosGeraisRelatorioSchema
+>;
+
+export const UpdateAlteracaoEfetivoSchema = z.object({
+  status: z.nativeEnum(StatusAlteracao),
+  descricao: z.string().min(5),
+});
+
+export type UpdateAlteracaoRequestDTO = z.infer<
+  typeof UpdateAlteracaoEfetivoSchema
 >;
