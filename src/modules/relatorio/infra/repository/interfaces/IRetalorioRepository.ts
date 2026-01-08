@@ -39,4 +39,11 @@ export interface IRelatorioRepository {
   ): Promise<AlteracaoEfetivo | null>;
 
   deleteAlteracaoEfetivo(id: string): Promise<void>;
+
+  findAspectoById(
+    id: string,
+    relatorioId: string,
+  ): Promise<AspectoPositivo | null>;
+
+  deleteAspecto(id: string): Promise<void>;
 }

@@ -31,9 +31,11 @@ import { DeleteRelatorioUseCase } from './modules/relatorio/application/usecases
 import { GerarPdfRelatorioUseCase } from './modules/relatorio/application/usecases/relatorio-pdf';
 import { UpdateDadosGeraisRelatorioUseCase } from './modules/relatorio/application/usecases/UpdateDadosGeraisRelatorioUseCase.ts';
 import { DeleteAlteracaoEfetivoUseCase } from './modules/relatorio/application/usecases/alteraca-efetivo/delete-alteracao-efetico';
-
 import { UpdateAlteracaoEfetivoUseCase } from './modules/relatorio/application/usecases/alteraca-efetivo/update-alteracao-efetivo';
 import { CreateAlteracaoEfetivoUseCase } from './modules/relatorio/application/usecases/alteraca-efetivo/create-alteracao-efetivo';
+import { CreateAspectoPositivoUseCase } from './modules/relatorio/application/usecases/aspecto-positivo/create-aspecto';
+import { UpdateAspectoPositivoUseCase } from './modules/relatorio/application/usecases/aspecto-positivo/update-aspecto';
+import { DeleteAspectoPositivoUseCase } from './modules/relatorio/application/usecases/aspecto-positivo/delete-aspecto';
 
 @Module({
   imports: [
@@ -69,6 +71,9 @@ import { CreateAlteracaoEfetivoUseCase } from './modules/relatorio/application/u
     DeleteAlteracaoEfetivoUseCase,
     UpdateAlteracaoEfetivoUseCase,
     CreateAlteracaoEfetivoUseCase,
+    CreateAspectoPositivoUseCase,
+    UpdateAspectoPositivoUseCase,
+    DeleteAspectoPositivoUseCase,
     {
       provide: 'IRelatorioRepository',
       useClass: RelatorioRepository,

@@ -15,7 +15,9 @@ import { ValidateSchema } from 'src/shared/validation/ValidationSchema';
 import { RelatorioResponseDTO } from '../../application/dto/response/RelatorioResponseDTO';
 import { CreateRelatorioUseCase } from '../../application/usecases/create-relatorio';
 import {
+  AlteracaoEfetivoRequestDTO,
   AlteracaoEfetivoSchema,
+  AspectoPositivoSchema,
   CreateRelatorioRequestDTO,
   CreateRelatorioSchema,
   UpdateAlteracaoEfetivoSchema,
@@ -31,6 +33,9 @@ import { UpdateDadosGeraisRelatorioUseCase } from '../../application/usecases/Up
 import { UpdateAlteracaoEfetivoUseCase } from '../../application/usecases/alteraca-efetivo/update-alteracao-efetivo';
 import { DeleteAlteracaoEfetivoUseCase } from '../../application/usecases/alteraca-efetivo/delete-alteracao-efetico';
 import { CreateAlteracaoEfetivoUseCase } from '../../application/usecases/alteraca-efetivo/create-alteracao-efetivo';
+import { CreateAspectoPositivoUseCase } from '../../application/usecases/aspecto-positivo/create-aspecto';
+import { UpdateAspectoPositivoUseCase } from '../../application/usecases/aspecto-positivo/update-aspecto';
+import { DeleteAspectoPositivoUseCase } from '../../application/usecases/aspecto-positivo/delete-aspecto';
 
 @Controller('api/relatorios')
 export class RelatorioController {
@@ -44,6 +49,9 @@ export class RelatorioController {
     private readonly updateAlteracaoEfetivoUse: UpdateAlteracaoEfetivoUseCase,
     private readonly deleteAlteracaoEfetivoUse: DeleteAlteracaoEfetivoUseCase,
     private readonly createAlteracaoEfetivoUse: CreateAlteracaoEfetivoUseCase,
+    private readonly createAspectoPositivoUseCase: CreateAspectoPositivoUseCase,
+    private readonly updateAspectoPositivoUseCase: UpdateAspectoPositivoUseCase,
+    private readonly deleteAspectoPositivoUseCase: DeleteAspectoPositivoUseCase,
   ) {}
 
   @Get()
@@ -122,7 +130,7 @@ export class RelatorioController {
   async updateAlteracao(
     @Param('relatorioId') relatorioId: string,
     @Param('alteracaoId') alteracaoId: string,
-    @Body() body: any,
+    @Body() body: AlteracaoEfetivoRequestDTO,
   ) {
     const dto = await ValidateSchema.validate(
       UpdateAlteracaoEfetivoSchema,
@@ -151,10 +159,45 @@ export class RelatorioController {
   @HttpCode(HttpStatus.CREATED)
   async createAlteracao(
     @Param('relatorioId') relatorioId: string,
-    @Body() body: any,
+    @Body() body: AlteracaoEfetivoRequestDTO,
   ) {
     const dto = await ValidateSchema.validate(AlteracaoEfetivoSchema, body);
 
     return await this.createAlteracaoEfetivoUse.execute(relatorioId, dto);
+  }
+
+  @Post(':relatorioId/aspectos-positivos')
+  async createAspecto(
+    @Param('relatorioId') relatorioId: string,
+    @Body() body: any,
+  ) {
+    const dto = await ValidateSchema.validate(AspectoPositivoSchema, body);
+    return await this.createAspectoPositivoUseCase.execute(relatorioId, dto);
+  }
+
+  @Patch(':relatorioId/aspectos-positivos/:aspectoId')
+  async updateAspecto(
+    @Param('relatorioId') relatorioId: string,
+    @Param('aspectoId') aspectoId: string,
+    @Body() body: any,
+  ) {
+    const dto = await ValidateSchema.validate(AspectoPositivoSchema, body);
+    return await this.updateAspectoPositivoUseCase.execute(
+      relatorioId,
+      aspectoId,
+      dto,
+    );
+  }
+
+  @Delete(':relatorioId/aspectos-positivos/:aspectoId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteAspecto(
+    @Param('relatorioId') relatorioId: string,
+    @Param('aspectoId') aspectoId: string,
+  ) {
+    return await this.deleteAspectoPositivoUseCase.execute(
+      relatorioId,
+      aspectoId,
+    );
   }
 }

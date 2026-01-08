@@ -5,6 +5,8 @@ export const AspectoPositivoSchema = z.object({
   descricao: z.string().min(5, 'A descrição deve ter no mínimo 5 caracteres.'),
 });
 
+export type AspectoPositivoRequestDTO = z.infer<typeof AspectoPositivoSchema>;
+
 export const MelhoriaIdentificadaSchema = z.object({
   descricao: z.string().min(5, 'A descrição deve ter no mínimo 5 caracteres.'),
 });
