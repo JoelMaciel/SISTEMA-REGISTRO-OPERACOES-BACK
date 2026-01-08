@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  Patch,
   Post,
   Query,
   Res,
@@ -16,12 +17,15 @@ import { CreateRelatorioUseCase } from '../../application/usecases/create-relato
 import {
   CreateRelatorioRequestDTO,
   CreateRelatorioSchema,
-} from '../../application/dto/shemas/CreateRelatorioSchema';
+  UpdateDadosGeraisRelatorioSchema,
+  UpdateRelatorioRequestDTO,
+} from '../../application/dto/shemas/types';
 import { ListarRelatoriosUseCase } from '../../application/usecases/list-relatorio';
 import { ShowRelatoriodUseCase } from '../../application/usecases/show-relatorio';
 import { DeleteRelatorioUseCase } from '../../application/usecases/delete-relatorio';
 import { GerarPdfRelatorioUseCase } from '../../application/usecases/relatorio-pdf';
 import { Response } from 'express';
+import { UpdateDadosGeraisRelatorioUseCase } from '../../application/usecases/UpdateDadosGeraisRelatorioUseCase.ts';
 
 @Controller('api/relatorios')
 export class RelatorioController {
@@ -31,6 +35,7 @@ export class RelatorioController {
     private readonly showRelatorioUseCase: ShowRelatoriodUseCase,
     private readonly deleteRelatorioUseCase: DeleteRelatorioUseCase,
     private readonly gerarPdfRelatorioUseCase: GerarPdfRelatorioUseCase,
+    private readonly updateDadosGeraisUseCase: UpdateDadosGeraisRelatorioUseCase,
   ) {}
 
   @Get()
@@ -72,6 +77,19 @@ export class RelatorioController {
       body,
     );
     return this.createRelatorioUseCase.execute(dto);
+  }
+
+  @Patch(':id')
+  async updateDadosGerais(
+    @Param('id') id: string,
+    @Body() body: UpdateRelatorioRequestDTO,
+  ) {
+    const dto: UpdateRelatorioRequestDTO = await ValidateSchema.validate(
+      UpdateDadosGeraisRelatorioSchema,
+      body,
+    );
+
+    return await this.updateDadosGeraisUseCase.execute(id, dto);
   }
 
   @Delete(':id')

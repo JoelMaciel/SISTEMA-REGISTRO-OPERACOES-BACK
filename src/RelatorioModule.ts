@@ -29,6 +29,7 @@ import { ListarRelatoriosUseCase } from './modules/relatorio/application/usecase
 import { ShowRelatoriodUseCase } from './modules/relatorio/application/usecases/show-relatorio';
 import { DeleteRelatorioUseCase } from './modules/relatorio/application/usecases/delete-relatorio';
 import { GerarPdfRelatorioUseCase } from './modules/relatorio/application/usecases/relatorio-pdf';
+import { UpdateDadosGeraisRelatorioUseCase } from './modules/relatorio/application/usecases/UpdateDadosGeraisRelatorioUseCase.ts';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { GerarPdfRelatorioUseCase } from './modules/relatorio/application/usecas
     ShowRelatoriodUseCase,
     DeleteRelatorioUseCase,
     GerarPdfRelatorioUseCase,
+    UpdateDadosGeraisRelatorioUseCase,
     {
       provide: 'IRelatorioRepository',
       useClass: RelatorioRepository,

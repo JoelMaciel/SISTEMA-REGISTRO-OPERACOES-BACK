@@ -53,3 +53,23 @@ export const CreateRelatorioSchema = z.object({
 });
 
 export type CreateRelatorioRequestDTO = z.infer<typeof CreateRelatorioSchema>;
+
+export const UpdateDadosGeraisRelatorioSchema = z.object({
+  dataInicial: z.coerce.date().optional(),
+  dataFinal: z.coerce.date().optional(),
+  horarioInicial: z
+    .string()
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Horário inicial inválido.')
+    .optional(),
+  horarioFinal: z
+    .string()
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, 'Horário final inválido.')
+    .optional(),
+  local: z.string().min(5).max(100).optional(),
+  operacaoId: z.string().uuid('operacaoId deve ser um UUID válido.').optional(),
+  fiscalId: z.string().uuid('fiscalId deve ser um UUID válido.').optional(),
+});
+
+export type UpdateRelatorioRequestDTO = z.infer<
+  typeof UpdateDadosGeraisRelatorioSchema
+>;
