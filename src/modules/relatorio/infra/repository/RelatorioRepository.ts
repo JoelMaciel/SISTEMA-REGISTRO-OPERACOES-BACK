@@ -188,4 +188,20 @@ export class RelatorioRepository implements IRelatorioRepository {
   async deleteAspecto(id: string): Promise<void> {
     await this.aspectoRepository.delete(id);
   }
+
+  async findMelhoriaById(
+    id: string,
+    relatorioId: string,
+  ): Promise<MelhoriaIdentificada | null> {
+    return await this.melhoriaRepository.findOne({
+      where: {
+        id,
+        relatorio: { id: relatorioId },
+      },
+    });
+  }
+
+  async deleteMelhoria(id: string): Promise<void> {
+    await this.melhoriaRepository.delete(id);
+  }
 }

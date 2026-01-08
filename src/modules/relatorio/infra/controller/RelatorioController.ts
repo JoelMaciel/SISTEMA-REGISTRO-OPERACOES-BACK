@@ -20,6 +20,7 @@ import {
   AspectoPositivoSchema,
   CreateRelatorioRequestDTO,
   CreateRelatorioSchema,
+  MelhoriaIdentificadaSchema,
   UpdateAlteracaoEfetivoSchema,
   UpdateDadosGeraisRelatorioSchema,
   UpdateRelatorioRequestDTO,
@@ -36,6 +37,9 @@ import { CreateAlteracaoEfetivoUseCase } from '../../application/usecases/altera
 import { CreateAspectoPositivoUseCase } from '../../application/usecases/aspecto-positivo/create-aspecto';
 import { UpdateAspectoPositivoUseCase } from '../../application/usecases/aspecto-positivo/update-aspecto';
 import { DeleteAspectoPositivoUseCase } from '../../application/usecases/aspecto-positivo/delete-aspecto';
+import { CreateMelhoriaIdentificadaUseCase } from '../../application/usecases/melhoria-identificada/create-melhoria';
+import { UpdateMelhoriaIdentificadaUseCase } from '../../application/usecases/melhoria-identificada/update-melhoria';
+import { DeleteMelhoriaIdentificadaUseCase } from '../../application/usecases/melhoria-identificada/delete-melhoria';
 
 @Controller('api/relatorios')
 export class RelatorioController {
@@ -52,6 +56,9 @@ export class RelatorioController {
     private readonly createAspectoPositivoUseCase: CreateAspectoPositivoUseCase,
     private readonly updateAspectoPositivoUseCase: UpdateAspectoPositivoUseCase,
     private readonly deleteAspectoPositivoUseCase: DeleteAspectoPositivoUseCase,
+    private readonly createMelhoriaIdentificadaUseCase: CreateMelhoriaIdentificadaUseCase,
+    private readonly updateMelhoriaIdentificadaUseCase: UpdateMelhoriaIdentificadaUseCase,
+    private readonly deleteMelhoriaIdentificadaUseCase: DeleteMelhoriaIdentificadaUseCase,
   ) {}
 
   @Get()
@@ -198,6 +205,44 @@ export class RelatorioController {
     return await this.deleteAspectoPositivoUseCase.execute(
       relatorioId,
       aspectoId,
+    );
+  }
+
+  @Post(':relatorioId/melhorias')
+  async createMelhoria(
+    @Param('relatorioId') relatorioId: string,
+    @Body() body: any,
+  ) {
+    const dto = await ValidateSchema.validate(MelhoriaIdentificadaSchema, body);
+    return await this.createMelhoriaIdentificadaUseCase.execute(
+      relatorioId,
+      dto,
+    );
+  }
+
+  @Patch(':relatorioId/melhorias/:melhoriaId')
+  async updateMelhoria(
+    @Param('relatorioId') relatorioId: string,
+    @Param('melhoriaId') melhoriaId: string,
+    @Body() body: any,
+  ) {
+    const dto = await ValidateSchema.validate(MelhoriaIdentificadaSchema, body);
+    return await this.updateMelhoriaIdentificadaUseCase.execute(
+      relatorioId,
+      melhoriaId,
+      dto,
+    );
+  }
+
+  @Delete(':relatorioId/melhorias/:melhoriaId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteMelhoria(
+    @Param('relatorioId') relatorioId: string,
+    @Param('melhoriaId') melhoriaId: string,
+  ) {
+    return await this.deleteMelhoriaIdentificadaUseCase.execute(
+      relatorioId,
+      melhoriaId,
     );
   }
 }

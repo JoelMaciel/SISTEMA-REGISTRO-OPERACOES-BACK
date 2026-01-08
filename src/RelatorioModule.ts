@@ -36,6 +36,9 @@ import { CreateAlteracaoEfetivoUseCase } from './modules/relatorio/application/u
 import { CreateAspectoPositivoUseCase } from './modules/relatorio/application/usecases/aspecto-positivo/create-aspecto';
 import { UpdateAspectoPositivoUseCase } from './modules/relatorio/application/usecases/aspecto-positivo/update-aspecto';
 import { DeleteAspectoPositivoUseCase } from './modules/relatorio/application/usecases/aspecto-positivo/delete-aspecto';
+import { CreateMelhoriaIdentificadaUseCase } from './modules/relatorio/application/usecases/melhoria-identificada/create-melhoria';
+import { UpdateMelhoriaIdentificadaUseCase } from './modules/relatorio/application/usecases/melhoria-identificada/update-melhoria';
+import { DeleteMelhoriaIdentificadaUseCase } from './modules/relatorio/application/usecases/melhoria-identificada/delete-melhoria';
 
 @Module({
   imports: [
@@ -74,6 +77,9 @@ import { DeleteAspectoPositivoUseCase } from './modules/relatorio/application/us
     CreateAspectoPositivoUseCase,
     UpdateAspectoPositivoUseCase,
     DeleteAspectoPositivoUseCase,
+    CreateMelhoriaIdentificadaUseCase,
+    UpdateMelhoriaIdentificadaUseCase,
+    DeleteMelhoriaIdentificadaUseCase,
     {
       provide: 'IRelatorioRepository',
       useClass: RelatorioRepository,

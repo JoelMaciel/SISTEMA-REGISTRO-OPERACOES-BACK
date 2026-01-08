@@ -11,6 +11,10 @@ export const MelhoriaIdentificadaSchema = z.object({
   descricao: z.string().min(5, 'A descrição deve ter no mínimo 5 caracteres.'),
 });
 
+export type MelhoriaIdentificadaRequestDTO = z.infer<
+  typeof MelhoriaIdentificadaSchema
+>;
+
 export const AlteracaoEfetivoSchema = z.object({
   status: z.nativeEnum(StatusAlteracao, {
     required_error: "O campo 'status' é obrigatório.",

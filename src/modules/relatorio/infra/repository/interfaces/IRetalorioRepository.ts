@@ -46,4 +46,11 @@ export interface IRelatorioRepository {
   ): Promise<AspectoPositivo | null>;
 
   deleteAspecto(id: string): Promise<void>;
+
+  findMelhoriaById(
+    id: string,
+    relatorioId: string,
+  ): Promise<MelhoriaIdentificada | null>;
+
+  deleteMelhoria(id: string): Promise<void>;
 }
