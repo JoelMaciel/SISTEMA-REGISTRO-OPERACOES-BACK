@@ -28,6 +28,8 @@ export const OutraAlteracaoSchema = z.object({
   descricao: z.string().min(5, 'A descrição deve ter no mínimo 5 caracteres.'),
 });
 
+export type OutraAlteracaoRequestDTO = z.infer<typeof OutraAlteracaoSchema>;
+
 export const CreateRelatorioSchema = z.object({
   dataInicial: z.coerce.date({
     invalid_type_error: 'A data inicial deve ser uma data válida.',

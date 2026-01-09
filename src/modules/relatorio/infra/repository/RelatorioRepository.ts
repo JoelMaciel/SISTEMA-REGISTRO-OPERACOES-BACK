@@ -129,6 +129,7 @@ export class RelatorioRepository implements IRelatorioRepository {
         'operacao.ocorrencias.valoresApreendidos',
         'fiscal',
         'aspectosPositivos',
+        'alteracoesEfetivo',
         'melhoriasIdentificadas',
         'outrasAlteracoes',
       ],
@@ -203,5 +204,24 @@ export class RelatorioRepository implements IRelatorioRepository {
 
   async deleteMelhoria(id: string): Promise<void> {
     await this.melhoriaRepository.delete(id);
+  }
+
+  async findOutraAlteracaoById(
+    id: string,
+    relatorioId: string,
+  ): Promise<OutraAlteracao | null> {
+    return await this.outraAlteracaoRepository.findOne({
+      where: {
+        id,
+        relatorio: { id: relatorioId },
+      },
+    });
+  }
+
+  async deleteOutraAlteracao(id: string): Promise<void> {
+    const result = await this.outraAlteracaoRepository.delete(id);
+    if (result.affected === 0) {
+      throw new Error('Alteração não encontrada para exclusão.');
+    }
   }
 }

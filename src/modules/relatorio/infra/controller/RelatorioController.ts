@@ -21,6 +21,7 @@ import {
   CreateRelatorioRequestDTO,
   CreateRelatorioSchema,
   MelhoriaIdentificadaSchema,
+  OutraAlteracaoSchema,
   UpdateAlteracaoEfetivoSchema,
   UpdateDadosGeraisRelatorioSchema,
   UpdateRelatorioRequestDTO,
@@ -40,6 +41,9 @@ import { DeleteAspectoPositivoUseCase } from '../../application/usecases/aspecto
 import { CreateMelhoriaIdentificadaUseCase } from '../../application/usecases/melhoria-identificada/create-melhoria';
 import { UpdateMelhoriaIdentificadaUseCase } from '../../application/usecases/melhoria-identificada/update-melhoria';
 import { DeleteMelhoriaIdentificadaUseCase } from '../../application/usecases/melhoria-identificada/delete-melhoria';
+import { CreateOutraAlteracaoUseCase } from '../../application/usecases/outras-alteracoes/create-outra-alteracao';
+import { UpdateOutraAlteracaoUseCase } from '../../application/usecases/outras-alteracoes/update-outra-alteracao';
+import { DeleteOutraAlteracaoUseCase } from '../../application/usecases/outras-alteracoes/delete-outra-alteracao';
 
 @Controller('api/relatorios')
 export class RelatorioController {
@@ -59,6 +63,9 @@ export class RelatorioController {
     private readonly createMelhoriaIdentificadaUseCase: CreateMelhoriaIdentificadaUseCase,
     private readonly updateMelhoriaIdentificadaUseCase: UpdateMelhoriaIdentificadaUseCase,
     private readonly deleteMelhoriaIdentificadaUseCase: DeleteMelhoriaIdentificadaUseCase,
+    private readonly createOutraAlteracaoUseCase: CreateOutraAlteracaoUseCase,
+    private readonly updateOutraAlteracaoUseCase: UpdateOutraAlteracaoUseCase,
+    private readonly deleteOutraAlteracaoUseCase: DeleteOutraAlteracaoUseCase,
   ) {}
 
   @Get()
@@ -243,6 +250,41 @@ export class RelatorioController {
     return await this.deleteMelhoriaIdentificadaUseCase.execute(
       relatorioId,
       melhoriaId,
+    );
+  }
+
+  @Post(':relatorioId/outras-alteracoes')
+  async createOutraAlteracao(
+    @Param('relatorioId') relatorioId: string,
+    @Body() body: any,
+  ) {
+    const dto = await ValidateSchema.validate(OutraAlteracaoSchema, body);
+    return await this.createOutraAlteracaoUseCase.execute(relatorioId, dto);
+  }
+
+  @Patch(':relatorioId/outras-alteracoes/:alteracaoId')
+  async updateOutraAlteracao(
+    @Param('relatorioId') relatorioId: string,
+    @Param('alteracaoId') alteracaoId: string,
+    @Body() body: any,
+  ) {
+    const dto = await ValidateSchema.validate(OutraAlteracaoSchema, body);
+    return await this.updateOutraAlteracaoUseCase.execute(
+      relatorioId,
+      alteracaoId,
+      dto,
+    );
+  }
+
+  @Delete(':relatorioId/outras-alteracoes/:alteracaoId')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async deleteOutraAlteracao(
+    @Param('relatorioId') relatorioId: string,
+    @Param('alteracaoId') alteracaoId: string,
+  ) {
+    return await this.deleteOutraAlteracaoUseCase.execute(
+      relatorioId,
+      alteracaoId,
     );
   }
 }

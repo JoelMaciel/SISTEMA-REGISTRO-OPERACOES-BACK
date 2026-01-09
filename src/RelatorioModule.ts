@@ -39,6 +39,9 @@ import { DeleteAspectoPositivoUseCase } from './modules/relatorio/application/us
 import { CreateMelhoriaIdentificadaUseCase } from './modules/relatorio/application/usecases/melhoria-identificada/create-melhoria';
 import { UpdateMelhoriaIdentificadaUseCase } from './modules/relatorio/application/usecases/melhoria-identificada/update-melhoria';
 import { DeleteMelhoriaIdentificadaUseCase } from './modules/relatorio/application/usecases/melhoria-identificada/delete-melhoria';
+import { CreateOutraAlteracaoUseCase } from './modules/relatorio/application/usecases/outras-alteracoes/create-outra-alteracao';
+import { UpdateOutraAlteracaoUseCase } from './modules/relatorio/application/usecases/outras-alteracoes/update-outra-alteracao';
+import { DeleteOutraAlteracaoUseCase } from './modules/relatorio/application/usecases/outras-alteracoes/delete-outra-alteracao';
 
 @Module({
   imports: [
@@ -80,6 +83,9 @@ import { DeleteMelhoriaIdentificadaUseCase } from './modules/relatorio/applicati
     CreateMelhoriaIdentificadaUseCase,
     UpdateMelhoriaIdentificadaUseCase,
     DeleteMelhoriaIdentificadaUseCase,
+    CreateOutraAlteracaoUseCase,
+    UpdateOutraAlteracaoUseCase,
+    DeleteOutraAlteracaoUseCase,
     {
       provide: 'IRelatorioRepository',
       useClass: RelatorioRepository,
