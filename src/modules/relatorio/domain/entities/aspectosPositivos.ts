@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { Relatorio } from './relatorio';
 
-@Entity('aspectos- positivos')
+@Entity('aspectos-positivos')
 export class AspectoPositivo {
   @PrimaryGeneratedColumn('uuid')
   id: string;

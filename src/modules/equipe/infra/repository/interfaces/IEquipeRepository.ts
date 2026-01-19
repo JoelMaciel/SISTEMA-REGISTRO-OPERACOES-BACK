@@ -10,6 +10,13 @@ export interface IPaginatedResult<T> {
 export interface IEquipeRepository {
   create(data: Partial<Equipe>): Promise<Equipe>;
   findById(id: string): Promise<Equipe | null>;
+
+  getSummaryByOperacaoAndPeriod(
+    operacaoId: string,
+    dataInicial: Date,
+    dataFinal: Date,
+  ): Promise<{ totalEfetivo: number; totalPostosDistintos: number }>;
+
   findAll(
     page: number,
     limit: number,

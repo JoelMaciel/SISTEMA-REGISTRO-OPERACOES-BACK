@@ -6,13 +6,44 @@ import {
 } from './interfaces/IEquipeRepository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Equipe } from '../../domain/entities/equipe';
+import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
 
 @Injectable()
 export class EquipeRepository implements IEquipeRepository {
   constructor(
     @InjectRepository(Equipe)
     private readonly equipeRepository: Repository<Equipe>,
+    @InjectRepository(Operacao)
+    private readonly operacaoRepository: Repository<Operacao>,
   ) {}
+
+  async getSummaryByOperacaoAndPeriod(
+    operacaoId: string,
+    dataInicial: Date,
+    dataFinal: Date,
+  ): Promise<{ totalEfetivo: number; totalPostosDistintos: number }> {
+    const operacao = await this.operacaoRepository.findOneBy({
+      id: operacaoId,
+    });
+    if (!operacao) return { totalEfetivo: 0, totalPostosDistintos: 0 };
+
+    const inicio = dataInicial.toISOString().split('T')[0];
+    const fim = dataFinal.toISOString().split('T')[0];
+
+    const result = await this.equipeRepository
+      .createQueryBuilder('equipe')
+      .select('SUM(equipe.efetivo_policial)', 'totalEfetivo')
+      .addSelect('COUNT(DISTINCT equipe.posto_area_id)', 'totalPostosDistintos')
+      .where('equipe.nome_operacao = :nome', { nome: operacao.nome })
+      .andWhere('equipe.data_operacao >= :inicio', { inicio })
+      .andWhere('equipe.data_operacao <= :fim', { fim })
+      .getRawOne();
+
+    return {
+      totalEfetivo: parseInt(result?.totalEfetivo) || 0,
+      totalPostosDistintos: parseInt(result?.totalPostosDistintos) || 0,
+    };
+  }
 
   async create(data: Partial<Equipe>): Promise<Equipe> {
     const equipe = this.equipeRepository.create(data);

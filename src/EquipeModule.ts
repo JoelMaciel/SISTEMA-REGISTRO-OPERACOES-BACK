@@ -8,9 +8,10 @@ import { OperacaoModule } from './OperacaoModule';
 import { ShowEquipeUseCase } from './modules/equipe/application/usecases/equipe/show-equipe';
 import { ListarEquipeUseCase } from './modules/equipe/application/usecases/equipe/list-equipe';
 import { UpdateEquipeUseCase } from './modules/equipe/application/usecases/equipe/update-equipe';
+import { Operacao } from './modules/operacao/domain/entities/operacao';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Equipe]), OperacaoModule],
+  imports: [TypeOrmModule.forFeature([Equipe, Operacao]), OperacaoModule],
   controllers: [EquipeController],
   providers: [
     CriarEquipeUseCase,
