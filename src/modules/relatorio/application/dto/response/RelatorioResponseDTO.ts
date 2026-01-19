@@ -20,7 +20,7 @@ export class RelatorioResponseDTO {
   postoAreas: any[];
 
   operacao: Pick<
-    OperacaoResponseDTO,
+    any,
     | 'id'
     | 'nome'
     | 'opmDemandante'
@@ -30,17 +30,13 @@ export class RelatorioResponseDTO {
     | 'quantidadePostoArea'
   >;
 
-  fiscal: Pick<
-    FiscalResponseDTO,
-    'id' | 'nome' | 'postoGraduacao' | 'matricula' | 'opm'
-  >;
+  fiscal: Pick<any, 'id' | 'nome' | 'postoGraduacao' | 'matricula' | 'opm'>;
 
-  ocorrencias: OcorrenciaResponseDTO[];
-
-  aspectosPositivos: AspectoPositivoResponseDTO[];
-  melhoriasIdentificadas: MelhoriaIdentificadaResponseDTO[];
-  alteracoesEfetivo: AlteracaoEfetivoResponseDTO[];
-  outrasAlteracoes: OutraAlteracaoResponseDTO[];
+  ocorrencias: any[];
+  aspectosPositivos: any[];
+  melhoriasIdentificadas: any[];
+  alteracoesEfetivo: any[];
+  outrasAlteracoes: any[];
 
   constructor(entity: Relatorio, ocorrenciasEncontradas: Ocorrencia[] = []) {
     this.id = entity.id;
@@ -49,8 +45,22 @@ export class RelatorioResponseDTO {
     this.horarioInicial = entity.horarioInicial;
     this.horarioFinal = entity.horarioFinal;
     this.local = entity.local;
-    this.totalPosto = entity.totalPosto;
-    this.efetivoTotal = entity.efetivoTotal;
+
+    const postosComEquipes =
+      entity.operacao?.postoAreas?.filter(
+        (posto) => posto.equipes && posto.equipes.length > 0,
+      ) || [];
+
+    const todasAsEquipes = postosComEquipes.flatMap(
+      (posto) => posto.equipes || [],
+    );
+
+    this.efetivoTotal = todasAsEquipes.reduce(
+      (acc, equipe) => acc + (Number(equipe.efetivoPolicial) || 0),
+      0,
+    );
+
+    this.totalPosto = postosComEquipes.length;
 
     this.operacao = entity.operacao
       ? {
@@ -63,25 +73,29 @@ export class RelatorioResponseDTO {
           quantidadePostoArea: entity.operacao.quantidadePostoArea,
         }
       : null;
+
     this.fiscal = entity.fiscal
       ? {
           id: entity.fiscal.id,
           nome: entity.fiscal.nome,
-          postoGraduacao: entity.fiscal.postoGraduação,
+          postoGraduacao:
+            (entity.fiscal as any).postoGraduacao ||
+            (entity.fiscal as any).postoGraduação,
           matricula: entity.fiscal.matricula,
           opm: entity.fiscal.opm,
         }
       : null;
 
-    this.postoAreas =
-      entity.operacao?.postoAreas?.map((posto) => ({
-        nome: posto.nome,
-        equipes: posto.equipes?.map((equipe) => ({
-          comandante: `${equipe.postoComandante} ${equipe.nomeGuerraComandante}`,
-          matricula: equipe.matriculaComandante,
-          efetivo: equipe.efetivoPolicial,
-        })),
-      })) || [];
+    this.postoAreas = postosComEquipes.map((posto) => ({
+      id: posto.id,
+      nome: posto.nome,
+      equipes: posto.equipes?.map((equipe) => ({
+        id: equipe.id,
+        comandante: `${equipe.postoComandante} ${equipe.nomeGuerraComandante}`,
+        matricula: equipe.matriculaComandante,
+        efetivo: equipe.efetivoPolicial,
+      })),
+    }));
 
     this.ocorrencias = ocorrenciasEncontradas.map(
       (oc) => new OcorrenciaResponseDTO(oc),
