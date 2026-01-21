@@ -51,7 +51,10 @@ export class EquipeRepository implements IEquipeRepository {
   }
 
   async findById(id: string): Promise<Equipe | null> {
-    return this.equipeRepository.findOne({ where: { id } });
+    return await this.equipeRepository.findOne({
+      where: { id },
+      relations: ['postoArea'],
+    });
   }
 
   public async findAll(

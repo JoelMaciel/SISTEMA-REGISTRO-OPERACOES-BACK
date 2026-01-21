@@ -17,11 +17,19 @@ export class EquipeResponseDTO {
   logradouro: string;
   tipoServico: string;
   numeroHt: string;
+  postoArea?: {
+    nome: string;
+    local: string;
+    logradouro: string;
+    numero: string;
+    bairro?: string;
+  };
 
   constructor(entity: Equipe) {
     this.id = entity.id;
     this.email = entity.email;
     this.contatoEquipe = entity.contatoEquipe;
+
     let dataOperacao: Date | null = null;
     if (entity.dataOperacao) {
       if (entity.dataOperacao instanceof Date) {
@@ -50,5 +58,15 @@ export class EquipeResponseDTO {
     this.logradouro = entity.logradouro;
     this.tipoServico = entity.tipoServico;
     this.numeroHt = entity.numeroHt;
+
+    if (entity.postoArea) {
+      this.postoArea = {
+        nome: entity.postoArea.nome,
+        local: entity.postoArea.local,
+        logradouro: entity.postoArea.logradouro,
+        numero: entity.postoArea.numero,
+        bairro: entity.postoArea.bairro,
+      };
+    }
   }
 }

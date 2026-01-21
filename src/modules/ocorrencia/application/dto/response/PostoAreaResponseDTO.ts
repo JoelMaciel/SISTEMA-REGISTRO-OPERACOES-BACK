@@ -3,6 +3,7 @@ import { PostoArea } from 'src/modules/operacao/domain/entities/posto-area';
 export class PostoAreaResponseDTO {
   id: string;
   nome: string;
+  logradouro?: string;
   local: string;
   numero?: string;
   bairro?: string;
@@ -12,6 +13,7 @@ export class PostoAreaResponseDTO {
   constructor(posto: PostoArea) {
     this.id = posto.id;
     this.nome = posto.nome;
+    this.logradouro = posto.logradouro;
     this.local = posto.local;
     this.numero = posto.numero;
     this.bairro = posto.bairro;

@@ -44,6 +44,7 @@ export class OperacaoRepository implements IOperacaoRepository {
     dataFinalStart?: Date,
     dataFinalEnd?: Date,
     postoArea?: string,
+    local?: string,
   ): Promise<IPaginatedResult<Operacao>> {
     const skip = (page - 1) * limit;
 
@@ -102,8 +103,14 @@ export class OperacaoRepository implements IOperacaoRepository {
     }
 
     if (postoArea) {
-      query.andWhere('postoServico.nome ILIKE :postoServico', {
-        postoServico: `%${postoArea}%`,
+      query.andWhere('postoAreas.nome ILIKE :postoAreaNome', {
+        postoAreaNome: `%${postoArea}%`,
+      });
+    }
+
+    if (local) {
+      query.andWhere('postoAreas.local ILIKE :localNome', {
+        localNome: `%${local}%`,
       });
     }
 
@@ -182,6 +189,20 @@ export class OperacaoRepository implements IOperacaoRepository {
     operacao.postoAreas.splice(postoIndex, 1);
 
     await this.operacaoRepository.save(operacao);
+  }
+
+  async findLocaisByCidade(
+    operacaoId: string,
+    cidade: string,
+  ): Promise<string[]> {
+    const result = await this.operacaoRepository.manager
+      .createQueryBuilder(PostoArea, 'posto')
+      .select('DISTINCT posto.local', 'local')
+      .where('posto.operacao_id = :operacaoId', { operacaoId })
+      .andWhere('posto.cidade = :cidade', { cidade })
+      .getRawMany();
+
+    return result.map((r) => r.local);
   }
 
   async findByIdWithRelations(

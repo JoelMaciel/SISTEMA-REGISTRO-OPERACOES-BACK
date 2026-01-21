@@ -13,6 +13,13 @@ export const PostoAreaSchema = z.object({
       message: "O campo 'local' deve ter no máximo 120 caracteres.",
     }),
 
+  logradouro: z
+    .string()
+    .max(200, {
+      message: "O campo 'logradouro' deve ter no máximo 200 caracteres.",
+    })
+    .optional(),
+
   numero: z
     .string()
     .max(30, { message: "O campo 'número' deve ter no máximo 30 caracteres." })
