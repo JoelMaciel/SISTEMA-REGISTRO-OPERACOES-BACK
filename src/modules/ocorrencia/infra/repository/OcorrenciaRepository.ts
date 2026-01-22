@@ -96,6 +96,33 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     return this.ocorrenciaRepository.save(ocorrencia);
   }
 
+  async findOcorrenciasByOperacaoLocalAndPeriod(
+    operacaoId: string,
+    local: string,
+    dataInicial: Date,
+    dataFinal: Date,
+  ): Promise<Ocorrencia[]> {
+    const query = this.ocorrenciaRepository
+      .createQueryBuilder('ocorrencia')
+      .leftJoinAndSelect('ocorrencia.vitimas', 'vitimas')
+      .leftJoinAndSelect('ocorrencia.acusados', 'acusados')
+      .leftJoinAndSelect('ocorrencia.veiculos', 'veiculos')
+      .leftJoinAndSelect('ocorrencia.armas', 'armas')
+      .leftJoinAndSelect('ocorrencia.drogas', 'drogas')
+      .leftJoinAndSelect('ocorrencia.municoes', 'municoes')
+      .leftJoinAndSelect('ocorrencia.valoresApreendidos', 'valoresApreendidos')
+      .leftJoinAndSelect('ocorrencia.endereco', 'endereco')
+
+      .where('ocorrencia.operacao = :operacaoId', { operacaoId })
+      .andWhere('ocorrencia.data BETWEEN :dataInicial AND :dataFinal', {
+        dataInicial,
+        dataFinal,
+      })
+      .orderBy('ocorrencia.data', 'ASC');
+
+    return await query.getMany();
+  }
+
   async findById(id: string): Promise<Ocorrencia | null> {
     return await this.ocorrenciaRepository.findOne({
       where: { id },

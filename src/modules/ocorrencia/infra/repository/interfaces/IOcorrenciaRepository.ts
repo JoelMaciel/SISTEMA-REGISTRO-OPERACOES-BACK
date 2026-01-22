@@ -29,6 +29,12 @@ export interface IOcorrenciaRepository {
   saveVeiculo(veiculo: Veiculo): Promise<Veiculo>;
   saveMunicao(municao: Municao): Promise<Municao>;
   saveDroga(droga: Droga): Promise<Droga>;
+  findOcorrenciasByOperacaoLocalAndPeriod(
+    operacaoId: string,
+    local: string,
+    dataInicial: Date,
+    dataFinal: Date,
+  ): Promise<Ocorrencia[]>;
 
   findById(id: string, relations?: string[]): Promise<Ocorrencia | null>;
 

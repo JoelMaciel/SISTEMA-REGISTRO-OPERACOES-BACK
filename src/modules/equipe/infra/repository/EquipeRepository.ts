@@ -117,6 +117,33 @@ export class EquipeRepository implements IEquipeRepository {
     };
   }
 
+  async getSummaryByOperacaoLocalAndPeriod(
+    operacaoId: string,
+    local: string,
+    dataInicial: Date,
+    dataFinal: Date,
+  ) {
+    const result = await this.equipeRepository
+      .createQueryBuilder('equipe')
+
+      .innerJoin('equipe.postoArea', 'postoArea')
+      .select('SUM(equipe.efetivoPolicial)', 'totalEfetivo')
+      .addSelect('COUNT(DISTINCT equipe.id)', 'totalPostosDistintos')
+
+      .where('postoArea.operacao = :operacaoId', { operacaoId })
+      .andWhere('postoArea.local = :local', { local })
+      .andWhere('equipe.dataOperacao BETWEEN :dataInicial AND :dataFinal', {
+        dataInicial,
+        dataFinal,
+      })
+      .getRawOne();
+
+    return {
+      totalEfetivo: Number(result?.totalEfetivo) || 0,
+      totalPostosDistintos: Number(result?.totalPostosDistintos) || 0,
+    };
+  }
+
   async update(id: string, data: Partial<Equipe>): Promise<Equipe> {
     const equipe = await this.equipeRepository.findOneOrFail({ where: { id } });
 

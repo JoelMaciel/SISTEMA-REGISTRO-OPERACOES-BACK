@@ -1,6 +1,4 @@
 import { Relatorio } from '../../../domain/entities/relatorio';
-import { FiscalResponseDTO } from 'src/modules/fiscal/application/dto/response/FiscalResponseDTO';
-import { OperacaoResponseDTO } from 'src/modules/operacao/application/dto/response/OperacaoResponseDTO';
 import { AspectoPositivoResponseDTO } from './AspectoPositivoResponseDTO';
 import { MelhoriaIdentificadaResponseDTO } from './MelhoriaIdentificadaResponseDTO';
 import { AlteracaoEfetivoResponseDTO } from './AlteracaoEfetivoResponseDTO.ts';
