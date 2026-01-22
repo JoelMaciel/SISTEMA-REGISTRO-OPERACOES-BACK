@@ -44,7 +44,11 @@ export class RelatorioRepository implements IRelatorioRepository {
     const query = this.relatorioRepository
       .createQueryBuilder('relatorio')
       .leftJoinAndSelect('relatorio.operacao', 'operacao')
-      .leftJoinAndSelect('operacao.postoAreas', 'postoAreas')
+      .leftJoinAndSelect(
+        'operacao.postoAreas',
+        'postoAreas',
+        'TRIM(UPPER(postoAreas.local)) = TRIM(UPPER(relatorio.local))',
+      )
       .leftJoinAndSelect('postoAreas.equipes', 'equipes')
       .leftJoinAndSelect('relatorio.fiscal', 'fiscal')
       .leftJoinAndSelect('relatorio.aspectosPositivos', 'aspectosPositivos')
