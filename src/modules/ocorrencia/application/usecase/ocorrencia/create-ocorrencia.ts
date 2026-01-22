@@ -13,6 +13,7 @@ import { IOcorrenciaRepository } from 'src/modules/ocorrencia/infra/repository/i
 import { OcorrenciaRequestDTO } from '../../dto/schema/CreateOcorrenciaSchema';
 import { OcorrenciaResponseDTO } from '../../dto/response/OcorrenciaResponseDTO';
 import { IOperacaoRepository } from 'src/modules/operacao/infra/repository/interfaces/IOperacaoRepository';
+import { AppError } from 'src/shared/errors/AppError';
 
 @Injectable()
 export class CreateOcorrenciaUseCase {
@@ -29,12 +30,31 @@ export class CreateOcorrenciaUseCase {
     dto: OcorrenciaRequestDTO,
   ): Promise<OcorrenciaResponseDTO> {
     const operacao = await this.operacaoRepository.findById(operacaoId);
+
+    if (dto.postoAreaId) {
+      const vinculoValido =
+        await this.operacaoRepository.findOperacaoWithPostoArea(
+          operacaoId,
+          dto.postoAreaId,
+        );
+
+      if (!vinculoValido) {
+        throw new AppError(
+          'O Posto/Área informado não existe ou não pertence a esta operação.',
+          400,
+        );
+      }
+    }
     if (!operacao) {
-      throw new Error('Operação não encontrada');
+      throw new AppError('Operação não encontrada', 404);
     }
 
     const ocorrenciaEntity = this.mapToEntity(dto);
     ocorrenciaEntity.operacao = operacao;
+
+    if (dto.postoAreaId) {
+      ocorrenciaEntity.postoAreaId = dto.postoAreaId;
+    }
 
     const novaOcorrencia = await this.ocorrenciaRepository.create(
       ocorrenciaEntity,
@@ -50,6 +70,7 @@ export class CreateOcorrenciaUseCase {
     ocorrencia.horario = dto.horario;
     ocorrencia.tipo = dto.tipo;
     ocorrencia.resumo = dto.resumo;
+    ocorrencia.postoAreaId = dto.postoAreaId;
 
     const endereco = new Endereco();
     endereco.rua = dto.endereco.rua;

@@ -127,6 +127,7 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     return await this.ocorrenciaRepository.findOne({
       where: { id },
       relations: [
+        'postoArea',
         'vitimas',
         'drogas',
         'municoes',
