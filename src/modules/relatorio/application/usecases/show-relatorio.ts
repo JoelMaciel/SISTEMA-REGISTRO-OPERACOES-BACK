@@ -25,6 +25,17 @@ export class ShowRelatoriodUseCase {
         relatorio.dataFinal,
       );
 
+    if (relatorio.operacao && relatorio.operacao.postoAreas) {
+      const localNormalizado = relatorio.local.trim().toUpperCase();
+
+      relatorio.operacao.postoAreas = relatorio.operacao.postoAreas.filter(
+        (pa) => {
+          const localPosto = pa.local.trim().toUpperCase();
+          return localPosto === localNormalizado;
+        },
+      );
+    }
+
     return new RelatorioResponseDTO(relatorio, ocorrencias);
   }
 }

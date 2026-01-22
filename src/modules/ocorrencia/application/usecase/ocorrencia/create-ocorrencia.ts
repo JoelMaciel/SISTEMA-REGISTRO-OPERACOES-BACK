@@ -66,7 +66,14 @@ export class CreateOcorrenciaUseCase {
   private mapToEntity(dto: OcorrenciaRequestDTO): Ocorrencia {
     const ocorrencia = new Ocorrencia();
     ocorrencia.m = dto.m;
-    ocorrencia.data = dto.data instanceof Date ? dto.data : new Date(dto.data);
+    if (dto.data) {
+      const dataString =
+        dto.data instanceof Date
+          ? dto.data.toISOString().split('T')[0]
+          : String(dto.data).split('T')[0];
+
+      ocorrencia.data = new Date(`${dataString}T12:00:00`);
+    }
     ocorrencia.horario = dto.horario;
     ocorrencia.tipo = dto.tipo;
     ocorrencia.resumo = dto.resumo;

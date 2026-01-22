@@ -98,29 +98,38 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
 
   async findOcorrenciasByOperacaoLocalAndPeriod(
     operacaoId: string,
-    local: string,
+    localAlvo: string,
     dataInicial: Date,
     dataFinal: Date,
   ): Promise<Ocorrencia[]> {
-    const query = this.ocorrenciaRepository
+    return await this.ocorrenciaRepository
       .createQueryBuilder('ocorrencia')
+      .innerJoinAndSelect('ocorrencia.postoArea', 'postoArea')
+      .leftJoinAndSelect('ocorrencia.endereco', 'endereco')
       .leftJoinAndSelect('ocorrencia.vitimas', 'vitimas')
       .leftJoinAndSelect('ocorrencia.acusados', 'acusados')
-      .leftJoinAndSelect('ocorrencia.veiculos', 'veiculos')
       .leftJoinAndSelect('ocorrencia.armas', 'armas')
       .leftJoinAndSelect('ocorrencia.drogas', 'drogas')
       .leftJoinAndSelect('ocorrencia.municoes', 'municoes')
+      .leftJoinAndSelect('ocorrencia.veiculos', 'veiculos')
       .leftJoinAndSelect('ocorrencia.valoresApreendidos', 'valoresApreendidos')
-      .leftJoinAndSelect('ocorrencia.endereco', 'endereco')
 
-      .where('ocorrencia.operacao = :operacaoId', { operacaoId })
-      .andWhere('ocorrencia.data BETWEEN :dataInicial AND :dataFinal', {
-        dataInicial,
-        dataFinal,
+      .where('ocorrencia.operacao_id = :operacaoId', { operacaoId })
+
+      .andWhere('TRIM(UPPER(postoArea.local)) = TRIM(UPPER(:localAlvo))', {
+        localAlvo,
       })
-      .orderBy('ocorrencia.data', 'ASC');
 
-    return await query.getMany();
+      .andWhere(
+        'ocorrencia.data::date BETWEEN :dataInicial::date AND :dataFinal::date',
+        {
+          dataInicial,
+          dataFinal,
+        },
+      )
+      .orderBy('ocorrencia.data', 'ASC')
+      .addOrderBy('ocorrencia.horario', 'ASC')
+      .getMany();
   }
 
   async findById(id: string): Promise<Ocorrencia | null> {

@@ -50,8 +50,8 @@ export class CreateRelatorioUseCase {
       );
 
     const novoRelatorioData: Partial<Relatorio> = {
-      dataInicial: dto.dataInicial,
-      dataFinal: dto.dataFinal,
+      dataInicial: this.normalizarData(dto.dataInicial),
+      dataFinal: this.normalizarData(dto.dataFinal),
       horarioInicial: dto.horarioInicial,
       horarioFinal: dto.horarioFinal,
       local: dto.local.toUpperCase(),
@@ -74,4 +74,10 @@ export class CreateRelatorioUseCase {
 
     return new RelatorioResponseDTO(novoRelatorio, ocorrencias);
   }
+
+  private normalizarData = (data: Date | string) => {
+    const d = data instanceof Date ? data.toISOString() : data;
+    const apenasData = d.split('T')[0];
+    return new Date(`${apenasData}T12:00:00`);
+  };
 }
