@@ -14,12 +14,12 @@ export const PostoAreaSchema = z.object({
     }),
 
   logradouro: z
-    .string()
-    .max(200, {
-      message: "O campo 'logradouro' deve ter no máximo 200 caracteres.",
+    .string({
+      required_error: 'O logradouro é obrigatório.',
+      invalid_type_error: 'O logradouro deve ser uma string.',
     })
-    .optional(),
-
+    .min(1, { message: 'O logradouro não pode estar vazio.' })
+    .max(200, { message: 'O logradouro deve ter no máximo 200 caracteres.' }),
   numero: z
     .string()
     .max(30, { message: "O campo 'número' deve ter no máximo 30 caracteres." })
