@@ -87,6 +87,10 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     return this.acusadoRepository.save(acusado);
   }
 
+  async findByM(m: string): Promise<Ocorrencia | null> {
+    return await this.ocorrenciaRepository.findOne({ where: { m } });
+  }
+
   async saveEndereco(endereco: Endereco): Promise<Endereco> {
     endereco;
     return this.enderecoRepository.save(endereco);

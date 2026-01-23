@@ -18,6 +18,7 @@ export interface IPaginatedResult<T> {
 
 export interface IOcorrenciaRepository {
   create(data: Partial<Ocorrencia>): Promise<Ocorrencia>;
+  findByM(m: string): Promise<Ocorrencia | null>;
 
   save(ocorrencia: Ocorrencia): Promise<Ocorrencia>;
   saveArma(arma: Arma): Promise<Arma>;

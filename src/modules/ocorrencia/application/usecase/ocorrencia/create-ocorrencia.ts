@@ -31,6 +31,15 @@ export class CreateOcorrenciaUseCase {
   ): Promise<OcorrenciaResponseDTO> {
     const operacao = await this.operacaoRepository.findById(operacaoId);
 
+    const ocorrenciaJaExiste = await this.ocorrenciaRepository.findByM(dto.m);
+
+    if (ocorrenciaJaExiste) {
+      throw new AppError(
+        `Já existe uma ocorrência cadastrada com o registro (M): ${dto.m}`,
+        409,
+      );
+    }
+
     if (dto.postoAreaId) {
       const vinculoValido =
         await this.operacaoRepository.findOperacaoWithPostoArea(
