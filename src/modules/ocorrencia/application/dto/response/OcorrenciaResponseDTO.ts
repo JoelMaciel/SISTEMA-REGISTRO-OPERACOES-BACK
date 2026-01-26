@@ -6,6 +6,10 @@ export class OcorrenciaResponseDTO {
   data: Date;
   horario: string;
   tipo: string;
+  operacao: {
+    id: string;
+    nome: string;
+  };
   resumo: string;
 
   postoArea: {
@@ -118,6 +122,12 @@ export class OcorrenciaResponseDTO {
     this.data = ocorrencia.data;
     this.horario = ocorrencia.horario;
     this.tipo = ocorrencia.tipo;
+    this.operacao = ocorrencia.operacao
+      ? {
+          id: ocorrencia.operacao.id,
+          nome: ocorrencia.operacao.nome,
+        }
+      : null;
     this.resumo = ocorrencia.resumo;
 
     this.postoArea = ocorrencia.postoArea
