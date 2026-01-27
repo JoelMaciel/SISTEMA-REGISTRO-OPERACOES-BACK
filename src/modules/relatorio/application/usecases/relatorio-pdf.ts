@@ -4,32 +4,39 @@ import { RelatorioResponseDTO } from '../dto/response/RelatorioResponseDTO';
 import * as PDFDocument from 'pdfkit';
 import * as path from 'path';
 import { AppError } from 'src/shared/errors/AppError';
+import { IOcorrenciaRepository } from 'src/modules/ocorrencia/infra/repository/interfaces/IOcorrenciaRepository';
 
 @Injectable()
 export class GerarPdfRelatorioUseCase {
   constructor(
     @Inject('IRelatorioRepository')
     private readonly relatorioRepository: IRelatorioRepository,
+    @Inject('IOcorrenciaRepository')
+    private readonly ocorrenciaRepository: IOcorrenciaRepository,
   ) {}
 
   async execute(id: string): Promise<PDFKit.PDFDocument> {
     const entity = await this.relatorioRepository.findById(id);
+    if (!entity) throw new AppError('Relatório não encontrado', 404);
 
-    if (!entity) {
-      throw new AppError('Relatório não encontrado', 404);
+    const ocorrencias =
+      await this.ocorrenciaRepository.findOcorrenciasByOperacaoLocalAndPeriod(
+        entity.operacao.id,
+        entity.local,
+        entity.dataInicial,
+        entity.dataFinal,
+      );
+
+    if (entity.operacao && entity.operacao.postoAreas) {
+      const localNormalizado = entity.local.trim().toUpperCase();
+      entity.operacao.postoAreas = entity.operacao.postoAreas.filter((pa) => {
+        return pa.local.trim().toUpperCase() === localNormalizado;
+      });
     }
 
-    const relatorio = new RelatorioResponseDTO(
-      entity,
-      entity.operacao?.ocorrencias || [],
-    );
+    const relatorio = new RelatorioResponseDTO(entity, ocorrencias);
 
-    const doc = new PDFDocument({
-      size: 'A4',
-      margin: 40,
-      bufferPages: true,
-    });
-
+    const doc = new PDFDocument({ size: 'A4', margin: 40, bufferPages: true });
     const pathCabecalho = path.resolve(
       process.cwd(),
       'src',
@@ -42,12 +49,10 @@ export class GerarPdfRelatorioUseCase {
       'assets',
       'image_rodape.png',
     );
-
     const pageWidth = 595.28;
     const pageHeight = 841.89;
 
     doc.moveDown(6);
-
     doc
       .font('Helvetica-Bold')
       .fontSize(14)
@@ -61,64 +66,38 @@ export class GerarPdfRelatorioUseCase {
     doc.text(
       `FISCAL: ${
         relatorio.fiscal?.postoGraduacao
-      } ${relatorio.fiscal?.nome?.toUpperCase()} ` +
-        `(MAT: ${
-          relatorio.fiscal?.matricula
-        }) - OPM: ${relatorio.fiscal?.opm?.toUpperCase()}`,
+      } ${relatorio.fiscal?.nome?.toUpperCase()} (MAT: ${
+        relatorio.fiscal?.matricula
+      })`,
     );
     doc.text(
       `PERÍODO: ${new Date(relatorio.dataInicial).toLocaleDateString(
         'pt-BR',
-      )} ${relatorio.horarioInicial} ATÉ ` +
-        `${new Date(relatorio.dataFinal).toLocaleDateString('pt-BR')} ${
-          relatorio.horarioFinal
-        }`,
+      )} ${relatorio.horarioInicial} ATÉ ${new Date(
+        relatorio.dataFinal,
+      ).toLocaleDateString('pt-BR')} ${relatorio.horarioFinal}`,
     );
-    doc.text(
-      `EFETIVO TOTAL: ${relatorio.efetivoTotal} PMS | TOTAL DE POSTOS: ${relatorio.totalPosto}`,
-    );
+    doc.text(`EFETIVO TOTAL NO LOCAL: ${relatorio.efetivoTotal} PMS`);
     doc.moveDown();
 
     this.drawSectionHeader(doc, '2. DETALHAMENTO DOS POSTOS E EFETIVO');
-
-    const inicioRelatorio = new Date(relatorio.dataInicial);
-    const fimRelatorio = new Date(relatorio.dataFinal);
-
-    const postosNoPeriodo =
-      relatorio.postoAreas?.filter((posto) => {
-        const equipesNoPeriodo = posto.equipes?.filter((equipe) => {
-          const dataEquipe = new Date(equipe.data);
-          return dataEquipe >= inicioRelatorio && dataEquipe <= fimRelatorio;
-        });
-
-        if (equipesNoPeriodo && equipesNoPeriodo.length > 0) {
-          posto.equipes = equipesNoPeriodo;
-          return true;
-        }
-        return false;
-      }) || [];
-
-    if (postosNoPeriodo.length > 0) {
-      postosNoPeriodo.forEach((posto) => {
+    if (relatorio.postoAreas?.length > 0) {
+      relatorio.postoAreas.forEach((posto) => {
         this.checkNewPage(doc);
-
         doc
           .font('Helvetica-Bold')
           .fontSize(9)
           .fillColor('#2D3748')
           .text(`POSTO/ÁREA: ${posto.nome.toUpperCase()}`);
-
-        posto.equipes.forEach((equipe) => {
+        posto.equipes?.forEach((equipe) => {
           doc
             .font('Helvetica')
             .fontSize(8)
             .fillColor('black')
             .text(
-              `  • COMANDANTE: ${equipe.comandante.toUpperCase()} (MAT: ${
+              `  • COMANDANTE: ${equipe.comandante.toUpperCase()} | MAT: ${
                 equipe.matricula
-              }) | DATA: ${new Date(equipe.data).toLocaleDateString(
-                'pt-BR',
-              )} | EFETIVO: ${equipe.efetivo} PMS`,
+              } | EFETIVO: ${equipe.efetivo} PMS`,
             );
         });
         doc.moveDown(0.5);
@@ -127,27 +106,21 @@ export class GerarPdfRelatorioUseCase {
       doc
         .font('Helvetica')
         .fontSize(9)
-        .text(
-          'Nenhum posto ou equipe escalada para esta operação no período informado.',
-        );
+        .text('Nenhum posto escalado para este local.');
     }
-
     doc.moveDown();
 
     this.drawSectionHeader(
       doc,
-      `2. OCORRÊNCIAS REGISTRADAS (${relatorio.ocorrencias.length})`,
+      `3. OCORRÊNCIAS REGISTRADAS NO LOCAL (${relatorio.ocorrencias.length})`,
     );
-
     relatorio.ocorrencias.forEach((oc, index) => {
       this.checkNewPage(doc);
-
       doc
         .font('Helvetica-Bold')
         .fontSize(10)
         .fillColor('#1A365D')
         .text(`${index + 1}. M: ${oc.m} | TIPO: ${oc.tipo.toUpperCase()}`);
-
       doc
         .font('Helvetica')
         .fontSize(8)
@@ -157,64 +130,15 @@ export class GerarPdfRelatorioUseCase {
             oc.horario
           }`,
         );
-
       if (oc.endereco) {
         doc.text(
-          `LOCAL: ${oc.endereco.rua?.toUpperCase()}, ${
+          `ENDEREÇO: ${oc.endereco.rua?.toUpperCase()}, ${
             oc.endereco.numero || 'S/N'
-          } - ` +
-            `${oc.endereco.bairro?.toUpperCase()} | ${oc.endereco.cidade?.toUpperCase()}-${
-              oc.endereco.uf
-            }`,
+          } - ${oc.endereco.bairro?.toUpperCase()}`,
         );
       }
-      doc.moveDown(0.3);
-
-      if (oc.vitimas?.length > 0) {
-        doc.font('Helvetica-Bold').text('VÍTIMAS:');
-        oc.vitimas.forEach((v) => {
-          doc
-            .font('Helvetica')
-            .text(
-              `  • ${v.nome?.toUpperCase()} | CPF: ${v.cpf || 'N/I'} | IDADE: ${
-                v.idade || 'N/I'
-              } | ` + `MÃE: ${v.nomeMae?.toUpperCase() || 'N/I'}`,
-            );
-        });
-      }
-
-      if (oc.acusados?.length > 0) {
-        doc.font('Helvetica-Bold').fillColor('#C53030').text('ACUSADOS:');
-        oc.acusados.forEach((a) => {
-          doc
-            .font('Helvetica')
-            .fillColor('black')
-            .text(
-              `  • ${a.nome?.toUpperCase()} | CPF: ${a.cpf} | IDADE: ${
-                a.idade || 'N/I'
-              } | ` +
-                `NATURAL: ${
-                  a.naturalidade?.toUpperCase() || 'N/I'
-                } | NACIONALIDADE: ${a.nacionalidade?.toUpperCase() || 'N/I'}`,
-            );
-          doc.text(
-            `    PAI: ${a.nomePai?.toUpperCase() || 'N/I'} | MÃE: ${
-              a.nomeMae?.toUpperCase() || 'N/I'
-            }`,
-          );
-          if (a.endereco) {
-            doc.text(
-              `    END: ${a.endereco.rua?.toUpperCase()}, ${
-                a.endereco.numero || 'S/N'
-              } - ${a.endereco.bairro?.toUpperCase()}`,
-            );
-          }
-        });
-      }
-
-      doc.moveDown(0.3).font('Helvetica-Bold').text('RESUMO DO FATO:');
+      doc.moveDown(0.2).font('Helvetica-Bold').text('RESUMO:');
       doc.font('Helvetica').text(oc.resumo.toUpperCase(), { align: 'justify' });
-
       doc
         .moveDown(0.8)
         .moveTo(40, doc.y)
@@ -226,7 +150,7 @@ export class GerarPdfRelatorioUseCase {
     });
 
     if (relatorio.aspectosPositivos?.length > 0) {
-      this.drawSectionHeader(doc, '3. ASPECTOS POSITIVOS');
+      this.drawSectionHeader(doc, '4. ASPECTOS POSITIVOS');
       relatorio.aspectosPositivos.forEach((ap) =>
         doc
           .font('Helvetica')
@@ -237,7 +161,7 @@ export class GerarPdfRelatorioUseCase {
     }
 
     if (relatorio.melhoriasIdentificadas?.length > 0) {
-      this.drawSectionHeader(doc, '4. MELHORIAS IDENTIFICADAS');
+      this.drawSectionHeader(doc, '5. MELHORIAS IDENTIFICADAS');
       relatorio.melhoriasIdentificadas.forEach((mi) =>
         doc
           .font('Helvetica')
@@ -248,7 +172,7 @@ export class GerarPdfRelatorioUseCase {
     }
 
     if (relatorio.alteracoesEfetivo?.length > 0) {
-      this.drawSectionHeader(doc, '5. ALTERAÇÕES DE EFETIVO');
+      this.drawSectionHeader(doc, '6. ALTERAÇÕES DE EFETIVO');
       relatorio.alteracoesEfetivo.forEach((ae) => {
         doc
           .font('Helvetica-Bold')
@@ -261,18 +185,16 @@ export class GerarPdfRelatorioUseCase {
     }
 
     if (relatorio.outrasAlteracoes?.length > 0) {
-      this.drawSectionHeader(doc, '6. OUTRAS ALTERAÇÕES');
+      this.drawSectionHeader(doc, '7. OUTRAS ALTERAÇÕES');
       relatorio.outrasAlteracoes.forEach((oa) =>
         doc
           .font('Helvetica')
           .fontSize(9)
           .text(`• ${oa.descricao.toUpperCase()}`),
       );
-      doc.moveDown();
     }
 
     this.addOverlays(doc, pathCabecalho, pathRodape, pageWidth, pageHeight);
-
     doc.end();
     return doc;
   }
@@ -307,7 +229,6 @@ export class GerarPdfRelatorioUseCase {
     const logoWidth = 280;
     const xPosCabecalho = (pageWidth - logoWidth) / 2;
     const footerHeight = 45;
-
     for (let i = range.start; i < range.start + range.count; i++) {
       doc.switchToPage(i);
       doc.image(pathCabecalho, xPosCabecalho, 15, { width: logoWidth });
