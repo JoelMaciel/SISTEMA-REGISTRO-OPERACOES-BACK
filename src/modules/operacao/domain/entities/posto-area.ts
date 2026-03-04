@@ -20,6 +20,9 @@ export class PostoArea {
   @Column({ length: 120 })
   local: string;
 
+  @Column({ name: 'logradouro', length: 200, nullable: true })
+  logradouro?: string;
+
   @Column({ length: 30, nullable: true })
   numero?: string;
 

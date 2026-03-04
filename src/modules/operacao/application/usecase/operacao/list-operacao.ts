@@ -23,6 +23,7 @@ export class ListOperacaoUseCase {
     dataFinalStart?: string,
     dataFinalEnd?: string,
     postoServico?: string,
+    local?: string,
   ): Promise<IPaginatedResult<OperacaoResponseDTO>> {
     const result = await this.operacaoRepository.findAll(
       page,
@@ -34,6 +35,7 @@ export class ListOperacaoUseCase {
       parseDate(dataFinalStart),
       parseDate(dataFinalEnd),
       postoServico,
+      local,
     );
 
     return {

@@ -20,9 +20,10 @@ export interface IRelatorioRepository {
     dataInicial?: Date,
     dataFinal?: Date,
     local?: string,
-    operacao?: string,
-    fiscal?: string,
+    nomeOperacao?: string,
+    matriculaFiscal?: string,
   ): Promise<IPaginatedResult<Relatorio>>;
+
   delete(id: string): Promise<void>;
   update(id: string, data: Partial<Relatorio>): Promise<Relatorio>;
   saveAspectoPositivo(aspecto: AspectoPositivo): Promise<AspectoPositivo>;
@@ -31,4 +32,32 @@ export interface IRelatorioRepository {
   ): Promise<MelhoriaIdentificada>;
   saveAlteracaoEfetivo(alteracao: AlteracaoEfetivo): Promise<AlteracaoEfetivo>;
   saveOutraAlteracao(alteracao: OutraAlteracao): Promise<OutraAlteracao>;
+
+  findAlteracaoEfetivoById(
+    id: string,
+    relatorioId: string,
+  ): Promise<AlteracaoEfetivo | null>;
+
+  deleteAlteracaoEfetivo(id: string): Promise<void>;
+
+  findAspectoById(
+    id: string,
+    relatorioId: string,
+  ): Promise<AspectoPositivo | null>;
+
+  deleteAspecto(id: string): Promise<void>;
+
+  findMelhoriaById(
+    id: string,
+    relatorioId: string,
+  ): Promise<MelhoriaIdentificada | null>;
+
+  deleteMelhoria(id: string): Promise<void>;
+
+  findOutraAlteracaoById(
+    id: string,
+    relatorioId: string,
+  ): Promise<OutraAlteracao | null>;
+
+  deleteOutraAlteracao(id: string): Promise<void>;
 }

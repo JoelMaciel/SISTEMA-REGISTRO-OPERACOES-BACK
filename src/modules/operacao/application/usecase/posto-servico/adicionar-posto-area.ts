@@ -24,45 +24,29 @@ export class AddPostoAreaOperacaoUseCase {
       throw new AppError('Operação não encontrada na base de dados', 404);
     }
 
+    const dtos = Array.isArray(dto) ? dto : [dto];
+
+    const novosPostos = dtos.map((item) => {
+      const novo = new PostoArea();
+
+      Object.assign(novo, item);
+
+      novo.numero = item.numero ?? null;
+      novo.bairro = item.bairro ?? null;
+      novo.operacao = operacao;
+      return novo;
+    });
+
+    operacao.postoAreas.push(...novosPostos);
+    const operacaoAtualizada = await this.operacaoRepository.save(operacao);
+
     if (Array.isArray(dto)) {
-      const novosPostos = dto.map((item) => {
-        const novo = new PostoArea();
-        novo.nome = item.nome;
-        novo.local = item.local;
-        novo.numero = item.numero ?? null;
-        novo.bairro = item.bairro ?? null;
-        novo.cidade = item.cidade;
-        novo.quantidade = item.quantidade;
-        novo.operacao = operacao;
-        return novo;
-      });
-
-      operacao.postoAreas.push(...novosPostos);
-      const operacaoAtualizada = await this.operacaoRepository.save(operacao);
-
       const salvos = operacaoAtualizada.postoAreas.slice(-novosPostos.length);
       return salvos.map((p) => new PostoAreaResponseDTO(p));
     }
 
-    const novoPosto = new PostoArea();
-    novoPosto.nome = dto.nome;
-    novoPosto.local = dto.local;
-    novoPosto.numero = dto.numero ?? null;
-    novoPosto.bairro = dto.bairro ?? null;
-    novoPosto.cidade = dto.cidade;
-    novoPosto.quantidade = dto.quantidade;
-    novoPosto.operacao = operacao;
-
-    operacao.postoAreas.push(novoPosto);
-    const operacaoAtualizada = await this.operacaoRepository.save(operacao);
-
-    const salvo = operacaoAtualizada.postoAreas.find(
-      (p) => p.nome === novoPosto.nome && p.local === novoPosto.local,
-    );
-
-    if (!salvo) {
-      throw new AppError('Falha ao criar o posto/área', 500);
-    }
+    const salvo =
+      operacaoAtualizada.postoAreas[operacaoAtualizada.postoAreas.length - 1];
 
     return new PostoAreaResponseDTO(salvo);
   }

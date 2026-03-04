@@ -87,6 +87,10 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     return this.acusadoRepository.save(acusado);
   }
 
+  async findByM(m: string): Promise<Ocorrencia | null> {
+    return await this.ocorrenciaRepository.findOne({ where: { m } });
+  }
+
   async saveEndereco(endereco: Endereco): Promise<Endereco> {
     endereco;
     return this.enderecoRepository.save(endereco);
@@ -96,10 +100,48 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     return this.ocorrenciaRepository.save(ocorrencia);
   }
 
+  async findOcorrenciasByOperacaoLocalAndPeriod(
+    operacaoId: string,
+    localAlvo: string,
+    dataInicial: Date,
+    dataFinal: Date,
+  ): Promise<Ocorrencia[]> {
+    return await this.ocorrenciaRepository
+      .createQueryBuilder('ocorrencia')
+      .innerJoinAndSelect('ocorrencia.postoArea', 'postoArea')
+      .leftJoinAndSelect('ocorrencia.endereco', 'endereco')
+      .leftJoinAndSelect('ocorrencia.vitimas', 'vitimas')
+      .leftJoinAndSelect('ocorrencia.acusados', 'acusados')
+      .leftJoinAndSelect('ocorrencia.armas', 'armas')
+      .leftJoinAndSelect('ocorrencia.drogas', 'drogas')
+      .leftJoinAndSelect('ocorrencia.municoes', 'municoes')
+      .leftJoinAndSelect('ocorrencia.veiculos', 'veiculos')
+      .leftJoinAndSelect('ocorrencia.valoresApreendidos', 'valoresApreendidos')
+
+      .where('ocorrencia.operacao_id = :operacaoId', { operacaoId })
+
+      .andWhere('TRIM(UPPER(postoArea.local)) = TRIM(UPPER(:localAlvo))', {
+        localAlvo,
+      })
+
+      .andWhere(
+        'ocorrencia.data::date BETWEEN :dataInicial::date AND :dataFinal::date',
+        {
+          dataInicial,
+          dataFinal,
+        },
+      )
+      .orderBy('ocorrencia.data', 'ASC')
+      .addOrderBy('ocorrencia.horario', 'ASC')
+      .getMany();
+  }
+
   async findById(id: string): Promise<Ocorrencia | null> {
     return await this.ocorrenciaRepository.findOne({
       where: { id },
       relations: [
+        'operacao',
+        'postoArea',
         'vitimas',
         'drogas',
         'municoes',
@@ -417,6 +459,27 @@ export class OcorrenciaRepository implements IOcorrenciaRepository {
     if (!droga) return null;
 
     return { ocorrencia, droga };
+  }
+
+  async findOcorrenciasByOperacaoAndPeriod(
+    operacaoId: string,
+    dataInicial: Date,
+    dataFinal: Date,
+  ): Promise<Ocorrencia[]> {
+    const dataInicioFormatada = dataInicial.toISOString().split('T')[0];
+    const dataFimFormatada = dataFinal.toISOString().split('T')[0];
+
+    return await this.ocorrenciaRepository
+      .createQueryBuilder('ocorrencia')
+      .where('ocorrencia.operacao_id = :operacaoId', { operacaoId })
+      .andWhere('ocorrencia.data >= :dataInicio', {
+        dataInicio: dataInicioFormatada,
+      })
+      .andWhere('ocorrencia.data <= :dataFim', { dataFim: dataFimFormatada })
+
+      .orderBy('ocorrencia.data', 'ASC')
+      .addOrderBy('ocorrencia.horario', 'ASC')
+      .getMany();
   }
 
   async delete(id: string): Promise<void> {

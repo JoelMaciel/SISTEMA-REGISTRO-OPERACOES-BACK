@@ -59,6 +59,7 @@ export const AcusadoSchema = z.object({
   nomeMae: z.string().min(3).max(100).optional(),
   nomePai: z.string().min(3).max(100).optional(),
   naturalidade: z.string().min(2).max(50),
+  postoAreaId: z.string().uuid({ message: 'ID do Posto inválido' }).optional(),
   nacionalidade: z.string().min(2).max(50),
   endereco: EnderecoSchema,
 });
@@ -124,6 +125,7 @@ export const OcorrenciaSchema = z.object({
   horario: z.string().regex(horaRegex),
   tipo: z.string().min(3).max(80),
   resumo: z.string().min(5).max(4000),
+  postoAreaId: z.string().uuid({ message: 'ID do Posto inválido' }),
   endereco: EnderecoSchema,
   vitimas: z.array(VitimaSchema).optional(),
   acusados: z.array(AcusadoSchema).optional(),

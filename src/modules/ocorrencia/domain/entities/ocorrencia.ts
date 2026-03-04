@@ -19,6 +19,7 @@ import { Veiculo } from './veiculo';
 import { OutroObjeto } from './outroObjeto';
 import { Dinheiro } from './dinheiro';
 import { Operacao } from 'src/modules/operacao/domain/entities/operacao';
+import { PostoArea } from 'src/modules/operacao/domain/entities/posto-area';
 
 @Entity('ocorrencias')
 export class Ocorrencia {
@@ -46,6 +47,13 @@ export class Ocorrencia {
   })
   @JoinColumn({ name: 'operacao_id' })
   operacao: Operacao;
+
+  @ManyToOne(() => PostoArea, { nullable: true })
+  @JoinColumn({ name: 'posto_area_id' })
+  postoArea: PostoArea;
+
+  @Column({ name: 'posto_area_id', nullable: true })
+  postoAreaId: string;
 
   @OneToMany(() => Vitima, (vitima) => vitima.ocorrencia, {
     cascade: true,

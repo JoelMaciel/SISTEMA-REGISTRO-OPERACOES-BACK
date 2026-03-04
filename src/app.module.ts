@@ -25,6 +25,7 @@ import { MelhoriaIdentificada } from './modules/relatorio/domain/entities/melhor
 import { AlteracaoEfetivo } from './modules/relatorio/domain/entities/alteracaoEfetivo';
 import { OutraAlteracao } from './modules/relatorio/domain/entities/outraAlteracao';
 import { FiscalModule } from './FiscalModule';
+import { RelatorioModule } from './RelatorioModule';
 
 @Module({
   imports: [
@@ -68,6 +69,7 @@ import { FiscalModule } from './FiscalModule';
     OperacaoModule,
     OcorrenciaModule,
     FiscalModule,
+    RelatorioModule,
   ],
   controllers: [],
   providers: [],

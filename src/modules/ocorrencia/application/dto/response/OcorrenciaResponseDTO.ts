@@ -1,5 +1,3 @@
-// src/modules/ocorrencia/dto/response/OcorrenciaResponseDTO.ts
-
 import { Ocorrencia } from 'src/modules/ocorrencia/domain/entities/ocorrencia';
 
 export class OcorrenciaResponseDTO {
@@ -8,7 +6,18 @@ export class OcorrenciaResponseDTO {
   data: Date;
   horario: string;
   tipo: string;
+  operacao: {
+    id: string;
+    nome: string;
+  };
   resumo: string;
+
+  postoArea: {
+    id: string;
+    nome: string;
+    local: string;
+  } | null;
+
   endereco: {
     id?: string;
     rua: string;
@@ -62,17 +71,20 @@ export class OcorrenciaResponseDTO {
       complemento?: string;
     } | null;
   }[];
+
   drogas: {
     id?: string;
     tipo: string;
     quantidade: string;
     unidadeMedida: string;
   }[];
+
   municoes: {
     id?: string;
     calibre: string;
     quantidade: string;
   }[];
+
   veiculos: {
     id?: string;
     marca: string;
@@ -82,6 +94,7 @@ export class OcorrenciaResponseDTO {
     cor: string;
     situacao: string;
   }[];
+
   armas: {
     id?: string;
     tipo: string;
@@ -89,14 +102,17 @@ export class OcorrenciaResponseDTO {
     numeracao: string;
     capacidade: number;
   }[];
+
   outrosObjetos: {
     id?: string;
     descricao: string;
   }[];
+
   valoresApreendidos: {
     id?: string;
     valor: string;
   }[];
+
   createdAt?: Date;
   updatedAt?: Date;
 
@@ -106,7 +122,23 @@ export class OcorrenciaResponseDTO {
     this.data = ocorrencia.data;
     this.horario = ocorrencia.horario;
     this.tipo = ocorrencia.tipo;
+    this.operacao = ocorrencia.operacao
+      ? {
+          id: ocorrencia.operacao.id,
+          nome: ocorrencia.operacao.nome,
+        }
+      : null;
     this.resumo = ocorrencia.resumo;
+
+    this.postoArea = ocorrencia.postoArea
+      ? {
+          id: ocorrencia.postoArea.id,
+          nome: ocorrencia.postoArea.nome,
+          local: ocorrencia.postoArea.local,
+        }
+      : ocorrencia.postoAreaId
+      ? { id: ocorrencia.postoAreaId, nome: 'Posto vinculado', local: '' }
+      : null;
 
     this.endereco = ocorrencia.endereco
       ? {

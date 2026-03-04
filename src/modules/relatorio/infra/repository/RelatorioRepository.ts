@@ -1,15 +1,15 @@
-// src/modules/relatorio/infra/repository/RelatorioRepository.ts
-
 import { Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Relatorio } from '../../domain/entities/relatorio';
 import { AspectoPositivo } from '../../domain/entities/aspectosPositivos';
 import { MelhoriaIdentificada } from '../../domain/entities/melhoriaIndentificada';
 import { AlteracaoEfetivo } from '../../domain/entities/alteracaoEfetivo';
 import { OutraAlteracao } from '../../domain/entities/outraAlteracao';
-import { IRelatorioRepository } from './interfaces/IRetalorioRepository';
+import {
+  IPaginatedResult,
+  IRelatorioRepository,
+} from './interfaces/IRetalorioRepository';
 
 @Injectable()
 export class RelatorioRepository implements IRelatorioRepository {
@@ -30,11 +30,112 @@ export class RelatorioRepository implements IRelatorioRepository {
     return this.relatorioRepository.save(data);
   }
 
+  async findAll(
+    page = 1,
+    limit = 10,
+    dataInicial?: Date,
+    dataFinal?: Date,
+    local?: string,
+    nomeOperacao?: string,
+    matriculaFiscal?: string,
+  ): Promise<IPaginatedResult<Relatorio>> {
+    const skip = (page - 1) * limit;
+
+    const query = this.relatorioRepository
+      .createQueryBuilder('relatorio')
+      .leftJoinAndSelect('relatorio.operacao', 'operacao')
+      .leftJoinAndSelect(
+        'operacao.postoAreas',
+        'postoAreas',
+        'TRIM(UPPER(postoAreas.local)) = TRIM(UPPER(relatorio.local))',
+      )
+      .leftJoinAndSelect('postoAreas.equipes', 'equipes')
+      .leftJoinAndSelect('relatorio.fiscal', 'fiscal')
+      .leftJoinAndSelect('relatorio.aspectosPositivos', 'aspectosPositivos')
+      .leftJoinAndSelect(
+        'relatorio.melhoriasIdentificadas',
+        'melhoriasIdentificadas',
+      )
+      .leftJoinAndSelect('relatorio.alteracoesEfetivo', 'alteracoesEfetivo')
+      .leftJoinAndSelect('relatorio.outrasAlteracoes', 'outrasAlteracoes')
+      .skip(skip)
+      .take(limit)
+      .orderBy('relatorio.dataInicial', 'DESC');
+
+    if (dataInicial && dataFinal) {
+      query.andWhere(
+        'relatorio.dataInicial BETWEEN :dataInicial AND :dataFinal',
+        { dataInicial, dataFinal },
+      );
+    }
+
+    if (local) {
+      query.andWhere('relatorio.local ILIKE :local', { local: `%${local}%` });
+    }
+
+    if (nomeOperacao) {
+      query.andWhere('operacao.nome ILIKE :nomeOperacao', {
+        nomeOperacao: `%${nomeOperacao}%`,
+      });
+    }
+
+    if (matriculaFiscal) {
+      query.andWhere('fiscal.matricula ILIKE :matriculaFiscal', {
+        matriculaFiscal: `%${matriculaFiscal}%`,
+      });
+    }
+
+    const [items, total] = await query.getManyAndCount();
+
+    return {
+      items,
+      total,
+      pageIndex: page,
+      pageSize: limit,
+    };
+  }
+
+  async update(id: string, data: Partial<Relatorio>): Promise<Relatorio> {
+    const relatorioExistente = await this.relatorioRepository.findOneBy({ id });
+
+    if (!relatorioExistente) {
+      throw new Error('Relatório não encontrado para atualização.');
+    }
+
+    const relatorioMesclado = this.relatorioRepository.merge(
+      relatorioExistente,
+      data,
+    );
+
+    return this.relatorioRepository.save(relatorioMesclado);
+  }
+
+  async delete(id: string): Promise<void> {
+    const result = await this.relatorioRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new Error('Relatório não encontrado para exclusão.');
+    }
+  }
+
   async findById(id: string): Promise<Relatorio | null> {
     return await this.relatorioRepository.findOne({
       where: { id },
       relations: [
         'operacao',
+
+        'operacao.postoAreas',
+        'operacao.postoAreas.equipes',
+
+        'operacao.ocorrencias',
+        'operacao.ocorrencias.vitimas',
+        'operacao.ocorrencias.acusados',
+        'operacao.ocorrencias.veiculos',
+        'operacao.ocorrencias.armas',
+        'operacao.ocorrencias.drogas',
+        'operacao.ocorrencias.municoes',
+        'operacao.ocorrencias.valoresApreendidos',
+        'operacao.ocorrencias.endereco', //
         'fiscal',
         'aspectosPositivos',
         'melhoriasIdentificadas',
@@ -44,7 +145,6 @@ export class RelatorioRepository implements IRelatorioRepository {
     });
   }
 
-  // Implementação dos métodos de salvamento individual (se o TypeORM precisar ou para uso externo)
   async saveAspectoPositivo(
     aspecto: AspectoPositivo,
   ): Promise<AspectoPositivo> {
@@ -65,5 +165,72 @@ export class RelatorioRepository implements IRelatorioRepository {
 
   async saveOutraAlteracao(alteracao: OutraAlteracao): Promise<OutraAlteracao> {
     return this.outraAlteracaoRepository.save(alteracao);
+  }
+
+  async findAlteracaoEfetivoById(
+    id: string,
+    relatorioId: string,
+  ): Promise<AlteracaoEfetivo | null> {
+    return await this.alteracaoEfetivoRepository.findOne({
+      where: {
+        id,
+        relatorio: { id: relatorioId },
+      },
+    });
+  }
+
+  async deleteAlteracaoEfetivo(id: string): Promise<void> {
+    await this.alteracaoEfetivoRepository.delete(id);
+  }
+
+  async findAspectoById(
+    id: string,
+    relatorioId: string,
+  ): Promise<AspectoPositivo | null> {
+    return await this.aspectoRepository.findOne({
+      where: {
+        id,
+        relatorio: { id: relatorioId },
+      },
+    });
+  }
+
+  async deleteAspecto(id: string): Promise<void> {
+    await this.aspectoRepository.delete(id);
+  }
+
+  async findMelhoriaById(
+    id: string,
+    relatorioId: string,
+  ): Promise<MelhoriaIdentificada | null> {
+    return await this.melhoriaRepository.findOne({
+      where: {
+        id,
+        relatorio: { id: relatorioId },
+      },
+    });
+  }
+
+  async deleteMelhoria(id: string): Promise<void> {
+    await this.melhoriaRepository.delete(id);
+  }
+
+  async findOutraAlteracaoById(
+    id: string,
+    relatorioId: string,
+  ): Promise<OutraAlteracao | null> {
+    return await this.outraAlteracaoRepository.findOne({
+      where: {
+        id,
+        relatorio: { id: relatorioId },
+      },
+    });
+  }
+
+  async deleteOutraAlteracao(id: string): Promise<void> {
+    const result = await this.outraAlteracaoRepository.delete(id);
+    if (result.affected === 0) {
+      throw new Error('Alteração não encontrada para exclusão.');
+    }
   }
 }

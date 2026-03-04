@@ -28,6 +28,7 @@ export interface IOperacaoRepository {
     dataFinalStart?: Date,
     dataFinalEnd?: Date,
     postoArea?: string,
+    local?: string,
   ): Promise<IPaginatedResult<Operacao>>;
 
   update(id: string, data: Partial<Operacao>): Promise<Operacao>;
@@ -36,6 +37,8 @@ export interface IOperacaoRepository {
     operacaoId: string,
     postoAreaId: string,
   ): Promise<{ operacao: Operacao; postoArea: PostoArea } | null>;
+
+  findLocaisByCidade(operacaoId: string, cidade: string): Promise<string[]>;
 
   findOperacaoComPostoAreas(operacaoId: string): Promise<Operacao | null>;
 

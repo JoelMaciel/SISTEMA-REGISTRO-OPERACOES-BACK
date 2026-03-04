@@ -37,6 +37,7 @@ export class CriarOperacaoUseCase {
       const novoPosto = new PostoArea();
       novoPosto.nome = posto.nome;
       novoPosto.local = posto.local;
+      novoPosto.logradouro = posto.logradouro;
       novoPosto.numero = posto.numero;
       novoPosto.bairro = posto.bairro;
       novoPosto.cidade = posto.cidade;

@@ -18,25 +18,25 @@ export class Relatorio {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ name: 'data_inicial' })
   dataInicial: Date;
 
-  @Column()
+  @Column({ name: 'data_final' })
   dataFinal: Date;
 
-  @Column()
+  @Column({ name: 'horario_inicial' })
   horarioInicial: string;
 
-  @Column()
+  @Column({ name: 'horario_final' })
   horarioFinal: string;
 
-  @Column({ length: 60 })
+  @Column({ length: 100 })
   local: string;
 
-  @Column()
+  @Column({ name: 'total_posto' })
   totalPosto: number;
 
-  @Column()
+  @Column({ name: 'efetivo_total' })
   efetivoTotal: number;
 
   @ManyToOne(() => Operacao, (operacao) => operacao.relatorios, {

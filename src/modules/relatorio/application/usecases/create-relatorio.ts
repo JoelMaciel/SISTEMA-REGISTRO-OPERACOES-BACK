@@ -1,0 +1,83 @@
+import { Inject, Injectable } from '@nestjs/common';
+import { AppError } from 'src/shared/errors/AppError';
+import { IRelatorioRepository } from 'src/modules/relatorio/infra/repository/interfaces/IRetalorioRepository';
+import { CreateRelatorioRequestDTO } from '../dto/shemas/types';
+import { RelatorioResponseDTO } from '../dto/response/RelatorioResponseDTO';
+import { Relatorio } from 'src/modules/relatorio/domain/entities/relatorio';
+import { IOperacaoRepository } from 'src/modules/operacao/infra/repository/interfaces/IOperacaoRepository';
+import { IFiscalRepository } from 'src/modules/fiscal/infra/repository/interfaces/IFiscalRepository';
+import { IEquipeRepository } from 'src/modules/equipe/infra/repository/interfaces/IEquipeRepository';
+import { IOcorrenciaRepository } from 'src/modules/ocorrencia/infra/repository/interfaces/IOcorrenciaRepository';
+
+@Injectable()
+export class CreateRelatorioUseCase {
+  constructor(
+    @Inject('IRelatorioRepository')
+    private readonly relatorioRepository: IRelatorioRepository,
+    @Inject('IOperacaoRepository')
+    private readonly operacaoRepository: IOperacaoRepository,
+    @Inject('IFiscalRepository')
+    private readonly fiscalRepository: IFiscalRepository,
+    @Inject('IEquipeRepository')
+    private readonly equipeRepository: IEquipeRepository,
+    @Inject('IOcorrenciaRepository')
+    private readonly ocorrenciaRepository: IOcorrenciaRepository,
+  ) {}
+
+  async execute(dto: CreateRelatorioRequestDTO): Promise<RelatorioResponseDTO> {
+    const [operacao, fiscal] = await Promise.all([
+      this.operacaoRepository.findById(dto.operacaoId),
+      this.fiscalRepository.findById(dto.fiscalId),
+    ]);
+
+    if (!operacao) throw new AppError(`Operação não encontrada.`, 404);
+    if (!fiscal) throw new AppError(`Fiscal não encontrado.`, 404);
+
+    const summary =
+      await this.equipeRepository.getSummaryByOperacaoLocalAndPeriod(
+        dto.operacaoId,
+        dto.local,
+        dto.dataInicial,
+        dto.dataFinal,
+      );
+
+    const ocorrencias =
+      await this.ocorrenciaRepository.findOcorrenciasByOperacaoLocalAndPeriod(
+        dto.operacaoId,
+        dto.local,
+        dto.dataInicial,
+        dto.dataFinal,
+      );
+
+    const novoRelatorioData: Partial<Relatorio> = {
+      dataInicial: this.normalizarData(dto.dataInicial),
+      dataFinal: this.normalizarData(dto.dataFinal),
+      horarioInicial: dto.horarioInicial,
+      horarioFinal: dto.horarioFinal,
+      local: dto.local.toUpperCase(),
+
+      totalPosto: summary.totalPostosDistintos,
+      efetivoTotal: summary.totalEfetivo,
+
+      operacao: operacao,
+      fiscal: fiscal,
+
+      aspectosPositivos: dto.aspectosPositivos as any,
+      melhoriasIdentificadas: dto.melhoriasIdentificadas as any,
+      alteracoesEfetivo: dto.alteracoesEfetivo as any,
+      outrasAlteracoes: dto.outrasAlteracoes as any,
+    };
+
+    const novoRelatorio = await this.relatorioRepository.create(
+      novoRelatorioData,
+    );
+
+    return new RelatorioResponseDTO(novoRelatorio, ocorrencias);
+  }
+
+  private normalizarData = (data: Date | string) => {
+    const d = data instanceof Date ? data.toISOString() : data;
+    const apenasData = d.split('T')[0];
+    return new Date(`${apenasData}T12:00:00`);
+  };
+}
