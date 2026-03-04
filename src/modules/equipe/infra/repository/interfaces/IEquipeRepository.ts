@@ -17,6 +17,13 @@ export interface IEquipeRepository {
     dataFinal: Date,
   ): Promise<{ totalEfetivo: number; totalPostosDistintos: number }>;
 
+  getSummaryByOperacaoLocalAndPeriod(
+    operacaoId: string,
+    local: string,
+    dataInicial: Date,
+    dataFinal: Date,
+  ): Promise<{ totalEfetivo: number; totalPostosDistintos: number }>;
+
   findAll(
     page: number,
     limit: number,

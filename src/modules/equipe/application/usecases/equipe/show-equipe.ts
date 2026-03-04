@@ -12,9 +12,11 @@ export class ShowEquipeUseCase {
 
   async execute(id: string): Promise<EquipeResponseDTO> {
     const equipe = await this.equipeRepository.findById(id);
+
     if (!equipe) {
       throw new AppError('Equipe não encontrada na base de dados', 404);
     }
+
     return new EquipeResponseDTO(equipe);
   }
 }

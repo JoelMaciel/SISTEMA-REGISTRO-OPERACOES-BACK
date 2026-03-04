@@ -1,5 +1,4 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Ocorrencia } from 'src/modules/ocorrencia/domain/entities/ocorrencia';
 import { IOcorrenciaRepository } from 'src/modules/ocorrencia/infra/repository/interfaces/IOcorrenciaRepository';
 import { AppError } from 'src/shared/errors/AppError';
 import { OcorrenciaResponseDTO } from '../../dto/response/OcorrenciaResponseDTO';

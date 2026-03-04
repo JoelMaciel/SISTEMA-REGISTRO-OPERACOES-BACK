@@ -4,6 +4,7 @@ export class PostoAreaResponseDTO {
   id: string;
   nome: string;
   local: string;
+  logradouro?: string;
   numero?: string;
   bairro?: string;
   cidade: string;
@@ -13,6 +14,7 @@ export class PostoAreaResponseDTO {
     this.id = posto.id;
     this.nome = posto.nome;
     this.local = posto.local;
+    this.logradouro = posto.logradouro;
     this.numero = posto.numero;
     this.bairro = posto.bairro;
     this.cidade = posto.cidade;

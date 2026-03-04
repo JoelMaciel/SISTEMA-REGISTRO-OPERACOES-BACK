@@ -3,7 +3,6 @@ import {
   Catch,
   ArgumentsHost,
   HttpException,
-  HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AppError } from './AppError';
@@ -37,17 +36,13 @@ export class AppExceptionFilter implements ExceptionFilter {
 
     if (exception instanceof HttpException) {
       const status = exception.getStatus();
-      const res = exception.getResponse();
+      const res = exception.getResponse() as any;
 
       return response.status(status).json({
         statusCode: status,
-        ...(typeof res === 'string' ? { message: res } : res),
+        message: res.message || 'Erro na requisição',
+        errors: res.errors || [],
       });
     }
-
-    return response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      message: 'Erro interno do servidor',
-    });
   }
 }

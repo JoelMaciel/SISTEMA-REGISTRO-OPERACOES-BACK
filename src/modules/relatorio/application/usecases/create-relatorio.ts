@@ -30,41 +30,34 @@ export class CreateRelatorioUseCase {
       this.fiscalRepository.findById(dto.fiscalId),
     ]);
 
-    if (!operacao) {
-      throw new AppError(
-        `Operação com ID ${dto.operacaoId} não encontrada.`,
-        404,
+    if (!operacao) throw new AppError(`Operação não encontrada.`, 404);
+    if (!fiscal) throw new AppError(`Fiscal não encontrado.`, 404);
+
+    const summary =
+      await this.equipeRepository.getSummaryByOperacaoLocalAndPeriod(
+        dto.operacaoId,
+        dto.local,
+        dto.dataInicial,
+        dto.dataFinal,
       );
-    }
-    if (!fiscal) {
-      throw new AppError(`Fiscal com ID ${dto.fiscalId} não encontrado.`, 404);
-    }
-
-    const summary = await this.equipeRepository.getSummaryByOperacaoAndPeriod(
-      dto.operacaoId,
-      dto.dataInicial,
-      dto.dataFinal,
-    );
-
-    const efetivoCalculado = summary.totalEfetivo;
-    const postosCalculados = summary.totalPostosDistintos;
 
     const ocorrencias =
-      await this.ocorrenciaRepository.findOcorrenciasByOperacaoAndPeriod(
+      await this.ocorrenciaRepository.findOcorrenciasByOperacaoLocalAndPeriod(
         dto.operacaoId,
+        dto.local,
         dto.dataInicial,
         dto.dataFinal,
       );
 
     const novoRelatorioData: Partial<Relatorio> = {
-      dataInicial: dto.dataInicial,
-      dataFinal: dto.dataFinal,
+      dataInicial: this.normalizarData(dto.dataInicial),
+      dataFinal: this.normalizarData(dto.dataFinal),
       horarioInicial: dto.horarioInicial,
       horarioFinal: dto.horarioFinal,
-      local: dto.local,
+      local: dto.local.toUpperCase(),
 
-      totalPosto: postosCalculados,
-      efetivoTotal: efetivoCalculado,
+      totalPosto: summary.totalPostosDistintos,
+      efetivoTotal: summary.totalEfetivo,
 
       operacao: operacao,
       fiscal: fiscal,
@@ -81,4 +74,10 @@ export class CreateRelatorioUseCase {
 
     return new RelatorioResponseDTO(novoRelatorio, ocorrencias);
   }
+
+  private normalizarData = (data: Date | string) => {
+    const d = data instanceof Date ? data.toISOString() : data;
+    const apenasData = d.split('T')[0];
+    return new Date(`${apenasData}T12:00:00`);
+  };
 }

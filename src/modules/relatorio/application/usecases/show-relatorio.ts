@@ -15,17 +15,26 @@ export class ShowRelatoriodUseCase {
 
   async execute(id: string): Promise<RelatorioResponseDTO> {
     const relatorio = await this.relatorioRepository.findById(id);
-
-    if (!relatorio) {
-      throw new AppError('Relatório não encontrado.', 404);
-    }
+    if (!relatorio) throw new AppError('Relatório não encontrado.', 404);
 
     const ocorrencias =
-      await this.ocorrenciaRepository.findOcorrenciasByOperacaoAndPeriod(
+      await this.ocorrenciaRepository.findOcorrenciasByOperacaoLocalAndPeriod(
         relatorio.operacao.id,
+        relatorio.local,
         relatorio.dataInicial,
         relatorio.dataFinal,
       );
+
+    if (relatorio.operacao && relatorio.operacao.postoAreas) {
+      const localNormalizado = relatorio.local.trim().toUpperCase();
+
+      relatorio.operacao.postoAreas = relatorio.operacao.postoAreas.filter(
+        (pa) => {
+          const localPosto = pa.local.trim().toUpperCase();
+          return localPosto === localNormalizado;
+        },
+      );
+    }
 
     return new RelatorioResponseDTO(relatorio, ocorrencias);
   }

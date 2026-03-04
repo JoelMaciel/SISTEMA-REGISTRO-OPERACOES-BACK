@@ -51,7 +51,10 @@ export class EquipeRepository implements IEquipeRepository {
   }
 
   async findById(id: string): Promise<Equipe | null> {
-    return this.equipeRepository.findOne({ where: { id } });
+    return await this.equipeRepository.findOne({
+      where: { id },
+      relations: ['postoArea'],
+    });
   }
 
   public async findAll(
@@ -111,6 +114,33 @@ export class EquipeRepository implements IEquipeRepository {
       total,
       pageIndex: page,
       pageSize: limit,
+    };
+  }
+
+  async getSummaryByOperacaoLocalAndPeriod(
+    operacaoId: string,
+    local: string,
+    dataInicial: Date,
+    dataFinal: Date,
+  ) {
+    const result = await this.equipeRepository
+      .createQueryBuilder('equipe')
+
+      .innerJoin('equipe.postoArea', 'postoArea')
+      .select('SUM(equipe.efetivoPolicial)', 'totalEfetivo')
+      .addSelect('COUNT(DISTINCT equipe.id)', 'totalPostosDistintos')
+
+      .where('postoArea.operacao = :operacaoId', { operacaoId })
+      .andWhere('postoArea.local = :local', { local })
+      .andWhere('equipe.dataOperacao BETWEEN :dataInicial AND :dataFinal', {
+        dataInicial,
+        dataFinal,
+      })
+      .getRawOne();
+
+    return {
+      totalEfetivo: Number(result?.totalEfetivo) || 0,
+      totalPostosDistintos: Number(result?.totalPostosDistintos) || 0,
     };
   }
 

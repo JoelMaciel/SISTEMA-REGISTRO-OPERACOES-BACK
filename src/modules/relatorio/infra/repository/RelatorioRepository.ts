@@ -44,7 +44,11 @@ export class RelatorioRepository implements IRelatorioRepository {
     const query = this.relatorioRepository
       .createQueryBuilder('relatorio')
       .leftJoinAndSelect('relatorio.operacao', 'operacao')
-      .leftJoinAndSelect('operacao.postoAreas', 'postoAreas')
+      .leftJoinAndSelect(
+        'operacao.postoAreas',
+        'postoAreas',
+        'TRIM(UPPER(postoAreas.local)) = TRIM(UPPER(relatorio.local))',
+      )
       .leftJoinAndSelect('postoAreas.equipes', 'equipes')
       .leftJoinAndSelect('relatorio.fiscal', 'fiscal')
       .leftJoinAndSelect('relatorio.aspectosPositivos', 'aspectosPositivos')
@@ -119,9 +123,11 @@ export class RelatorioRepository implements IRelatorioRepository {
       where: { id },
       relations: [
         'operacao',
-        'operacao.ocorrencias',
+
         'operacao.postoAreas',
         'operacao.postoAreas.equipes',
+
+        'operacao.ocorrencias',
         'operacao.ocorrencias.vitimas',
         'operacao.ocorrencias.acusados',
         'operacao.ocorrencias.veiculos',
@@ -129,10 +135,11 @@ export class RelatorioRepository implements IRelatorioRepository {
         'operacao.ocorrencias.drogas',
         'operacao.ocorrencias.municoes',
         'operacao.ocorrencias.valoresApreendidos',
+        'operacao.ocorrencias.endereco', //
         'fiscal',
         'aspectosPositivos',
-        'alteracoesEfetivo',
         'melhoriasIdentificadas',
+        'alteracoesEfetivo',
         'outrasAlteracoes',
       ],
     });

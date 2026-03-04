@@ -13,9 +13,10 @@ export class OperacaoResponseDTO {
     id: string;
     nome: string;
     local: string;
-    number?: string;
+    logradouro?: string;
+    numero?: string;
     bairro?: string;
-    cidade: string;
+    cidade: string; // <--- Isso traz os dados do logradouro de outra tabela
     quantidade: number;
   }[];
 
@@ -34,7 +35,8 @@ export class OperacaoResponseDTO {
           id: posto.id,
           nome: posto.nome,
           local: posto.local,
-          number: posto.numero,
+          logradouro: posto.logradouro,
+          numero: posto.numero,
           bairro: posto.bairro,
           cidade: posto.cidade,
           quantidade: posto.quantidade,

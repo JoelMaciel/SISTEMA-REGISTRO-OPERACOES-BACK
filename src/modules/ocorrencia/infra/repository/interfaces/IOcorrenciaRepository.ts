@@ -18,6 +18,7 @@ export interface IPaginatedResult<T> {
 
 export interface IOcorrenciaRepository {
   create(data: Partial<Ocorrencia>): Promise<Ocorrencia>;
+  findByM(m: string): Promise<Ocorrencia | null>;
 
   save(ocorrencia: Ocorrencia): Promise<Ocorrencia>;
   saveArma(arma: Arma): Promise<Arma>;
@@ -29,6 +30,12 @@ export interface IOcorrenciaRepository {
   saveVeiculo(veiculo: Veiculo): Promise<Veiculo>;
   saveMunicao(municao: Municao): Promise<Municao>;
   saveDroga(droga: Droga): Promise<Droga>;
+  findOcorrenciasByOperacaoLocalAndPeriod(
+    operacaoId: string,
+    local: string,
+    dataInicial: Date,
+    dataFinal: Date,
+  ): Promise<Ocorrencia[]>;
 
   findById(id: string, relations?: string[]): Promise<Ocorrencia | null>;
 
